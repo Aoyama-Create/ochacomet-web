@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ochacomet-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ochacomet
+      POSTGRES_PASSWORD: ochacomet
+      POSTGRES_DB: ochacomet_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - ochacomet-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ochacomet -d ochacomet_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  ochacomet-pgdata:
