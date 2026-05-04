@@ -1,5 +1,10 @@
 import { defineConfig } from "drizzle-kit";
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
+
+// dotenv は `.env` をデフォルトで読むが、Next.js の慣習に合わせて `.env.local` を優先する。
+// (Next.js dev server は `.env.local` を自動読込するが drizzle-kit は読まないため)
+loadEnv({ path: ".env.local" });
+loadEnv({ path: ".env" });
 
 export default defineConfig({
   dialect: "postgresql",
@@ -8,7 +13,6 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
-  // 開発中は drop 文も生成して、スキーマ整合性を厳密に保つ
   strict: true,
   verbose: true,
 });
