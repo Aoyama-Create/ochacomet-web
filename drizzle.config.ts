@@ -6,13 +6,18 @@ import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env.local" });
 loadEnv({ path: ".env" });
 
+const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL;
+if (!url) {
+  throw new Error(
+    "Set DATABASE_URL or POSTGRES_URL (Vercel Postgres / Neon) before running drizzle-kit.",
+  );
+}
+
 export default defineConfig({
   dialect: "postgresql",
   schema: "./db/schema.ts",
   out: "./db/migrations",
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
+  dbCredentials: { url },
   strict: true,
   verbose: true,
 });
