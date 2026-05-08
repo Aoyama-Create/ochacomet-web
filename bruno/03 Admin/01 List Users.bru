@@ -1,0 +1,30 @@
+meta {
+  name: List Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/admin/users?limit=50
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 50
+  ~q:
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## GET /api/admin/users?q=&limit=50
+
+  admin only。直近で作成されたユーザーを `limit` 件返す。`q` でメール部分一致検索。
+
+  事前に **01 Auth / 04 CSRF Token** + **05 Login** を admin アカウントで実行して、
+  cookie jar に session-token がある状態で叩く。
+}

@@ -1,0 +1,44 @@
+meta {
+  name: Issue Friend Code
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/admin/users/{{targetUserId}}/friend-code
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "durationDays": 30,
+    "note": "Bruno test"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+script:post-response {
+  // 発行されたコードを後続の Validate で使うため env に保存
+  if (res.body && res.body.code) {
+    bru.setVar("friendCode", res.body.code);
+  }
+}
+
+docs {
+  ## POST /api/admin/users/[id]/friend-code
+
+  admin only。指定ユーザーにフレンドコードを発行。
+
+  - 事前に `targetUserId` 環境変数に対象ユーザーの id をセット
+  - 200 OK 時、発行された `code` を環境変数 `friendCode` に自動保存
+  - 後続の **02 Friend Codes / 01 Validate** でそのコードを使える
+}

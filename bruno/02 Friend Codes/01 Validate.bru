@@ -1,0 +1,31 @@
+meta {
+  name: Validate
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/codes/validate?code={{friendCode}}
+  body: none
+  auth: none
+}
+
+params:query {
+  code: {{friendCode}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ## GET /api/codes/validate?code=...
+
+  拡張側 background.js が叩く公開検証 API (認証不要)。
+
+  - 有効: `{ valid: true, expires: ISO8601 }`
+  - 無効: `{ valid: false, reason: "expired" | "not_found" }`
+
+  事前に **03 Admin / 02 Issue Friend Code** で取得したコードを `friendCode`
+  環境変数に貼って実行。
+}
