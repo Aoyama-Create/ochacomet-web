@@ -69,6 +69,31 @@ docker exec -it ochacomet-postgres psql -U ochacomet -d ochacomet_dev -c \
   "UPDATE users SET is_admin = true WHERE email = 'you@example.com';"
 ```
 
+### API テスト (Bruno)
+
+UI なしで signup / login / フレンドコード検証などを叩くための Bruno collection を `bruno/` に同梱。
+
+```bash
+# Bruno を未インストールなら
+brew install bruno   # GUI
+# または CLI
+npm i -g @usebruno/cli
+
+# GUI: Bruno を起動 → Open Collection → このリポジトリの bruno/ を選択
+# CLI 例:
+cd bruno
+bru run "01 Auth/01 Signup.bru" --env Local
+```
+
+**典型フロー (Local 環境)**:
+1. `01 Auth/01 Signup` → ユーザー作成 + verification email (dev では Vercel Function ログ or Postgres `verification_tokens` テーブルから token を取得)
+2. token を Bruno の `verifyToken` 環境変数に設定 → `02 Verify Email (GET)` 実行
+3. `04 CSRF Token` → 環境変数 `csrfToken` に自動保存
+4. `05 Login` → cookie jar に session-token が入る
+5. `06 Session` で current user を確認
+
+`bruno/02 Friend Codes/01 Validate (stub)` は実装次第でアサーションを足す。
+
 ## ディレクトリ構成 (1st リリーススコープ)
 
 ```

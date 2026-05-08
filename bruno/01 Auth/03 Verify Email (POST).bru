@@ -1,0 +1,32 @@
+meta {
+  name: Verify Email (POST)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/verify-email
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "token": "{{verifyToken}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## POST /api/auth/verify-email
+
+  GET 版と同等。JSON body での消費が便利な場合に使う (CSRF 不要、副作用は consume)。
+}

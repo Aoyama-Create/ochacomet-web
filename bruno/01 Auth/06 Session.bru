@@ -1,0 +1,25 @@
+meta {
+  name: Session
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/auth/session
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  ## GET /api/auth/session
+
+  現在のセッションを取得 (ログイン状態確認)。
+  - 未ログイン: `{}` (空オブジェクト) or `null`
+  - ログイン中: `{ user: { id, email, tier, isAdmin, ... }, expires: ISO8601 }`
+
+  事前に **05 Login** を実行し、cookie jar に session-token がある状態で叩く。
+}

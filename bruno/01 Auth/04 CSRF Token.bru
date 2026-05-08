@@ -1,0 +1,31 @@
+meta {
+  name: CSRF Token
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/auth/csrf
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.csrfToken: isString
+}
+
+script:post-response {
+  // login で使うため csrfToken を環境変数に保存
+  if (res.body && res.body.csrfToken) {
+    bru.setVar("csrfToken", res.body.csrfToken);
+  }
+}
+
+docs {
+  ## GET /api/auth/csrf
+
+  Auth.js が発行する CSRF token を取得する。
+  - レスポンス body の `csrfToken` を `bru.setVar` で保存し、後続の Login で使う。
+  - cookie `authjs.csrf-token` も同時に発行されるので、Bruno の cookie jar で保持。
+}

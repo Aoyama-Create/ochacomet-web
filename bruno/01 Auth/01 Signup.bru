@@ -1,0 +1,40 @@
+meta {
+  name: Signup
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/auth/signup
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "{{testEmail}}",
+    "password": "{{testPassword}}",
+    "passwordConfirm": "{{testPassword}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## POST /api/auth/signup
+
+  メール + パスワードでユーザー作成 + verification email 送信。
+
+  - `status: created` 新規作成
+  - `status: resent` 既存未認証ユーザー、token 再発行
+  - `status: already_verified` 既に認証済 (列挙対策で同じ 200 を返す)
+
+  認証メールは Brevo 未設定時 Vercel Function ログに `[brevo:dev-fallback]` で URL 出力。
+}

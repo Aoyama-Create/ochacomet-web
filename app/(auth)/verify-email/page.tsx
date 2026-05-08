@@ -1,58 +1,17 @@
 // /verify-email?token=XXX
 // クエリのトークンを検証して users.email_verified_at を立てる。サーバーコンポーネント。
 import Link from "next/link";
-import { and, eq, gt } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { users, verificationTokens } from "@/db/schema";
+import { consumeVerificationToken } from "@/lib/auth/verifyEmail";
 
 type Props = {
   searchParams: Promise<{ token?: string }>;
 };
 
-type VerifyOutcome =
-  | { ok: true; email: string }
-  | { ok: false; reason: "missing" | "invalid_or_expired" | "user_missing" };
-
-async function consumeToken(token: string): Promise<VerifyOutcome> {
-  const now = new Date();
-
-  const [tok] = await db
-    .select()
-    .from(verificationTokens)
-    .where(
-      and(
-        eq(verificationTokens.token, token),
-        gt(verificationTokens.expires, now),
-      ),
-    )
-    .limit(1);
-  if (!tok) return { ok: false, reason: "invalid_or_expired" };
-
-  const email = tok.identifier;
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-  if (!user) return { ok: false, reason: "user_missing" };
-
-  // 認証完了 + token 削除
-  await db
-    .update(users)
-    .set({ emailVerifiedAt: now, updatedAt: now })
-    .where(eq(users.id, user.id));
-  await db
-    .delete(verificationTokens)
-    .where(eq(verificationTokens.token, token));
-
-  return { ok: true, email };
-}
-
 export default async function VerifyEmailPage({ searchParams }: Props) {
   const { token } = await searchParams;
-  const outcome: VerifyOutcome = token
-    ? await consumeToken(token)
-    : { ok: false, reason: "missing" };
+  const outcome = token
+    ? await consumeVerificationToken(token)
+    : ({ ok: false, reason: "missing" } as const);
 
   if (outcome.ok) {
     return (

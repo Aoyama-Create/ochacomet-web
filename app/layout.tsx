@@ -20,8 +20,10 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   applicationName: APP_NAME,
+  // 空文字列 ("") もフォールバック対象にするため `||` を使う。
+  // (Vercel の Sensitive env vars が CLI pull 時に "" として落ちてくるケース対策)
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
   openGraph: {
     title: APP_NAME,

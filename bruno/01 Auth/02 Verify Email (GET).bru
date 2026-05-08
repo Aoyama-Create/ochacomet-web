@@ -1,0 +1,29 @@
+meta {
+  name: Verify Email (GET)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/auth/verify-email?token={{verifyToken}}
+  body: none
+  auth: none
+}
+
+params:query {
+  token: {{verifyToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## GET /api/auth/verify-email?token=...
+
+  verification token を消費して `users.email_verified_at` をセット。
+
+  事前に `verifyToken` 環境変数に値をセットすること。dev では Vercel Function ログ
+  または DB の `verification_tokens.token` を直接コピー。
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Login
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/auth/callback/credentials
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+}
+
+body:form-urlencoded {
+  csrfToken: {{csrfToken}}
+  email: {{testEmail}}
+  password: {{testPassword}}
+  json: true
+}
+
+assert {
+  res.status: in [200, 302]
+}
+
+docs {
+  ## POST /api/auth/callback/credentials
+
+  Auth.js Credentials Provider のログインエンドポイント。
+
+  事前に **04 CSRF Token** を実行して `csrfToken` を環境変数にセット。
+  cookie jar が ON だと `authjs.csrf-token` cookie が前リクエストから引き継がれる。
+
+  成功すると:
+  - `Set-Cookie: authjs.session-token=...` がレスポンスに付く
+  - body はリダイレクト URL or `{ url: '/account' }` (json:true 指定時)
+
+  以降の保護されたエンドポイントは cookie jar 経由でこの session-token を持ち回す。
+}
