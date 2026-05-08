@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Zen_Kaku_Gothic_Antique } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 const zenKaku = Zen_Kaku_Gothic_Antique({
   variable: "--font-zen-kaku",
@@ -45,7 +47,9 @@ export default function RootLayout({
       className={`${zenKaku.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-[var(--font-zen-kaku)]">
-        {children}
+        <Header />
+        <div className="flex flex-1 flex-col">{children}</div>
+        <Footer />
       </body>
     </html>
   );
