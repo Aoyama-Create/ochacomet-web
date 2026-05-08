@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  // unzipper / archiver は Node のみで動く CJS パッケージで、内部で optional dep
+  // (@aws-sdk/client-s3 など) を require しているため、bundle せず Node 側で require する。
+  serverExternalPackages: ["unzipper", "archiver", "@node-rs/argon2"],
 };
 
 export default nextConfig;

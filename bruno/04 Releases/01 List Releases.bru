@@ -1,0 +1,22 @@
+meta {
+  name: List Releases
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/admin/releases
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## GET /api/admin/releases
+
+  admin only。アップロード済リリースの新しい順 50 件を返す。
+}

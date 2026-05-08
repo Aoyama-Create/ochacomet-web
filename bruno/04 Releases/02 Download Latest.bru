@@ -1,0 +1,26 @@
+meta {
+  name: Download Latest
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/download/ochacomet-latest
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.headers["content-type"]: eq application/zip
+}
+
+docs {
+  ## GET /api/download/ochacomet-latest
+
+  認証 + メール認証 + レート制限 + watermark 付与済 ZIP を返す。
+  cookie jar に session-token がある状態で実行 (01 Auth / 05 Login の後)。
+
+  Bruno は binary レスポンスをファイル保存する設定があるので、Response → "Save to file"
+  で `.zip` として保存し、unzip して `WATERMARK.txt` を確認できる。
+}
