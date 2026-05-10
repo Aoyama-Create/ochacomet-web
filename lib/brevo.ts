@@ -14,6 +14,9 @@ type SendTransactionalArgs = {
   params?: Record<string, unknown>;
   /** Brevo 側のキャンペーン分類 (KPI 集計用) */
   tags?: string[];
+  /** 受信者側に渡すカスタムヘッダ。
+   *  例: List-Unsubscribe / List-Unsubscribe-Post (RFC 8058 1-click 用)。 */
+  headers?: Record<string, string>;
 };
 
 export type SendTransactionalResult =
@@ -45,6 +48,7 @@ export async function sendTransactional(
     textContent: args.textContent,
     params: args.params,
     tags: args.tags,
+    headers: args.headers,
   };
 
   let res: Response;
@@ -69,4 +73,23 @@ export async function sendTransactional(
 
   const json = (await res.json().catch(() => ({}))) as { messageId?: string };
   return { ok: true, messageId: json.messageId ?? "" };
+}
+
+/**
+ * Brevo の Webhook URL に `?secret=XXX` を付けてアプリ側で検証するための簡易チェック。
+ * Brevo は HMAC 署名ヘッダを公式に提供していないので、URL の query string で
+ * `BREVO_WEBHOOK_SECRET` と一致するかだけ確認する形にする。
+ *
+ * @returns true = 認可済 / false = 不正
+ */
+export function verifyBrevoWebhookSecret(url: string): boolean {
+  const expected = process.env.BREVO_WEBHOOK_SECRET;
+  if (!expected) return false;
+  try {
+    const parsed = new URL(url);
+    const got = parsed.searchParams.get("secret") ?? "";
+    return got === expected;
+  } catch {
+    return false;
+  }
 }

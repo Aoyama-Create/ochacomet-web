@@ -1,0 +1,43 @@
+meta {
+  name: Brevo Webhook
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/webhooks/brevo?secret={{brevoWebhookSecret}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "event": "delivered",
+    "email": "test@example.com",
+    "message-id": "<replace-with-real-id@brevo>",
+    "date": "2026-05-10T12:00:00Z"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## POST /api/webhooks/brevo?secret=...
+
+  Brevo dashboard → Settings → Webhooks で本 URL を登録 (`secret` query を含む)。
+  受け取れるイベント: delivered / opened / hard_bounce / soft_bounce / blocked /
+  spam / unsubscribed。
+
+  処理:
+  - email_send_log を message-id で引いて status を更新
+  - bounce / spam / unsubscribed は users.email_optin_marketing=false にする
+
+  手動テスト時は `brevoWebhookSecret` 環境変数に Vercel env と同じ値を入れる。
+}

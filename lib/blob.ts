@@ -25,10 +25,13 @@ function assertBlobConfigured(op: string): void {
   }
 }
 
-/** Vercel Blob は private アクセスが access:'public' でも token なしでは見えない仕様。
- *  1st では access:'public' で put し、配信プロキシ (/api/download/*) でだけ URL を解決する。
- *  → 流出防止は URL を渡さないことで担保 (Brevo メール内に URL を入れないこと)。
- */
+// Vercel Blob ストアは public access で作成する前提。
+// @vercel/blob v2 の put() は型・runtime ともに実質 access: "public" のみ
+// 受け付ける (private store は SDK ではなくサーバー間 fetch でアクセスする想定)。
+//
+// 流出防止は `/api/download/[artifact]` プロキシ経由でのみ Blob URL を解決する
+// ことで担保。プロキシ内では認証 + watermark + レート制限を挟む。
+// Blob 直 URL を Brevo メールや LP に貼らないこと。
 type PutResult = { url: string; pathname: string; size: number };
 
 export async function putRelease(

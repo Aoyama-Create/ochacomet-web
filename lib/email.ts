@@ -2,6 +2,7 @@
 // 各 send* は Brevo のテンプレート ID + パラメータに変換して `sendTransactional` を呼ぶ。
 // dev (BREVO_API_KEY 未設定) では console fallback で URL/内容が確認できる。
 import { sendTransactional, type SendTransactionalResult } from "@/lib/brevo";
+import { FRIEND_RECEIVED_STEPS } from "@/lib/campaign";
 
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ??
@@ -94,6 +95,81 @@ function formatExpiresJa(d: Date): string {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+  });
+}
+
+/**
+ * `friend_received` キャンペーンの cron から呼ばれる step 送信。
+ * stepIndex は 1..4 (step 0 は発行時 transactional で送信済)。
+ *
+ * params:
+ *   - code            : フレンドコード文字列
+ *   - expiresAtJa     : 日本語整形済の期限文字列
+ *   - daysRemaining   : 期限までの日数 (負ならすでに切れている)
+ *   - friendsUrl      : ガイドページ URL
+ *   - unsubscribeUrl  : 1-click 配信停止 URL (Brevo の List-Unsubscribe ヘッダ用)
+ */
+export async function sendFriendStepEmail(
+  to: Recipient,
+  stepIndex: number,
+  args: {
+    code: string;
+    expiresAt: Date;
+    daysRemaining: number;
+    friendsUrl?: string;
+    unsubscribeUrl: string;
+  },
+): Promise<SendTransactionalResult> {
+  const step = FRIEND_RECEIVED_STEPS[stepIndex];
+  if (!step) {
+    return { ok: false, error: `unknown step index ${stepIndex}` };
+  }
+
+  const friendsUrl = args.friendsUrl ?? `${APP_URL}/friends`;
+  const expiresAtJa = formatExpiresJa(args.expiresAt);
+
+  const params = {
+    code: args.code,
+    expiresAt: expiresAtJa,
+    daysRemaining: args.daysRemaining,
+    friendsUrl,
+    unsubscribeUrl: args.unsubscribeUrl,
+  };
+
+  const headers = {
+    // RFC 8058 1-click unsubscribe
+    "List-Unsubscribe": `<${args.unsubscribeUrl}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
+
+  const tpl = templateId(step.templateEnvKey);
+  if (tpl) {
+    return sendTransactional({
+      to: [to],
+      templateId: tpl,
+      params,
+      tags: step.tags,
+      headers,
+    });
+  }
+  // Template 未設定時のフォールバック: シンプルな text 本文。
+  return sendTransactional({
+    to: [to],
+    subject: step.fallbackSubject,
+    textContent: [
+      step.fallbackSubject,
+      "",
+      `フレンドコード: ${args.code}`,
+      `有効期限: ${expiresAtJa} (残り ${args.daysRemaining} 日)`,
+      "",
+      `${step.description}`,
+      "",
+      `ガイド: ${friendsUrl}`,
+      "",
+      `配信停止: ${args.unsubscribeUrl}`,
+    ].join("\n"),
+    tags: step.tags,
+    headers,
   });
 }
 

@@ -1,0 +1,34 @@
+meta {
+  name: Email Campaign
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/cron/email-campaign
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{cronSecret}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## POST /api/cron/email-campaign
+
+  Vercel Cron が日次で叩くエンドポイント。手動でも `Authorization: Bearer $CRON_SECRET`
+  を付けて叩ける。
+
+  - `cronSecret` 環境変数に Vercel の CRON_SECRET と同じ値をセット
+  - レスポンス: `{ ok, processed, sent, failed, skipped }`
+
+  実装: friend_received キャンペーンの next_send_at <= NOW を抽出して送信。
+  - step 0 はスキップ (発行時 transactional 済)
+  - step 1..4 を順次送信、step 5 で completed
+}
