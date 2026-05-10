@@ -163,9 +163,13 @@ ochacomet-web/
 4. デプロイ → `*.vercel.app` で動作確認
 5. Settings → Domains で `ochacomet.aoyamacreate.com` (本番) と `dev.ochacomet.aoyamacreate.com` (preview) を追加
 6. レジストラ DNS に Vercel 指示の CNAME / A レコードを登録 (DNS 反映 10分〜数時間)
-7. Brevo の SPF/DKIM/DMARC を `aoyamacreate.com` に追加 (反映 24-48h)
+7. Brevo の SPF/DKIM/DMARC を `aoyamacreate.com` に追加 (反映 24-48h) — 詳細手順は [docs/brevo-setup.md](docs/brevo-setup.md)
 
 詳細は `~/.claude/plans/1st-lp-zip-plan-fizzy-alpaca.md` の Day 0 5 フェーズを参照。
+
+## 運用 Runbook
+
+- メール (Brevo) セットアップと Sender 切り替え: [docs/brevo-setup.md](docs/brevo-setup.md)
 
 ## 設計参照
 
