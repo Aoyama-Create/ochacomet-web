@@ -14,6 +14,17 @@ import { Readable } from "node:stream";
 const HAS_VERCEL_BLOB = !!process.env.BLOB_READ_WRITE_TOKEN;
 const LOCAL_BLOB_DIR = path.join(process.cwd(), "tmp", "blob");
 
+// 本番で BLOB_READ_WRITE_TOKEN 未設定なら、ローカル FS fallback に落ちる前に
+// 明示的に止める。Vercel の関数 cwd は /var/task で read-only なので、
+// fs.writeFile が ENOENT で落ちて原因が見えにくいエラーになるのを防ぐ。
+function assertBlobConfigured(op: string): void {
+  if (!HAS_VERCEL_BLOB && process.env.NODE_ENV === "production") {
+    throw new Error(
+      `[blob:${op}] BLOB_READ_WRITE_TOKEN is not set. Attach Vercel Blob storage to this project (Vercel → Storage → Vercel Blob → Connect to Project), then redeploy.`,
+    );
+  }
+}
+
 /** Vercel Blob は private アクセスが access:'public' でも token なしでは見えない仕様。
  *  1st では access:'public' で put し、配信プロキシ (/api/download/*) でだけ URL を解決する。
  *  → 流出防止は URL を渡さないことで担保 (Brevo メール内に URL を入れないこと)。
@@ -24,6 +35,7 @@ export async function putRelease(
   pathname: string,
   body: Buffer,
 ): Promise<PutResult> {
+  assertBlobConfigured("put");
   if (HAS_VERCEL_BLOB) {
     const { put } = await import("@vercel/blob");
     const res = await put(pathname, body, {
@@ -47,6 +59,7 @@ export async function putRelease(
 export async function getReleaseStream(
   pathname: string,
 ): Promise<ReadableStream<Uint8Array>> {
+  assertBlobConfigured("get");
   if (HAS_VERCEL_BLOB) {
     const { head } = await import("@vercel/blob");
     const meta = await head(pathname);
@@ -63,6 +76,7 @@ export async function getReleaseStream(
 }
 
 export async function deleteRelease(pathname: string): Promise<void> {
+  assertBlobConfigured("delete");
   if (HAS_VERCEL_BLOB) {
     const { del } = await import("@vercel/blob");
     await del(pathname);
