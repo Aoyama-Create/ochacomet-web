@@ -15,6 +15,7 @@ import {
   friendCodes,
   users,
 } from "@/db/schema";
+import { sendFriendCodeIssuedEmail } from "@/lib/email";
 import { generateFriendCode } from "./generate";
 
 const DEFAULT_DURATION_DAYS = 30;
@@ -152,6 +153,22 @@ export async function issueFriendCode(
         updatedAt: issuedAt,
       },
     });
+
+  // 発行通知メール (tpl_friend_code_issued)。失敗してもフレンドコード自体の発行は成功扱い。
+  try {
+    const sent = await sendFriendCodeIssuedEmail(
+      { email: target.email },
+      { code, expiresAt },
+    );
+    if (!sent.ok) {
+      console.error("[issueFriendCode] notification email failed", {
+        targetUserId: args.targetUserId,
+        error: sent.error,
+      });
+    }
+  } catch (e) {
+    console.error("[issueFriendCode] notification email exception", e);
+  }
 
   return { ok: true, code, expiresAt, friendCodeId };
 }

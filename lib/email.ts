@@ -80,3 +80,55 @@ export async function sendWelcomeEmail(
     tags: ["welcome"],
   });
 }
+
+/**
+ * ISO 文字列ではなく日本語表記 ("2026年6月9日 16:30") に整形した日付。
+ * Brevo Template の {{ params.expiresAt }} に貼っても自然に読めるよう、
+ * Asia/Tokyo タイムゾーンに変換してから出す。
+ */
+function formatExpiresJa(d: Date): string {
+  return d.toLocaleString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export async function sendFriendCodeIssuedEmail(
+  to: Recipient,
+  args: { code: string; expiresAt: Date; friendsUrl?: string },
+): Promise<SendTransactionalResult> {
+  const friendsUrl = args.friendsUrl ?? `${APP_URL}/friends`;
+  const expiresAtJa = formatExpiresJa(args.expiresAt);
+  const tpl = templateId("BREVO_TPL_FRIEND_CODE_ISSUED");
+  if (tpl) {
+    return sendTransactional({
+      to: [to],
+      templateId: tpl,
+      params: {
+        code: args.code,
+        expiresAt: expiresAtJa,
+        friendsUrl,
+      },
+      tags: ["friend-code-issued"],
+    });
+  }
+  return sendTransactional({
+    to: [to],
+    subject: "[OchaComet] フレンドコードを発行しました",
+    textContent: [
+      "OchaComet のフレンドコードを発行しました。",
+      "",
+      `コード: ${args.code}`,
+      `有効期限: ${expiresAtJa}`,
+      "",
+      `使い方ガイド: ${friendsUrl}`,
+      "",
+      "拡張の Pro タブにこのコードを入力すると、Pro 機能を期間限定で試せます。",
+    ].join("\n"),
+    tags: ["friend-code-issued"],
+  });
+}
