@@ -1,5 +1,6 @@
 // 共通ヘッダー。ログイン状態で出し分け (Server Component で auth() を呼ぶ)。
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/auth";
 
 export async function Header() {
@@ -7,13 +8,21 @@ export async function Header() {
   const user = session?.user;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-zinc-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
+    <header className="sticky top-0 z-20 border-b border-line bg-canvas/80 backdrop-blur">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-base font-bold text-zinc-900"
+          className="flex items-center gap-2 text-base font-extrabold text-ink"
         >
-          <span aria-hidden className="text-xl">☕</span>
+          <Image
+            src="/ochacomet-icon.png"
+            width={28}
+            height={28}
+            alt=""
+            aria-hidden
+            className="h-7 w-7 rounded-md"
+            unoptimized
+          />
           OchaComet
         </Link>
 
@@ -22,7 +31,7 @@ export async function Header() {
             <>
               <Link
                 href="/account"
-                className="rounded-md px-3 py-1.5 text-zinc-700 hover:bg-zinc-100"
+                className="rounded-md px-3 py-1.5 text-ink-soft hover:bg-primary-soft hover:text-primary"
               >
                 マイページ
               </Link>
@@ -39,13 +48,13 @@ export async function Header() {
             <>
               <Link
                 href="/login"
-                className="rounded-md px-3 py-1.5 text-zinc-700 hover:bg-zinc-100"
+                className="rounded-md px-3 py-1.5 text-ink-soft hover:bg-primary-soft hover:text-primary"
               >
                 ログイン
               </Link>
               <Link
                 href="/signup"
-                className="rounded-md bg-zinc-900 px-3 py-1.5 font-medium text-white hover:bg-zinc-800"
+                className="rounded-full bg-primary px-4 py-1.5 font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] transition-colors hover:bg-primary-hover"
               >
                 会員登録
               </Link>

@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
+@theme inline {
+  /* Brand — 緑単色基調（拡張 popup.css 準拠 #48875b） */
+  --color-primary: #48875b;
+  --color-primary-hover: #3a6e48;
+  --color-primary-soft: #eff3e8;
+  --color-primary-deep: #2c5638;
+
+  /* Neutral */
+  --color-canvas: #faf9f4;
+  --color-surface: #ffffff;
+  --color-ink: #1d2939;
+  --color-ink-soft: #5c6b57;
+  --color-line: #e5e3d8;
+
+  /* Fonts */
+  --font-sans: var(--font-zen-kaku), "Nunito", "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", sans-serif;
+  --font-en: var(--font-nunito), var(--font-zen-kaku), sans-serif;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #1d2939;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hero pulse dot */
+@keyframes oc-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.5);
+  }
+}
+.oc-pulse {
+  animation: oc-pulse 2s ease-in-out infinite;
+}
+
+/* Floating chip drift */
+@keyframes oc-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.oc-float {
+  animation: oc-float 6s ease-in-out infinite;
+}
+.oc-float-delay {
+  animation-delay: 2s;
+}
+
+/* MockBrowser slight tilt — hover で水平に */
+.oc-tilt {
+  transform: rotate(-1deg);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.oc-tilt:hover {
+  transform: rotate(0deg) scale(1.01);
+}
+
+/* Reduced motion: 全アニメ停止 */
+@media (prefers-reduced-motion: reduce) {
+  .oc-pulse,
+  .oc-float,
+  .oc-tilt {
+    animation: none;
+    transform: none;
+  }
 }

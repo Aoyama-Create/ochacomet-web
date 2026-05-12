@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Zen_Kaku_Gothic_Antique } from "next/font/google";
+import { Zen_Kaku_Gothic_Antique, Nunito } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -10,10 +10,16 @@ const zenKaku = Zen_Kaku_Gothic_Antique({
   weight: ["400", "500", "700"],
 });
 
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  weight: ["600", "700", "800", "900"],
+});
+
 const APP_NAME = "OchaComet";
-const APP_TAGLINE = "配信者のそばに、そっと光る一杯。";
+const APP_TAGLINE = "17LIVE ガーディアンのコメント送信を支える Chrome 拡張";
 const APP_DESCRIPTION =
-  "OchaComet は 17.live ガーディアンのための Chrome 拡張です。配信中のギフト・入退室・フォローに自動で気の利いたコメントを返し、配信者と一緒に配信を盛り上げます。";
+  "OchaComet は 17LIVE のガーディアン (トップリスナー) と認証ライバーのための Chrome 拡張です。入室通知・大ギフトへのお礼・テンプレート送信を「通知 → 承認 → 送信」の手動フローで補助。あなたの会話を肩代わりせず、定型のひと押しだけを引き受けます。現在は招待制ベータでご案内中。";
 
 export const metadata: Metadata = {
   title: {
@@ -44,9 +50,9 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${zenKaku.variable} h-full antialiased`}
+      className={`${zenKaku.variable} ${nunito.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[var(--font-zen-kaku)]">
+      <body className="min-h-full flex flex-col bg-canvas text-ink font-[var(--font-zen-kaku)]">
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
