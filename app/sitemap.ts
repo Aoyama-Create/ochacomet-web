@@ -16,16 +16,47 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
-      url: `${APP_URL}/login`,
+      url: `${APP_URL}/pricing`,
       lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: `${APP_URL}/signup`,
       lastModified: now,
       changeFrequency: "yearly",
       priority: 0.5,
+    },
+    {
+      url: `${APP_URL}/login`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    // 法務系ページ (LS 審査の必須要件) — 検索エンジンにもインデックスさせて Trust シグナルを得る
+    {
+      url: `${APP_URL}/terms`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    {
+      url: `${APP_URL}/privacy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    {
+      url: `${APP_URL}/refund`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.4,
+    },
+    {
+      url: `${APP_URL}/legal`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.4,
     },
   ];
 }
