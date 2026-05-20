@@ -8,6 +8,13 @@
       "when": 1777842063787,
       "tag": "0000_white_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779240509506,
+      "tag": "0001_flimsy_sumo",
+      "breakpoints": true
     }
   ]
 }

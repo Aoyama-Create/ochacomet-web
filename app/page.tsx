@@ -1,5 +1,5 @@
-// 公開 LP — 招待制ベータ募集 (1st リリースのフェーズに合わせた構成)。
-// セクション: Hero / Why this exists / How it helps / Our Policy / How to Join / FAQ / Final CTA
+// 公開 LP — Free + Pro 並立型 (フリーミアム)。
+// セクション: Hero / Why this exists / How it helps / Our Policy / Pricing / How to Use / FAQ / Final CTA
 // ポジショニング: ガーディアン中心 + 認証ライバーも歓迎 / 「自動」ではなく「通知 → 承認 → 送信の補助」
 // 配色: 緑単色基調 (拡張 popup.css の #48875b 系)
 import Link from "next/link";
@@ -14,7 +14,7 @@ export default function Home() {
       <HowItHelps />
       <OurPolicy />
       <Pricing />
-      <HowToJoin />
+      <HowToUse />
       <Faq />
       <FinalCta />
     </main>
@@ -40,7 +40,7 @@ function Hero() {
         <div>
           <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-soft px-3.5 py-1 text-[12px] font-bold tracking-wide text-primary">
             <span aria-hidden className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary" />
-            招待制ベータ募集中 · 17LIVE ガーディアン向け
+            17LIVE ガーディアン・ライバー向け Chrome 拡張
           </span>
           <h1 className="mb-5 text-[34px] font-black leading-[1.25] tracking-tight sm:text-[44px] lg:text-[52px]">
             毎晩、推しの配信を
@@ -68,25 +68,25 @@ function Hero() {
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
             >
               <MailIcon />
-              ベータ募集に登録する
+              無料で始める
             </Link>
             <a
-              href="#how-to-join"
+              href="#pricing"
               className="inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3.5 text-[15px] font-extrabold text-ink transition-colors hover:border-primary hover:text-primary"
             >
-              招待の流れを見る
+              料金プランを見る
             </a>
           </div>
 
           <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-ink-soft">
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> 招待制（フレンドコードを受け取り次第ご案内）
+              <CheckIcon /> Free プランは無料で永続利用可
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> ベータ期間中は無料でご利用可
+              <CheckIcon /> Pro は 14 日間無料トライアル
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> いつでも退会できます
+              <CheckIcon /> いつでも解約できます
             </li>
           </ul>
         </div>
@@ -263,7 +263,7 @@ function PolicyCard({ title, body }: { title: string; body: string }) {
 /* ============================================================
    Pricing
    ============================================================
-   ベータ運用中は「無料試用」を前面に出しつつ、正式版の料金を明示する。
+   フリーミアム構成 (Free + Pro Monthly + Pro Yearly)。
    Lemon Squeezy 審査で参照される価格表示の根拠 (詳細は /pricing)。
 */
 function Pricing() {
@@ -273,14 +273,8 @@ function Pricing() {
         <SectionHead
           tag="Pricing"
           title="料金プラン。"
-          lead="現在はベータ募集中につき無料でお試しいただけます。正式版の料金は下記の通りです。"
+          lead="基本機能は Free でずっと無料。配信の振り返りには Pro を 14 日無料で。"
         />
-
-        <div className="mb-6 rounded-2xl border border-primary/20 bg-primary-soft px-5 py-4 text-center text-[14px] text-primary-deep">
-          <strong className="font-extrabold">ベータ期間中はすべての機能を無料でご利用可。</strong>
-          {" "}
-          正式版に切り替わる際は事前にメールでお知らせします。
-        </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           <PricingCard
@@ -308,9 +302,9 @@ function Pricing() {
               "ユーザー別ランキング (BC 降順)",
               "日付別記録 / セッション管理",
               "CSV / JSON エクスポート",
-              "14 日間の無料トライアル",
+              "14 日間の無料トライアル付き",
             ]}
-            cta={{ href: "/pricing", label: "詳細を見る" }}
+            cta={{ href: "/signup", label: "14 日無料で始める" }}
           />
           <PricingCard
             tier="Pro Yearly"
@@ -321,9 +315,9 @@ function Pricing() {
               "月額プランの全機能",
               "年額は ¥1,233 / 月相当",
               "1 年で約 ¥2,960 お得",
-              "14 日間の無料トライアル",
+              "14 日間の無料トライアル付き",
             ]}
-            cta={{ href: "/pricing", label: "詳細を見る" }}
+            cta={{ href: "/signup", label: "14 日無料で始める" }}
           />
         </div>
 
@@ -413,9 +407,9 @@ function PricingCard({
 }
 
 /* ============================================================
-   How to Join
+   How to Use
    ============================================================ */
-function HowToJoin() {
+function HowToUse() {
   const steps = [
     {
       n: 1,
@@ -424,28 +418,28 @@ function HowToJoin() {
     },
     {
       n: 2,
-      title: "招待を待つ",
-      body: "ベータ枠のご案内ができ次第、フレンドコードと案内をメールでお送りします。",
+      title: "拡張をダウンロード",
+      body: "マイページから最新版の ZIP を取得。Free プランはすぐに使えます。",
     },
     {
       n: 3,
-      title: "拡張を読み込む",
+      title: "Chrome に読み込む",
       body: "chrome://extensions で「パッケージ化されていない拡張機能を読み込む」から選択。5〜10 分ほど。",
     },
     {
       n: 4,
       title: "推しの配信で使う",
-      body: "popup でフレンドコードを入力し、配信ページを開けばすぐに通知が動き始めます。",
+      body: "配信ページを開けばすぐに通知が動き始めます。Pro は popup からライセンスキーを入力。",
     },
   ];
 
   return (
-    <section id="how-to-join" className="scroll-mt-16 bg-canvas">
+    <section id="how-to-use" className="scroll-mt-16 bg-canvas">
       <div className="mx-auto w-full max-w-6xl px-6 py-24">
         <SectionHead
-          tag="How to join"
-          title="招待の流れ。"
-          lead="ベータ枠は順次ご案内します。お急ぎの場合はメール本文でご相談ください。"
+          tag="How to use"
+          title="使い始めるまでの流れ。"
+          lead="登録から実際に使えるまで 10 分ほど。Free プランはクレジットカード不要です。"
         />
         <ol className="relative grid gap-8 md:grid-cols-4">
           <div
@@ -486,19 +480,23 @@ function Faq() {
     },
     {
       q: "配信のコメントやリスナー情報は外部に送られますか？",
-      a: "送りません。設定・テンプレ・ギフト記録などはすべて Chrome のローカルストレージに保存され、当方のサーバーへ送信されることはありません。会員サイトに送るのはメールアドレスとログイン情報のみです。",
+      a: "送りません。設定・テンプレ・ギフト記録などはすべて Chrome のローカルストレージに保存され、当方のサーバーへ送信されることはありません。会員サイトに送るのはメールアドレスとログイン情報、サポート連絡先などプロフィール情報のみです。",
     },
     {
-      q: "招待が届くまでどれくらいかかりますか？",
-      a: "ベータ枠は順次ご案内しています。早ければ数日、混雑時で 2〜3 週間ほどお待ちいただくことがあります。お急ぎの場合は登録時のメールでご事情をお知らせください。",
+      q: "Free と Pro の違いは？",
+      a: "Free プランは自動コメント送信・テンプレート管理・通知制御など基本機能を無料で永続的にお使いいただけます。Pro プラン (月額 ¥1,480 / 年額 ¥14,800、税込) では、配信後の振り返りに使えるギフト集計・ユーザー別ランキング・日付別記録・CSV エクスポートなどが追加されます。",
     },
     {
-      q: "ベータ期間中の料金は？将来の料金は？",
-      a: "ベータ期間中は無料でご利用いただけます。将来的に有料プランを予定していますが、価格・開始時期ともに正式決定後にメールで事前にご案内します。決まる前に課金が発生することはありません。",
+      q: "14 日無料トライアルの仕組みは？",
+      a: "Pro プランを初めてご契約される方には 14 日間の無料トライアルが付きます。トライアル期間中はいつでも無料で解約でき、課金は 15 日目から開始されます。クレジットカードの登録は必要ですが、トライアル中に解約すれば請求は発生しません。",
+    },
+    {
+      q: "解約や返金はできますか？",
+      a: "解約はマイページまたは Lemon Squeezy のカスタマーポータルからいつでも可能です。解約後も契約期間の終了まで Pro 機能をご利用いただけます。返金は原則行いませんが、不具合・誤課金などは個別にご相談ください (詳細は返金ポリシー)。",
     },
     {
       q: "認証ライバーですが、使えますか？",
-      a: "はい、ご利用いただけます。配信中のリスナー対応の細部を軽くする補助として設計されており、ライバー側の利用も歓迎しています。ベータ募集フォームのご事情欄にその旨をお書きください。",
+      a: "はい、ご利用いただけます。配信中のリスナー対応の細部を軽くする補助として設計されており、ライバー側の利用も歓迎しています。",
     },
   ];
 
@@ -508,7 +506,7 @@ function Faq() {
         <SectionHead
           tag="FAQ"
           title="よくあるご質問。"
-          lead="ベータご利用前に、特に気になりやすい点をまとめました。"
+          lead="ご利用前に、特に気になりやすい点をまとめました。"
         />
         <div className="space-y-3">
           {items.map((it) => (
@@ -563,18 +561,18 @@ function FinalCta() {
           className="pointer-events-none absolute -bottom-28 -left-24 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(126,194,143,0.18)_0%,transparent_60%)]"
         />
         <h2 className="relative mb-3 text-[32px] font-black sm:text-[38px]">
-          まずは、招待を受け取るところから。
+          今日から、推しの配信を、もう少しだけ支えよう。
         </h2>
         <p className="relative mx-auto mb-8 max-w-md text-[16px] text-white/75">
-          メールアドレスを登録いただくと、ベータ枠が空き次第ご案内します。
-          無理にお誘いすることはありません。
+          1 分で会員登録 → 拡張機能をダウンロードしてすぐに使えます。
+          Free プランは永続無料、Pro は 14 日間無料でお試しいただけます。
         </p>
         <Link
           href="/signup"
           className="relative inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-[15px] font-extrabold text-primary-deep shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-px"
         >
           <MailIcon />
-          ベータ募集に登録する
+          無料で始める
         </Link>
       </div>
     </section>

@@ -32,6 +32,23 @@ export default function SignupPage() {
       }
     >
       <form action={action} className="space-y-5">
+        <Field
+          label="お名前"
+          htmlFor="displayName"
+          hint="サポート時や領収書の宛名に使います"
+        >
+          <input
+            id="displayName"
+            name="displayName"
+            type="text"
+            required
+            maxLength={80}
+            autoComplete="name"
+            placeholder="例: 青山 あるは"
+            className={inputClass}
+          />
+        </Field>
+
         <Field label="メールアドレス" htmlFor="email">
           <input
             id="email"

@@ -12,11 +12,17 @@ export async function signupAction(
   _prev: SignupFormState | undefined,
   formData: FormData,
 ): Promise<SignupFormState> {
+  const displayName = String(formData.get("displayName") ?? "");
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const passwordConfirm = String(formData.get("passwordConfirm") ?? "");
 
-  const result = await signup({ email, password, passwordConfirm });
+  const result = await signup({
+    email,
+    password,
+    passwordConfirm,
+    displayName,
+  });
   if (!result.ok) {
     return { ok: false, error: result.message };
   }

@@ -20,10 +20,12 @@ export type SignupErrorCode =
   | "invalid_email"
   | "weak_password"
   | "password_mismatch"
+  | "missing_name"
   | "internal_error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 8;
+const MAX_NAME_LENGTH = 80;
 
 function newToken(): string {
   return randomBytes(32).toString("base64url");
@@ -33,11 +35,20 @@ export async function signup(input: {
   email: string;
   password: string;
   passwordConfirm?: string;
+  displayName: string;
 }): Promise<SignupResult> {
   const email = input.email.toLowerCase().trim();
   const password = input.password;
   const confirm = input.passwordConfirm;
+  const displayName = (input.displayName ?? "").trim().slice(0, MAX_NAME_LENGTH);
 
+  if (!displayName) {
+    return {
+      ok: false,
+      error: "missing_name",
+      message: "お名前を入力してください。",
+    };
+  }
   if (!EMAIL_RE.test(email)) {
     return {
       ok: false,
@@ -73,10 +84,20 @@ export async function signup(input: {
       // UI 側でも「メールを送信しました」を出す (列挙対策)。
       return { ok: true, status: "already_verified" };
     }
+    // 未認証のスタブが残っているケース: displayName を最新値で上書き
+    await db
+      .update(users)
+      .set({ displayName, updatedAt: new Date() })
+      .where(eq(users.id, existing[0].id));
     resultStatus = "resent";
   } else {
     const passwordHash = await hashPassword(password);
-    await db.insert(users).values({ email, passwordHash, tier: "free" });
+    await db.insert(users).values({
+      email,
+      passwordHash,
+      displayName,
+      tier: "free",
+    });
     resultStatus = "created";
   }
 

@@ -72,6 +72,16 @@ export const users = pgTable(
     email: text("email").notNull().unique(),
     passwordHash: text("password_hash"),
 
+    // プロフィール情報。display_name は signup 時に必須。他は任意 (マイページから後追加)。
+    // 住所は Lemon Squeezy の billing_address に prefill する形を想定して 5 フィールド分割。
+    displayName: text("display_name"),
+    phone: text("phone"),
+    postalCode: text("postal_code"),
+    addressRegion: text("address_region"),
+    addressCity: text("address_city"),
+    addressLine1: text("address_line1"),
+    addressLine2: text("address_line2"),
+
     tier: tierEnum("tier").notNull().default("free"),
     proStatus: proStatusEnum("pro_status"),
     proSource: proSourceEnum("pro_source"),

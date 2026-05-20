@@ -2,7 +2,7 @@
 //
 // Lemon Squeezy 店舗審査で参照される独立ページ。
 // LP の Pricing セクションより詳しい比較表、支払い方法、トライアル詳細、FAQ を持つ。
-// CTA は招待制ベータ運用中なので /signup へ。LS チェックアウトに切り替えは Phase 4 で。
+// CTA は /signup → 会員登録後 /account/subscription から LS チェックアウト。
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -41,7 +41,7 @@ function PageHeader() {
           が付きます。トライアル中はいつでも無料で解約できます。
         </p>
         <p className="mt-4 inline-block rounded-full bg-primary-soft px-4 py-1.5 text-[13px] text-primary-deep">
-          ベータ期間中はすべて無料。正式版開始は事前にメールでお知らせします。
+          Free プランはクレジットカード不要。Pro は 14 日無料で全機能をお試しいただけます。
         </p>
       </div>
     </section>
@@ -292,8 +292,8 @@ function PaymentInfo() {
 function PricingFaq() {
   const items = [
     {
-      q: "ベータ期間中も Pro プランを購入できますか?",
-      a: "現在は招待制ベータ運用中のため、有料プランの販売はまだ開始していません。フレンドコードをお持ちの方は Pro 相当の機能を期間限定でお試しいただけます。正式版開始時にメールでご案内します。",
+      q: "Free プランはどこまで使えますか?",
+      a: "自動コメント送信・テンプレート管理・ニックネーム挿入・通知制御など基本機能を、永続的に無料でお使いいただけます。クレジットカード不要、機能制限の解除に課金は必要ありません。",
     },
     {
       q: "Free と Pro の違いは何ですか?",
@@ -361,10 +361,10 @@ function BottomCta() {
     <section className="bg-canvas px-6 py-20">
       <div className="mx-auto max-w-3xl rounded-3xl border border-line bg-surface px-10 py-14 text-center">
         <h2 className="mb-3 text-[26px] font-black tracking-tight text-ink sm:text-[30px]">
-          まずは Free から、または招待制ベータへ。
+          まずは Free から、必要に応じて Pro へ。
         </h2>
         <p className="mx-auto mb-8 max-w-md text-[14px] leading-relaxed text-ink-soft">
-          会員登録は 1 分で完了。トライアル付きの Pro プランは正式版開始時にご案内します。
+          会員登録は 1 分で完了。Pro プランには 14 日間の無料トライアルが付きます。
         </p>
         <Link
           href="/signup"

@@ -14,6 +14,7 @@ type Body = {
   email?: unknown;
   password?: unknown;
   passwordConfirm?: unknown;
+  displayName?: unknown;
 };
 
 export async function POST(req: Request) {
@@ -31,8 +32,15 @@ export async function POST(req: Request) {
   const password = typeof body.password === "string" ? body.password : "";
   const passwordConfirm =
     typeof body.passwordConfirm === "string" ? body.passwordConfirm : undefined;
+  const displayName =
+    typeof body.displayName === "string" ? body.displayName : "";
 
-  const result = await signup({ email, password, passwordConfirm });
+  const result = await signup({
+    email,
+    password,
+    passwordConfirm,
+    displayName,
+  });
   if (!result.ok) {
     return NextResponse.json(result, { status: 400 });
   }

@@ -1,11 +1,15 @@
 // マイページ。LP と同じ緑単色基調 (canvas / surface / ink / primary)。
 // 主な動線:
+//   - プロフィール編集 (/account/profile)
 //   - 拡張ダウンロード (/account/download)
 //   - サブスク状態 (/account/subscription)
 //   - サインアウト (Server Action)
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
 import { auth, signOut } from "@/auth";
+import { db } from "@/lib/db";
+import { users } from "@/db/schema";
 
 export const metadata = { title: "マイページ" };
 
@@ -16,6 +20,13 @@ export default async function AccountPage() {
   const { email, tier, proStatus, emailVerifiedAt, isAdmin } = session.user;
   const verified = !!emailVerifiedAt;
 
+  const [profile] = await db
+    .select({ displayName: users.displayName })
+    .from(users)
+    .where(eq(users.id, Number(session.user.id)))
+    .limit(1);
+  const displayName = profile?.displayName ?? "";
+
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-3xl px-6 py-12">
@@ -23,7 +34,13 @@ export default async function AccountPage() {
           マイページ
         </h1>
         <p className="mt-1 text-sm text-ink-soft">
-          ご登録情報の確認と、拡張機能のダウンロードはこちらから。
+          {displayName ? (
+            <>
+              <span className="font-extrabold text-ink">{displayName}</span> さん、こんにちは。
+            </>
+          ) : (
+            "ご登録情報の確認と、拡張機能のダウンロードはこちらから。"
+          )}
         </p>
 
         {!verified ? (
@@ -37,8 +54,17 @@ export default async function AccountPage() {
 
         {/* 基本情報 */}
         <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
-          <h2 className="text-lg font-extrabold text-ink">基本情報</h2>
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-lg font-extrabold text-ink">基本情報</h2>
+            <Link
+              href="/account/profile"
+              className="text-xs font-extrabold text-primary hover:text-primary-hover"
+            >
+              プロフィールを編集 →
+            </Link>
+          </div>
           <dl className="mt-5 space-y-2 text-sm">
+            <Row label="お名前" value={displayName || <span className="text-amber-700">未設定</span>} />
             <Row label="メール" value={email} />
             <Row label="プラン" value={tier ?? "—"} />
             <Row
@@ -69,17 +95,23 @@ export default async function AccountPage() {
         </section>
 
         {/* アクション */}
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
+        <section className="mt-6 grid gap-4 md:grid-cols-3">
+          <ActionCard
+            href="/account/profile"
+            title="プロフィール編集"
+            body="名前・電話番号・住所を編集します。"
+            cta="編集する →"
+          />
           <ActionCard
             href="/account/download"
             title="拡張をダウンロード"
             body="最新版の Chrome 拡張機能を取得します。"
-            cta="ダウンロードページへ →"
+            cta="ダウンロードへ →"
           />
           <ActionCard
             href="/account/subscription"
             title="サブスクリプション"
-            body="プラン状態の確認・アップグレード・解約。"
+            body="プラン状態・アップグレード・解約。"
             cta="プランを見る →"
           />
         </section>
