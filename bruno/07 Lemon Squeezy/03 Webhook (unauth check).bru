@@ -1,0 +1,38 @@
+meta {
+  name: Webhook (unauth check)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/webhooks/lemonsqueezy
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "meta": { "event_name": "subscription_created" },
+    "data": { "type": "subscriptions", "id": "1", "attributes": {} }
+  }
+}
+
+assert {
+  res.status: eq 401
+}
+
+docs {
+  ## POST /api/webhooks/lemonsqueezy
+
+  Lemon Squeezy から送信される webhook 受信エンドポイント。
+  `x-signature` ヘッダの HMAC-SHA256 を `LEMONSQUEEZY_WEBHOOK_SECRET` で検証する。
+  署名がないと 401 が返るのが正常 (このリクエストでの確認内容)。
+
+  本物の LS Webhook は LS dashboard → Settings → Webhooks で URL:
+    https://ochacomet.aoyamacreate.com/api/webhooks/lemonsqueezy
+  を登録し、Signing secret を `LEMONSQUEEZY_WEBHOOK_SECRET` に投入する。
+}

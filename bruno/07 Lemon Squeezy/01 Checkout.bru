@@ -1,0 +1,36 @@
+meta {
+  name: Checkout
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/account/checkout
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "variant": "monthly"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.ok: eq true
+}
+
+docs {
+  ## POST /api/account/checkout
+
+  認証必須 (cookie jar に session-token が必要)。
+  `variant: 'monthly' | 'yearly'` を受け取り、Lemon Squeezy の signed checkout URL を発行する。
+
+  事前に **01 Auth / 05 Login** で session を確立してから叩く。
+  レスポンス `url` を踏むとブラウザが LS チェックアウトに遷移する。
+}

@@ -13,6 +13,7 @@ export default function Home() {
       <WhyThisExists />
       <HowItHelps />
       <OurPolicy />
+      <Pricing />
       <HowToJoin />
       <Faq />
       <FinalCta />
@@ -256,6 +257,158 @@ function PolicyCard({ title, body }: { title: string; body: string }) {
       </div>
       <p className="text-[13px] leading-relaxed text-ink-soft">{body}</p>
     </div>
+  );
+}
+
+/* ============================================================
+   Pricing
+   ============================================================
+   ベータ運用中は「無料試用」を前面に出しつつ、正式版の料金を明示する。
+   Lemon Squeezy 審査で参照される価格表示の根拠 (詳細は /pricing)。
+*/
+function Pricing() {
+  return (
+    <section id="pricing" className="scroll-mt-16 bg-canvas">
+      <div className="mx-auto w-full max-w-6xl px-6 py-24">
+        <SectionHead
+          tag="Pricing"
+          title="料金プラン。"
+          lead="現在はベータ募集中につき無料でお試しいただけます。正式版の料金は下記の通りです。"
+        />
+
+        <div className="mb-6 rounded-2xl border border-primary/20 bg-primary-soft px-5 py-4 text-center text-[14px] text-primary-deep">
+          <strong className="font-extrabold">ベータ期間中はすべての機能を無料でご利用可。</strong>
+          {" "}
+          正式版に切り替わる際は事前にメールでお知らせします。
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          <PricingCard
+            tier="Free"
+            price="¥0"
+            unit="ずっと無料"
+            description="自動コメント送信・テンプレ・通知の基本機能"
+            features={[
+              "通知 → 承認 → 送信フロー",
+              "テンプレ管理 (最大 20 件)",
+              "ニックネーム挿入",
+              "ギフト・入退室・フォロー・シェア検知",
+            ]}
+            cta={{ href: "/signup", label: "無料で始める" }}
+          />
+          <PricingCard
+            tier="Pro Monthly"
+            price="¥1,480"
+            unit="/ 月 (税込)"
+            description="ガチイベ期の見守り記録・ランキング・エクスポートまで"
+            highlighted
+            features={[
+              "Free の全機能",
+              "ギフト集計 (BOX / 通常 / イベント)",
+              "ユーザー別ランキング (BC 降順)",
+              "日付別記録 / セッション管理",
+              "CSV / JSON エクスポート",
+              "14 日間の無料トライアル",
+            ]}
+            cta={{ href: "/pricing", label: "詳細を見る" }}
+          />
+          <PricingCard
+            tier="Pro Yearly"
+            price="¥14,800"
+            unit="/ 年 (税込)"
+            description="2 ヶ月分お得な年額プラン"
+            features={[
+              "月額プランの全機能",
+              "年額は ¥1,233 / 月相当",
+              "1 年で約 ¥2,960 お得",
+              "14 日間の無料トライアル",
+            ]}
+            cta={{ href: "/pricing", label: "詳細を見る" }}
+          />
+        </div>
+
+        <p className="mt-10 text-center text-[13px] text-ink-soft">
+          決済は{" "}
+          <a
+            href="https://www.lemonsqueezy.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="underline hover:text-primary"
+          >
+            Lemon Squeezy
+          </a>{" "}
+          を通じて行われます。クレジットカード (Visa / Mastercard / AmEx / JCB)
+          に対応。
+        </p>
+        <p className="mt-2 text-center text-[12px] text-ink-soft">
+          価格・支払条件の詳細は <Link href="/pricing" className="underline hover:text-primary">料金ページ</Link>{" "}
+          / <Link href="/refund" className="underline hover:text-primary">返金ポリシー</Link>{" "}
+          / <Link href="/legal" className="underline hover:text-primary">特定商取引法に基づく表記</Link> をご確認ください。
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function PricingCard({
+  tier,
+  price,
+  unit,
+  description,
+  features,
+  cta,
+  highlighted,
+}: {
+  tier: string;
+  price: string;
+  unit: string;
+  description: string;
+  features: string[];
+  cta: { href: string; label: string };
+  highlighted?: boolean;
+}) {
+  return (
+    <article
+      className={
+        highlighted
+          ? "relative rounded-2xl border-2 border-primary bg-surface p-8 shadow-[0_8px_24px_rgba(72,135,91,0.18)]"
+          : "rounded-2xl border border-line bg-surface p-8"
+      }
+    >
+      {highlighted ? (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
+          おすすめ
+        </span>
+      ) : null}
+      <h3 className="mb-1 text-[18px] font-black text-ink">{tier}</h3>
+      <p className="mb-5 text-[13px] leading-relaxed text-ink-soft">
+        {description}
+      </p>
+      <div className="mb-6 flex items-baseline gap-1.5">
+        <span className="text-[36px] font-black text-ink">{price}</span>
+        <span className="text-[12px] text-ink-soft">{unit}</span>
+      </div>
+      <ul className="mb-8 space-y-2 text-[13px] text-ink">
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2">
+            <span aria-hidden className="mt-0.5">
+              <CheckIcon />
+            </span>
+            <span className="leading-relaxed">{f}</span>
+          </li>
+        ))}
+      </ul>
+      <Link
+        href={cta.href}
+        className={
+          highlighted
+            ? "inline-flex w-full items-center justify-center rounded-full bg-primary py-2.5 text-[14px] font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
+            : "inline-flex w-full items-center justify-center rounded-full border border-line bg-canvas py-2.5 text-[14px] font-extrabold text-ink hover:border-primary hover:text-primary"
+        }
+      >
+        {cta.label}
+      </Link>
+    </article>
   );
 }
 
