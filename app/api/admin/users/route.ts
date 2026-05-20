@@ -1,7 +1,7 @@
 // GET /api/admin/users?q=<email substring>&limit=50
 // admin only. ユーザー一覧 (検索可)。
 import { NextResponse } from "next/server";
-import { ilike, desc } from "drizzle-orm";
+import { ilike, desc, or } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
@@ -30,6 +30,8 @@ export async function GET(req: Request) {
   const baseSelect = {
     id: users.id,
     email: users.email,
+    displayName: users.displayName,
+    phone: users.phone,
     tier: users.tier,
     proStatus: users.proStatus,
     friendCode: users.friendCode,
@@ -43,7 +45,12 @@ export async function GET(req: Request) {
     ? await db
         .select(baseSelect)
         .from(users)
-        .where(ilike(users.email, `%${q}%`))
+        .where(
+          or(
+            ilike(users.email, `%${q}%`),
+            ilike(users.displayName, `%${q}%`),
+          ),
+        )
         .orderBy(desc(users.createdAt))
         .limit(limit)
     : await db

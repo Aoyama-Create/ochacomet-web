@@ -29,6 +29,13 @@ export async function GET(
     .select({
       id: users.id,
       email: users.email,
+      displayName: users.displayName,
+      phone: users.phone,
+      postalCode: users.postalCode,
+      addressRegion: users.addressRegion,
+      addressCity: users.addressCity,
+      addressLine1: users.addressLine1,
+      addressLine2: users.addressLine2,
       tier: users.tier,
       proStatus: users.proStatus,
       proSource: users.proSource,

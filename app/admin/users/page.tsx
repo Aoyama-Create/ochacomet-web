@@ -1,7 +1,7 @@
 // /admin/users — ユーザー一覧 (admin only)
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { desc, ilike } from "drizzle-orm";
+import { desc, ilike, or } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
@@ -19,6 +19,8 @@ export default async function AdminUsersPage({ searchParams }: Props) {
   const baseSelect = {
     id: users.id,
     email: users.email,
+    displayName: users.displayName,
+    phone: users.phone,
     tier: users.tier,
     friendCode: users.friendCode,
     friendExpiresAt: users.friendExpiresAt,
@@ -26,11 +28,17 @@ export default async function AdminUsersPage({ searchParams }: Props) {
     emailVerifiedAt: users.emailVerifiedAt,
     createdAt: users.createdAt,
   };
+  // 名前にもマッチさせて検索しやすく
   const rows = query
     ? await db
         .select(baseSelect)
         .from(users)
-        .where(ilike(users.email, `%${query}%`))
+        .where(
+          or(
+            ilike(users.email, `%${query}%`),
+            ilike(users.displayName, `%${query}%`),
+          ),
+        )
         .orderBy(desc(users.createdAt))
         .limit(50)
     : await db
@@ -59,7 +67,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="メールアドレスで検索"
+            placeholder="メールアドレス・名前で検索"
             className="flex-1 rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
@@ -75,7 +83,8 @@ export default async function AdminUsersPage({ searchParams }: Props) {
             <thead className="bg-canvas">
               <tr className="text-left text-[11px] font-extrabold uppercase tracking-wider text-ink-soft">
                 <th className="px-4 py-3">ID</th>
-                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">ユーザー</th>
+                <th className="px-4 py-3">電話</th>
                 <th className="px-4 py-3">Tier</th>
                 <th className="px-4 py-3">Friend Code</th>
                 <th className="px-4 py-3">期限</th>
@@ -88,7 +97,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                 <tr>
                   <td
                     className="px-4 py-8 text-center text-ink-soft"
-                    colSpan={7}
+                    colSpan={8}
                   >
                     該当ユーザーがいません。
                   </td>
@@ -96,39 +105,47 @@ export default async function AdminUsersPage({ searchParams }: Props) {
               ) : (
                 rows.map((u) => (
                   <tr key={u.id} className="hover:bg-canvas/60">
-                    <td className="px-4 py-3 text-ink-soft">{u.id}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 align-top text-ink-soft">{u.id}</td>
+                    <td className="px-4 py-3 align-top">
                       <Link
                         href={`/admin/users/${u.id}`}
                         className="font-extrabold text-ink hover:text-primary"
                       >
-                        {u.email}
+                        {u.displayName?.trim() ? u.displayName : u.email}
                       </Link>
                       {u.isAdmin ? (
                         <span className="ml-2 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold text-violet-700">
                           admin
                         </span>
                       ) : null}
+                      {u.displayName?.trim() ? (
+                        <div className="mt-0.5 text-[11px] text-ink-soft">
+                          {u.email}
+                        </div>
+                      ) : null}
                     </td>
-                    <td className="px-4 py-3 text-ink">
+                    <td className="px-4 py-3 align-top text-xs text-ink-soft">
+                      {u.phone?.trim() ? u.phone : "—"}
+                    </td>
+                    <td className="px-4 py-3 align-top text-ink">
                       <TierBadge tier={u.tier} />
                     </td>
-                    <td className="px-4 py-3 font-mono text-[11px] text-ink-soft">
+                    <td className="px-4 py-3 align-top font-mono text-[11px] text-ink-soft">
                       {u.friendCode ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-xs text-ink-soft">
+                    <td className="px-4 py-3 align-top text-xs text-ink-soft">
                       {u.friendExpiresAt
                         ? new Date(u.friendExpiresAt).toLocaleDateString()
                         : "—"}
                     </td>
-                    <td className="px-4 py-3 text-xs">
+                    <td className="px-4 py-3 align-top text-xs">
                       {u.emailVerifiedAt ? (
                         <span className="font-extrabold text-primary">済</span>
                       ) : (
                         <span className="font-extrabold text-amber-700">未</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-xs text-ink-soft">
+                    <td className="px-4 py-3 align-top text-xs text-ink-soft">
                       {new Date(u.createdAt).toLocaleDateString()}
                     </td>
                   </tr>

@@ -58,8 +58,11 @@ export default async function AdminUserDetailPage({ params }: Props) {
           ← 一覧に戻る
         </Link>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
-          {user.email}
+          {user.displayName?.trim() ? user.displayName : user.email}
         </h1>
+        {user.displayName?.trim() ? (
+          <p className="mt-1 text-sm text-ink-soft">{user.email}</p>
+        ) : null}
 
         {/* 基本情報 */}
         <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
@@ -102,6 +105,25 @@ export default async function AdminUserDetailPage({ params }: Props) {
             <Row
               label="登録日"
               value={new Date(user.createdAt).toLocaleString()}
+            />
+          </dl>
+        </section>
+
+        {/* 連絡先 / プロフィール */}
+        <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-ink-soft">
+            連絡先 / プロフィール
+          </h2>
+          <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            <Row label="名前" value={user.displayName?.trim() || "—"} />
+            <Row label="電話番号" value={user.phone?.trim() || "—"} />
+            <Row label="郵便番号" value={user.postalCode?.trim() || "—"} />
+            <Row label="都道府県" value={user.addressRegion?.trim() || "—"} />
+            <Row label="市区町村" value={user.addressCity?.trim() || "—"} />
+            <Row label="住所 1" value={user.addressLine1?.trim() || "—"} />
+            <Row
+              label="住所 2 (建物名等)"
+              value={user.addressLine2?.trim() || "—"}
             />
           </dl>
         </section>
