@@ -1,5 +1,8 @@
-// マイページ placeholder。1st リリースでは /account/download への動線と
-// 現在の tier 表示・サインアウトだけ持たせる。本実装は plan §3 Track 2 で。
+// マイページ。LP と同じ緑単色基調 (canvas / surface / ink / primary)。
+// 主な動線:
+//   - 拡張ダウンロード (/account/download)
+//   - サブスク状態 (/account/subscription)
+//   - サインアウト (Server Action)
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
@@ -10,44 +13,102 @@ export default async function AccountPage() {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/account");
 
-  const { email, tier, emailVerifiedAt } = session.user;
+  const { email, tier, proStatus, emailVerifiedAt, isAdmin } = session.user;
   const verified = !!emailVerifiedAt;
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-zinc-50 p-8">
-      <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-bold text-zinc-900">マイページ</h1>
-
-        <dl className="mt-6 space-y-3 text-sm">
-          <div className="flex justify-between border-b border-zinc-100 pb-2">
-            <dt className="text-zinc-500">メール</dt>
-            <dd className="text-zinc-900">{email}</dd>
-          </div>
-          <div className="flex justify-between border-b border-zinc-100 pb-2">
-            <dt className="text-zinc-500">プラン</dt>
-            <dd className="text-zinc-900">{tier}</dd>
-          </div>
-          <div className="flex justify-between border-b border-zinc-100 pb-2">
-            <dt className="text-zinc-500">メール認証</dt>
-            <dd className={verified ? "text-emerald-700" : "text-amber-700"}>
-              {verified ? "完了" : "未完了"}
-            </dd>
-          </div>
-        </dl>
+    <main className="flex flex-1 flex-col bg-canvas">
+      <div className="mx-auto w-full max-w-3xl px-6 py-12">
+        <h1 className="text-2xl font-black tracking-tight text-ink">
+          マイページ
+        </h1>
+        <p className="mt-1 text-sm text-ink-soft">
+          ご登録情報の確認と、拡張機能のダウンロードはこちらから。
+        </p>
 
         {!verified ? (
-          <p className="mt-4 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
-            メール認証が未完了です。登録時に届いた認証メールのリンクを開いてください。
-          </p>
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <strong className="font-extrabold">メール認証が未完了です。</strong>
+            {" "}
+            登録時に届いた認証メールのリンクを開いて完了させてください。
+            拡張機能のダウンロード等、一部の機能が制限されます。
+          </div>
         ) : null}
 
-        <div className="mt-8 flex flex-col gap-3">
-          <Link
+        {/* 基本情報 */}
+        <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
+          <h2 className="text-lg font-extrabold text-ink">基本情報</h2>
+          <dl className="mt-5 space-y-2 text-sm">
+            <Row label="メール" value={email} />
+            <Row label="プラン" value={tier ?? "—"} />
+            <Row
+              label="Pro ステータス"
+              value={proStatus ?? <span className="text-ink-soft">—</span>}
+            />
+            <Row
+              label="メール認証"
+              value={
+                verified ? (
+                  <span className="font-extrabold text-primary">完了</span>
+                ) : (
+                  <span className="font-extrabold text-amber-700">未完了</span>
+                )
+              }
+            />
+            {isAdmin ? (
+              <Row
+                label="権限"
+                value={
+                  <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[11px] font-extrabold text-violet-700">
+                    admin
+                  </span>
+                }
+              />
+            ) : null}
+          </dl>
+        </section>
+
+        {/* アクション */}
+        <section className="mt-6 grid gap-4 md:grid-cols-2">
+          <ActionCard
             href="/account/download"
-            className="block rounded-md bg-zinc-900 px-4 py-2 text-center text-sm font-medium text-white hover:bg-zinc-800"
-          >
-            拡張をダウンロード (準備中)
-          </Link>
+            title="拡張をダウンロード"
+            body="最新版の Chrome 拡張機能を取得します。"
+            cta="ダウンロードページへ →"
+          />
+          <ActionCard
+            href="/account/subscription"
+            title="サブスクリプション"
+            body="プラン状態の確認・アップグレード・解約。"
+            cta="プランを見る →"
+          />
+        </section>
+
+        {/* admin 専用 */}
+        {isAdmin ? (
+          <section className="mt-6 rounded-2xl border border-violet-200 bg-violet-50/40 p-6">
+            <h2 className="text-sm font-extrabold text-violet-900">
+              Admin
+            </h2>
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
+              <Link
+                href="/admin/users"
+                className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+              >
+                ユーザー管理
+              </Link>
+              <Link
+                href="/admin/releases"
+                className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+              >
+                リリース管理
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
+        {/* サインアウト */}
+        <section className="mt-10 flex justify-end">
           <form
             action={async () => {
               "use server";
@@ -56,13 +117,53 @@ export default async function AccountPage() {
           >
             <button
               type="submit"
-              className="w-full rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+              className="rounded-full border border-line bg-surface px-5 py-2 text-sm font-extrabold text-ink-soft hover:border-primary hover:text-primary"
             >
               サインアウト
             </button>
           </form>
-        </div>
+        </section>
       </div>
     </main>
+  );
+}
+
+function Row({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between border-b border-line/60 py-2.5">
+      <dt className="text-ink-soft">{label}</dt>
+      <dd className="font-mono text-xs text-ink">{value}</dd>
+    </div>
+  );
+}
+
+function ActionCard({
+  href,
+  title,
+  body,
+  cta,
+}: {
+  href: string;
+  title: string;
+  body: string;
+  cta: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-2xl border border-line bg-surface p-6 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_6px_18px_rgba(72,135,91,0.12)]"
+    >
+      <h3 className="text-base font-extrabold text-ink">{title}</h3>
+      <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">{body}</p>
+      <p className="mt-4 text-[13px] font-extrabold text-primary group-hover:text-primary-hover">
+        {cta}
+      </p>
+    </Link>
   );
 }

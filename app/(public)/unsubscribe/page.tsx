@@ -2,9 +2,10 @@
 // GET で来たブラウザは確認画面を表示し、明示的に「停止する」ボタンを押させる。
 "use client";
 
-import { useState, useTransition, Suspense } from "react";
+import { Suspense, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { AuthCard, primaryButtonClass } from "@/components/auth/AuthCard";
 
 function UnsubscribeForm() {
   const params = useSearchParams();
@@ -30,63 +31,59 @@ function UnsubscribeForm() {
     });
   }
 
+  if (!token) {
+    return (
+      <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+        トークンが見つかりません。メール内のリンクを開き直してください。
+      </p>
+    );
+  }
+
+  if (done) {
+    return (
+      <div className="rounded-xl border border-primary/30 bg-primary-soft px-4 py-3 text-sm text-primary-deep">
+        配信を停止しました。ご利用ありがとうございました。
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
-      <h1 className="text-xl font-bold text-zinc-900">
-        マーケティング配信を停止
-      </h1>
-      <p className="mt-3 text-sm text-zinc-700 leading-relaxed">
-        OchaComet のフレンドコード関連メールおよびその他のお知らせメールの配信を停止します。
-        メール認証や購入確認などの transactional メールは引き続き送信されます。
-      </p>
-
-      {!token ? (
-        <p className="mt-6 text-sm text-red-600">
-          トークンが見つかりません。メール内のリンクを開き直してください。
+    <>
+      {error ? (
+        <p className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+          エラー: {error}
         </p>
-      ) : done ? (
-        <div className="mt-6 rounded-md bg-emerald-50 p-3 text-sm text-emerald-800">
-          配信を停止しました。ご利用ありがとうございました。
-        </div>
-      ) : (
-        <>
-          {error ? (
-            <p className="mt-3 text-sm text-red-600">エラー: {error}</p>
-          ) : null}
-          <button
-            type="button"
-            onClick={submit}
-            disabled={pending}
-            className="mt-6 w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
-          >
-            {pending ? "停止中..." : "配信を停止する"}
-          </button>
-        </>
-      )}
-
-      <p className="mt-6 text-xs text-zinc-500">
-        <Link href="/" className="underline">
-          ホームに戻る
-        </Link>
-      </p>
-    </div>
+      ) : null}
+      <button
+        type="button"
+        onClick={submit}
+        disabled={pending}
+        className={primaryButtonClass}
+      >
+        {pending ? "停止中..." : "配信を停止する"}
+      </button>
+    </>
   );
 }
 
 function Fallback() {
-  return (
-    <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm text-sm text-zinc-500">
-      読み込み中...
-    </div>
-  );
+  return <p className="text-sm text-ink-soft">読み込み中...</p>;
 }
 
 export default function UnsubscribePage() {
   return (
-    <main className="flex flex-1 items-center justify-center bg-zinc-50 p-8">
+    <AuthCard
+      title="マーケティング配信を停止"
+      description="OchaComet のフレンドコード関連メールおよびその他のお知らせメールの配信を停止します。メール認証や購入確認などの transactional メールは引き続き送信されます。"
+      footer={
+        <Link href="/" className="text-ink-soft hover:text-primary">
+          ホームに戻る
+        </Link>
+      }
+    >
       <Suspense fallback={<Fallback />}>
         <UnsubscribeForm />
       </Suspense>
-    </main>
+    </AuthCard>
   );
 }

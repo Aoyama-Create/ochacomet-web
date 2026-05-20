@@ -67,10 +67,13 @@ export function UploadForm() {
     }
   }
 
+  const inputClass =
+    "block w-full rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-zinc-800">
+        <label className="block text-[13px] font-extrabold text-ink">
           ZIP ファイル
         </label>
         <input
@@ -81,17 +84,17 @@ export function UploadForm() {
             const f = e.target.files?.[0];
             if (f) handleFile(f);
           }}
-          className="mt-1 block w-full text-sm"
+          className="mt-1.5 block w-full text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-primary-soft file:px-4 file:py-2 file:text-[12px] file:font-extrabold file:text-primary-deep hover:file:bg-primary-soft/80"
         />
         {shaPreview ? (
-          <p className="mt-1 break-all font-mono text-[10px] text-zinc-500">
+          <p className="mt-1.5 break-all font-mono text-[10px] text-ink-soft">
             SHA-256: {shaPreview}
           </p>
         ) : null}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-zinc-800">
+        <label className="block text-[13px] font-extrabold text-ink">
           Version
         </label>
         <input
@@ -101,12 +104,12 @@ export function UploadForm() {
           placeholder="1.20.1"
           value={version}
           onChange={(e) => setVersion(e.target.value)}
-          className="mt-1 w-40 rounded-md border border-zinc-300 px-3 py-2 text-sm"
+          className={`mt-1.5 w-40 ${inputClass.replace("block w-full ", "")}`}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-zinc-800">
+        <label className="block text-[13px] font-extrabold text-ink">
           リリースノート URL (任意)
         </label>
         <input
@@ -114,25 +117,25 @@ export function UploadForm() {
           value={releaseNotes}
           onChange={(e) => setReleaseNotes(e.target.value)}
           placeholder="https://..."
-          className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+          className={`mt-1.5 ${inputClass}`}
         />
       </div>
 
       <button
         type="submit"
         disabled={submitting || !file || !version || !shaPreview}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+        className="rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {submitting ? "アップロード中..." : "アップロード"}
       </button>
 
       {result ? (
         result.ok ? (
-          <div className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-800">
-            v{result.version} をアップロードしました ({(result.sizeBytes / 1024 / 1024).toFixed(2)} MB)
+          <div className="rounded-xl border border-primary/30 bg-primary-soft p-4 text-sm text-primary-deep">
+            <strong className="font-extrabold">v{result.version}</strong> をアップロードしました ({(result.sizeBytes / 1024 / 1024).toFixed(2)} MB)
           </div>
         ) : (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">
+          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">
             {result.message} <span className="text-xs">({result.reason})</span>
           </div>
         )

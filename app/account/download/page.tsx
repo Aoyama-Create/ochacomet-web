@@ -1,5 +1,4 @@
 // /account/download — 会員向けダウンロードページ
-// 認証は middleware で防御されているので、page では session を取りに行く程度。
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { desc } from "drizzle-orm";
@@ -29,95 +28,103 @@ export default async function DownloadPage() {
   const past = all.slice(1);
 
   return (
-    <main className="flex flex-1 flex-col bg-zinc-50 p-8">
-      <div className="mx-auto w-full max-w-2xl space-y-6">
-        <div>
-          <Link
-            href="/account"
-            className="text-xs text-zinc-500 hover:underline"
-          >
-            ← マイページに戻る
-          </Link>
-          <h1 className="mt-1 text-2xl font-bold text-zinc-900">
-            OchaComet のダウンロード
-          </h1>
-        </div>
+    <main className="flex flex-1 flex-col bg-canvas">
+      <div className="mx-auto w-full max-w-3xl px-6 py-12">
+        <Link
+          href="/account"
+          className="text-xs text-ink-soft hover:text-primary"
+        >
+          ← マイページに戻る
+        </Link>
+        <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
+          OchaComet のダウンロード
+        </h1>
 
-        <section className="rounded-lg border border-zinc-200 bg-white p-6">
+        {/* 最新版 */}
+        <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
           {latest ? (
             <>
-              <h2 className="text-sm font-medium text-zinc-500">最新版</h2>
-              <div className="mt-2 flex items-baseline gap-3">
-                <p className="text-xl font-bold text-zinc-900">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                最新版
+              </p>
+              <div className="mt-3 flex items-baseline gap-3">
+                <h2 className="text-3xl font-black text-ink">
                   v{latest.version}
-                </p>
-                <p className="text-xs text-zinc-500">
-                  公開日:{" "}
-                  {new Date(latest.uploadedAt).toLocaleDateString()} /{" "}
-                  サイズ: {(latest.sizeBytes / 1024 / 1024).toFixed(2)} MB
+                </h2>
+                <p className="text-xs text-ink-soft">
+                  公開: {new Date(latest.uploadedAt).toLocaleDateString()} · {" "}
+                  {(latest.sizeBytes / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
-              <a
-                href={`/api/download/ochacomet-v${latest.version}`}
-                className="mt-4 inline-block rounded-md bg-zinc-900 px-6 py-2 text-sm font-medium text-white hover:bg-zinc-800"
-              >
-                ダウンロード
-              </a>
-              {latest.releaseNotesUrl ? (
+              <div className="mt-6 flex flex-wrap items-center gap-3">
                 <a
-                  href={latest.releaseNotesUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-3 text-sm text-zinc-700 underline"
+                  href={`/api/download/ochacomet-v${latest.version}`}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
                 >
-                  リリースノート
+                  <DownloadIcon />
+                  ダウンロード
                 </a>
-              ) : null}
+                {latest.releaseNotesUrl ? (
+                  <a
+                    href={latest.releaseNotesUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-extrabold text-ink-soft hover:text-primary"
+                  >
+                    リリースノート →
+                  </a>
+                ) : null}
+              </div>
             </>
           ) : (
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-ink-soft">
               まだリリースが公開されていません。準備中です。
             </p>
           )}
         </section>
 
-        <section className="rounded-lg border border-zinc-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-zinc-500">
-            インストール手順
-          </h2>
-          <ol className="mt-3 list-decimal pl-5 text-sm text-zinc-700 space-y-1">
-            <li>ZIP を解凍する</li>
-            <li>
-              Chrome で <code>chrome://extensions</code> を開く
-            </li>
-            <li>右上のデベロッパーモードを ON</li>
-            <li>
+        {/* インストール手順 */}
+        <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
+          <h2 className="text-lg font-extrabold text-ink">インストール手順</h2>
+          <ol className="mt-4 space-y-3 text-sm text-ink">
+            <Step n={1}>ZIP を解凍する</Step>
+            <Step n={2}>
+              Chrome で <code className="rounded bg-canvas px-1.5 py-0.5 text-[12px]">chrome://extensions</code> を開く
+            </Step>
+            <Step n={3}>右上の「デベロッパーモード」を ON</Step>
+            <Step n={4}>
               「パッケージ化されていない拡張機能を読み込む」→ 解凍したフォルダを選択
-            </li>
-            <li>拡張アイコンが表示されたら、Pro タブにフレンドコードを入力</li>
+            </Step>
+            <Step n={5}>
+              拡張アイコンが表示されたら、Pro タブにフレンドコードまたはライセンスキーを入力
+            </Step>
           </ol>
+          <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
+            ⚠ 解凍フォルダを移動すると拡張 ID が変わるため、読み込んだ後はフォルダを移動しないでください。
+          </p>
         </section>
 
+        {/* 過去バージョン */}
         {past.length > 0 ? (
-          <section className="rounded-lg border border-zinc-200 bg-white p-6">
-            <h2 className="text-sm font-medium text-zinc-500">過去バージョン</h2>
-            <ul className="mt-3 divide-y divide-zinc-100 text-sm">
+          <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
+            <h2 className="text-lg font-extrabold text-ink">過去バージョン</h2>
+            <ul className="mt-4 divide-y divide-line text-sm">
               {past.map((r) => (
                 <li
                   key={r.version}
                   className="flex items-center justify-between py-3"
                 >
-                  <span className="text-zinc-700">
+                  <span className="text-ink">
                     v{r.version}
-                    <span className="ml-2 text-xs text-zinc-500">
+                    <span className="ml-2 text-xs text-ink-soft">
                       ({new Date(r.uploadedAt).toLocaleDateString()})
                     </span>
                   </span>
                   <a
                     href={`/api/download/ochacomet-v${r.version}`}
-                    className="text-xs text-zinc-700 underline hover:text-zinc-900"
+                    className="text-xs font-extrabold text-primary hover:text-primary-hover"
                   >
-                    ダウンロード
+                    ダウンロード →
                   </a>
                 </li>
               ))}
@@ -126,5 +133,39 @@ export default async function DownloadPage() {
         ) : null}
       </div>
     </main>
+  );
+}
+
+function Step({ n, children }: { n: number; children: React.ReactNode }) {
+  return (
+    <li className="flex items-start gap-3">
+      <span
+        aria-hidden
+        className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full bg-primary-soft text-xs font-extrabold text-primary"
+      >
+        {n}
+      </span>
+      <span className="leading-relaxed">{children}</span>
+    </li>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      aria-hidden
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
   );
 }

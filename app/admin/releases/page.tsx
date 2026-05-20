@@ -26,22 +26,32 @@ export default async function AdminReleasesPage() {
     .limit(50);
 
   return (
-    <main className="flex flex-1 flex-col bg-zinc-50 p-8">
-      <div className="mx-auto w-full max-w-5xl">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-zinc-900">リリース管理</h1>
+    <main className="flex flex-1 flex-col bg-canvas">
+      <div className="mx-auto w-full max-w-6xl px-6 py-12">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <Link
+              href="/admin/users"
+              className="text-xs text-ink-soft hover:text-primary"
+            >
+              ← ユーザー管理に戻る
+            </Link>
+            <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
+              リリース管理
+            </h1>
+          </div>
           <Link
             href="/admin/releases/new"
-            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
           >
             + 新規アップロード
           </Link>
         </div>
 
-        <div className="mt-6 overflow-x-auto rounded-lg border border-zinc-200 bg-white">
+        <div className="mt-6 overflow-x-auto rounded-2xl border border-line bg-surface">
           <table className="min-w-full text-sm">
-            <thead className="bg-zinc-50 text-left text-xs uppercase text-zinc-500">
-              <tr>
+            <thead className="bg-canvas">
+              <tr className="text-left text-[11px] font-extrabold uppercase tracking-wider text-ink-soft">
                 <th className="px-4 py-3">Version</th>
                 <th className="px-4 py-3">SHA-256</th>
                 <th className="px-4 py-3">Size</th>
@@ -49,43 +59,46 @@ export default async function AdminReleasesPage() {
                 <th className="px-4 py-3">Notes</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-line">
               {rows.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-center text-zinc-500" colSpan={5}>
+                  <td
+                    className="px-4 py-8 text-center text-ink-soft"
+                    colSpan={5}
+                  >
                     まだリリースがありません。
                   </td>
                 </tr>
               ) : (
                 rows.map((r) => (
-                  <tr key={r.version}>
-                    <td className="px-4 py-3 font-medium text-zinc-900">
+                  <tr key={r.version} className="hover:bg-canvas/60">
+                    <td className="px-4 py-3 font-extrabold text-ink">
                       v{r.version}
                     </td>
                     <td
-                      className="px-4 py-3 font-mono text-[10px] text-zinc-500"
+                      className="px-4 py-3 font-mono text-[10px] text-ink-soft"
                       title={r.sha256}
                     >
                       {r.sha256.slice(0, 16)}…
                     </td>
-                    <td className="px-4 py-3 text-zinc-700">
+                    <td className="px-4 py-3 text-ink">
                       {(r.sizeBytes / 1024 / 1024).toFixed(2)} MB
                     </td>
-                    <td className="px-4 py-3 text-xs text-zinc-500">
+                    <td className="px-4 py-3 text-xs text-ink-soft">
                       {new Date(r.uploadedAt).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 text-xs text-zinc-700">
+                    <td className="px-4 py-3 text-xs">
                       {r.releaseNotesUrl ? (
                         <a
                           href={r.releaseNotesUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="underline"
+                          className="font-extrabold text-primary hover:text-primary-hover"
                         >
                           link
                         </a>
                       ) : (
-                        "—"
+                        <span className="text-ink-soft">—</span>
                       )}
                     </td>
                   </tr>

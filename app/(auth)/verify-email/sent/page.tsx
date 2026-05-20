@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthCard } from "@/components/auth/AuthCard";
 
 export const metadata = {
   title: "認証メールを送信しました",
@@ -6,23 +7,28 @@ export const metadata = {
 
 export default function VerificationSentPage() {
   return (
-    <main className="flex flex-1 items-center justify-center bg-zinc-50 p-8">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm text-center">
-        <h1 className="text-xl font-bold text-zinc-900">認証メールを送信しました</h1>
-        <p className="mt-4 text-sm text-zinc-700 leading-relaxed">
-          ご登録のメールアドレスに認証用のリンクを送信しました。
-          24 時間以内にメール内のリンクを開いてアカウントを有効化してください。
-        </p>
-        <p className="mt-4 text-xs text-zinc-500">
-          メールが届かない場合は迷惑メールフォルダもご確認ください。
-        </p>
+    <AuthCard
+      title="認証メールを送信しました"
+      description="ご登録のメールアドレスに認証用のリンクを送信しました。24 時間以内にメール内のリンクを開いてアカウントを有効化してください。"
+    >
+      <p className="text-xs leading-relaxed text-ink-soft">
+        メールが届かない場合は迷惑メールフォルダもご確認ください。
+        数分待っても届かない場合は、メールアドレスが正しく入力されているか確認してから再度サインアップしてください。
+      </p>
+      <div className="mt-6 flex flex-col gap-2 text-center text-sm">
         <Link
           href="/login"
-          className="mt-6 inline-block text-sm font-medium text-zinc-900 underline"
+          className="font-extrabold text-primary hover:text-primary-hover"
         >
-          ログインに戻る
+          ログインに進む →
+        </Link>
+        <Link
+          href="/signup"
+          className="text-ink-soft hover:text-primary"
+        >
+          サインアップに戻る
         </Link>
       </div>
-    </main>
+    </AuthCard>
   );
 }
