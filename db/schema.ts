@@ -36,6 +36,7 @@ export const proSourceEnum = pgEnum("pro_source", [
   "lemon_squeezy",
   "admin_grant",
   "friend_code",
+  "stripe",
 ]);
 export const friendCodeStatusEnum = pgEnum("friend_code_status", [
   "active",
@@ -86,7 +87,15 @@ export const users = pgTable(
     proStatus: proStatusEnum("pro_status"),
     proSource: proSourceEnum("pro_source"),
 
-    // Lemon Squeezy (1st では未使用 — Phase 3 で書き込み開始)
+    // Stripe (1st リリースの課金経路)
+    stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    // 拡張が /api/license/validate で検証する自前ライセンスキー (決済成功時に発行)
+    licenseKey: text("license_key"),
+    // 現契約期間末 (= ライセンス有効期限 / トライアル終了)
+    proPeriodEndsAt: timestamp("pro_period_ends_at", { withTimezone: true }),
+
+    // Lemon Squeezy (旧経路 — Stripe 移行に伴い未使用。後続マイグレーションで削除予定)
     lsCustomerId: text("ls_customer_id"),
     lsSubscriptionId: text("ls_subscription_id"),
     lsLicenseKey: text("ls_license_key"),
@@ -99,6 +108,15 @@ export const users = pgTable(
     isAdmin: boolean("is_admin").notNull().default(false),
     statusClaimed: boolean("status_claimed").notNull().default(true),
     emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+
+    // ログイン失敗ロック (セキュリティ・チェックリスト §1c / §6)
+    failedLoginCount: integer("failed_login_count").notNull().default(0),
+    lockoutUntil: timestamp("lockout_until", { withTimezone: true }),
+
+    // 管理者ログインの二段階認証: メール OTP (チェックリスト §1b)
+    adminOtpHash: text("admin_otp_hash"),
+    adminOtpExpires: timestamp("admin_otp_expires", { withTimezone: true }),
+    adminOtpAttempts: integer("admin_otp_attempts").notNull().default(0),
 
     // ステップメール (09 §3)
     emailOptinMarketing: boolean("email_optin_marketing")
@@ -115,6 +133,8 @@ export const users = pgTable(
   },
   (t) => [
     index("idx_users_email").on(t.email),
+    index("idx_users_stripe_customer").on(t.stripeCustomerId),
+    uniqueIndex("idx_users_license_key").on(t.licenseKey),
     index("idx_users_ls_customer").on(t.lsCustomerId),
     index("idx_users_friend_code").on(t.friendCode),
   ],

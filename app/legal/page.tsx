@@ -82,7 +82,7 @@ export default function LegalPage_() {
           <tr>
             <th>お支払い方法</th>
             <td>
-              クレジットカード (Lemon Squeezy 経由で Visa, Mastercard, American Express, JCB 等)
+              クレジットカード (Stripe 経由で Visa, Mastercard, American Express, JCB 等)
             </td>
           </tr>
           <tr>
@@ -108,7 +108,7 @@ export default function LegalPage_() {
               詳細は <a href="/refund">返金ポリシー</a> をご確認ください。
               <br />
               解約は <a href="/account/subscription">マイページ</a>{" "}
-              または Lemon Squeezy のカスタマーポータルから行えます。
+              または Stripe のカスタマーポータルから行えます。
             </td>
           </tr>
           <tr>

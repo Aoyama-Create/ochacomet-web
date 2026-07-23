@@ -11,6 +11,10 @@ import { users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
 import { authConfig } from "./auth.config";
 
+// ログイン失敗ロックのしきい値 (チェックリスト §1c: 10 回以下で施錠)
+const LOGIN_LOCK_THRESHOLD = 10;
+const LOGIN_LOCK_MINUTES = 15;
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
@@ -33,8 +37,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!row || !row.passwordHash) return null;
         if (row.tier === "banned") return null;
 
+        // ログイン失敗ロック (チェックリスト §1c / §6)。ロック理由は明示しない。
+        const now = new Date();
+        if (row.lockoutUntil && row.lockoutUntil > now) return null;
+
         const ok = await verifyPassword(password, row.passwordHash);
-        if (!ok) return null;
+        if (!ok) {
+          const nextCount = (row.failedLoginCount ?? 0) + 1;
+          // 10 回目の失敗でロック (15 分)
+          const lockoutUntil =
+            nextCount >= LOGIN_LOCK_THRESHOLD
+              ? new Date(now.getTime() + LOGIN_LOCK_MINUTES * 60 * 1000)
+              : null;
+          await db
+            .update(users)
+            .set({ failedLoginCount: nextCount, lockoutUntil })
+            .where(eq(users.id, row.id));
+          return null;
+        }
+
+        // 成功: 失敗カウントとロックをリセット
+        if (row.failedLoginCount !== 0 || row.lockoutUntil) {
+          await db
+            .update(users)
+            .set({ failedLoginCount: 0, lockoutUntil: null })
+            .where(eq(users.id, row.id));
+        }
 
         return {
           id: String(row.id),

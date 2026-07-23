@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Zen_Kaku_Gothic_Antique, Nunito } from "next/font/google";
+import { Zen_Maru_Gothic, Nunito } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
-const zenKaku = Zen_Kaku_Gothic_Antique({
-  variable: "--font-zen-kaku",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+const zenMaru = Zen_Maru_Gothic({
+  variable: "--font-zen-maru",
+  weight: ["400", "500", "700", "900"],
+  preload: false,
 });
 
 const nunito = Nunito({
@@ -50,9 +50,9 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${zenKaku.variable} ${nunito.variable} h-full antialiased`}
+      className={`${zenMaru.variable} ${nunito.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-canvas text-ink font-[var(--font-zen-kaku)]">
+      <body className="min-h-full flex flex-col bg-canvas text-ink font-[var(--font-zen-maru)]">
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />

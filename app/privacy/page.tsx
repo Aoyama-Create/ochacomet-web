@@ -1,6 +1,6 @@
 // プライバシーポリシー
 //
-// Lemon Squeezy 店舗審査の必須要件 + 個人情報保護法 (日本) に準拠する範囲。
+// Stripe 店舗審査の必須要件 + 個人情報保護法 (日本) に準拠する範囲。
 // 提供者の連絡先と収集情報・利用目的を明示。
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal/LegalPage";
@@ -27,9 +27,9 @@ export default function PrivacyPage() {
           <strong>アカウント登録情報</strong>: メールアドレス、パスワード (argon2id でハッシュ化して保存)
         </li>
         <li>
-          <strong>決済情報</strong>: Lemon Squeezy 経由で受け取る顧客 ID、サブスクリプション ID、
+          <strong>決済情報</strong>: Stripe 経由で受け取る顧客 ID、サブスクリプション ID、
           ライセンスキー、トライアル期限、サブスク状態 (active / past_due / cancelled 等)。
-          クレジットカード番号は当方では収集せず、Lemon Squeezy 側でのみ保管されます。
+          クレジットカード番号は当方では収集せず、Stripe 側でのみ保管されます。
         </li>
         <li>
           <strong>利用ログ</strong>: ダウンロード履歴 (バージョン、IP アドレス、User-Agent、ダウンロード時刻)、
@@ -89,9 +89,9 @@ export default function PrivacyPage() {
             <td>アカウント情報、利用ログ、決済情報</td>
           </tr>
           <tr>
-            <td>Lemon Squeezy (Sold through Link, LLC)</td>
+            <td>Stripe (Stripe Payments Japan 株式会社 / Stripe, Inc.)</td>
             <td>決済処理、サブスクリプション管理</td>
-            <td>メールアドレス、決済情報 (クレジットカード番号は LS が直接管理)</td>
+            <td>メールアドレス、決済情報 (クレジットカード番号は Stripe が直接管理)</td>
           </tr>
           <tr>
             <td>Brevo (旧 Sendinblue)</td>
@@ -136,7 +136,7 @@ export default function PrivacyPage() {
 
       <h2>第 8 条 (海外への移転)</h2>
       <p>
-        前述の業務委託先のうち、Vercel、Neon、Lemon Squeezy、Brevo、Upstash は米国またはヨーロッパに本社を置いており、
+        前述の業務委託先のうち、Vercel、Neon、Stripe、Brevo、Upstash は米国またはヨーロッパに本社を置いており、
         個人情報は同国のデータセンターに保管される場合があります。各社は GDPR / CCPA に準拠した運用を行っています。
       </p>
 

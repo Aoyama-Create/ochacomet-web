@@ -1,22 +1,30 @@
 // 公開 LP — Free + Pro 並立型 (フリーミアム)。
-// セクション: Hero / Why this exists / How it helps / Our Policy / Pricing / How to Use / FAQ / Final CTA
-// ポジショニング: ガーディアン中心 + 認証ライバーも歓迎 / 「自動」ではなく「通知 → 承認 → 送信の補助」
+// セクション: Hero / Why this exists / How it helps / Our Policy / Who it's for / Pricing / How to Use / FAQ / Final CTA
+// ポジショニング: ガーディアン中心 + ライバーも歓迎 / 「自動」ではなく「通知 → 承認 → 送信の補助」 / JTBD 型 課題→解決訴求
 // 配色: 緑単色基調 (拡張 popup.css の #48875b 系)
 import Link from "next/link";
 import { OchaCometPopup } from "@/components/lp/OchaCometPopup";
 import { NotificationToast } from "@/components/lp/NotificationToast";
 
 export default function Home() {
+  // リリース優先で一旦ヒーローのみ公開する暫定フラグ。
+  // NEXT_PUBLIC_LP_HERO_ONLY=true でヒーロー以外を非表示。false / 未設定で全復活。
+  const heroOnly = process.env.NEXT_PUBLIC_LP_HERO_ONLY === "true";
   return (
     <main className="flex flex-1 flex-col">
-      <Hero />
-      <WhyThisExists />
-      <HowItHelps />
-      <OurPolicy />
-      <Pricing />
-      <HowToUse />
-      <Faq />
-      <FinalCta />
+      <Hero heroOnly={heroOnly} />
+      {!heroOnly && (
+        <>
+          <WhyThisExists />
+          <HowItHelps />
+          <OurPolicy />
+          <WhoFor />
+          <Pricing />
+          <HowToUse />
+          <Faq />
+          <FinalCta />
+        </>
+      )}
     </main>
   );
 }
@@ -24,9 +32,9 @@ export default function Home() {
 /* ============================================================
    Hero
    ============================================================ */
-function Hero() {
+function Hero({ heroOnly }: { heroOnly?: boolean }) {
   return (
-    <section className="relative overflow-hidden bg-canvas">
+    <section className="relative overflow-hidden bg-primary-soft">
       <div
         aria-hidden
         className="pointer-events-none absolute -right-40 -top-52 h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(72,135,91,0.18)_0%,transparent_65%)]"
@@ -36,33 +44,41 @@ function Hero() {
         className="pointer-events-none absolute -bottom-72 -left-52 h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(72,135,91,0.10)_0%,transparent_65%)]"
       />
 
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-2 md:py-24">
-        <div>
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-soft px-3.5 py-1 text-[12px] font-bold tracking-wide text-primary">
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-24">
+        <div className="min-w-0 text-center md:text-left">
+          <span className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-surface px-3.5 py-1 text-[11px] font-bold tracking-wide text-primary shadow-[0_1px_2px_rgba(72,135,91,0.08)] sm:text-[12px]">
             <span aria-hidden className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary" />
             17LIVE ガーディアン・ライバー向け Chrome 拡張
           </span>
-          <h1 className="mb-5 text-[34px] font-black leading-[1.25] tracking-tight sm:text-[44px] lg:text-[52px]">
-            毎晩、推しの配信を
+          <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] lg:text-[48px]">
+            <span className="text-[1.08em] font-semibold">17LIVE</span>
+            <span className="text-[0.88em]">の</span>お茶だし<span className="text-[0.88em]">と</span>
+            <br />
+            ギフト反応<span className="text-[0.88em]">を</span>補助<span className="text-[0.88em]">する</span>
             <br />
             <span className="relative inline-block text-primary">
-              <span className="relative z-10">支えるあなたへ。</span>
+              <span className="relative z-10">
+                <span className="text-[1.08em] font-semibold">chrome</span>拡張ツール
+              </span>
               <span
                 aria-hidden
-                className="absolute inset-x-0 bottom-1 z-0 h-2.5 rounded bg-primary-soft"
+                className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-canvas"
               />
             </span>
           </h1>
-          <p className="mb-3 max-w-[520px] text-[17px] leading-relaxed text-ink-soft">
-            入室通知、ギフトへのお礼、定期的な一声。
-            ガーディアンの「あと一言」を、Chrome 拡張がそっと手伝います。
+          {/* <p className="mb-5 max-w-[520px] text-[15px] font-bold text-primary-deep">
+            — 毎晩の「あと一言」を、もう少し楽に。
+          </p> */}
+          <p className="mx-auto mb-3 max-w-[520px] text-[17px] leading-relaxed text-ink-soft md:mx-0">
+            入室通知、ギフトへのお礼、配信中の記録...<br />
+            手作業で抱えがちな定型対応を、テンプレ+ワンタップで処理する<br />Chrome 拡張型 サポートツールです。
           </p>
-          <p className="mb-8 max-w-[520px] text-[14px] leading-relaxed text-ink-soft">
-            完全自動化のためのツールではありません。<strong className="font-extrabold text-ink">通知 → 承認 → 送信</strong>の手動フローで、
-            あなたの会話を肩代わりせず、定型のひと押しだけを引き受けます。
-          </p>
+          {/* <p className="mb-8 max-w-[520px] text-[14px] leading-relaxed text-ink-soft">
+            動作は「<strong className="font-extrabold text-ink">通知 → 承認 → 送信</strong>」の手動承認フロー。<br />
+            会話の代行ではなく、候補テンプレを横に出して、送るかどうかは利用者が決めます。
+          </p> */}
 
-          <div className="mb-8 flex flex-wrap gap-3">
+          <div className="mb-8 flex flex-wrap justify-center gap-3 md:justify-start">
             <Link
               href="/signup"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
@@ -70,15 +86,18 @@ function Hero() {
               <MailIcon />
               無料で始める
             </Link>
-            <a
-              href="#pricing"
-              className="inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3.5 text-[15px] font-extrabold text-ink transition-colors hover:border-primary hover:text-primary"
-            >
-              料金プランを見る
-            </a>
+            {/* 料金セクション非表示 (heroOnly) のときはアンカー切れになるため隠す */}
+            {!heroOnly && (
+              <a
+                href="#pricing"
+                className="inline-flex items-center justify-center rounded-full border border-line bg-surface px-7 py-3.5 text-[15px] font-extrabold text-ink transition-colors hover:border-primary hover:text-primary"
+              >
+                料金プランを見る
+              </a>
+            )}
           </div>
 
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-ink-soft">
+          <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-ink-soft md:justify-start">
             <li className="inline-flex items-center gap-1.5">
               <CheckIcon /> Free プランは無料で永続利用可
             </li>
@@ -91,9 +110,9 @@ function Hero() {
           </ul>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[380px] md:mx-0 md:w-fit">
-          {/* 通知トースト: モバイルでは popup の上にスタック、md+ で左上に被せて「通知 → 承認 → 送信」の瞬間を可視化 */}
-          <div className="mb-3 md:absolute md:-left-14 md:-top-8 md:z-20 md:mb-0 md:rotate-[-3deg]">
+        <div className="relative mx-auto mt-6 w-full min-w-0 max-w-[320px] sm:max-w-[380px] md:mx-0 md:mt-0 md:w-fit">
+          {/* 通知トースト: 全 viewport で popup 左上に被せて「通知 → 承認 → 送信」の瞬間を可視化 */}
+          <div className="absolute -left-2 -top-6 z-20 w-[240px] -rotate-3 sm:-left-6 sm:w-[280px] md:-left-14 md:-top-8 md:w-auto">
             <NotificationToast />
           </div>
           <OchaCometPopup />
@@ -107,29 +126,60 @@ function Hero() {
    Why this exists
    ============================================================ */
 function WhyThisExists() {
+  const items = [
+    {
+      n: "01",
+      icon: "⌨️",
+      title: "入室応対の取りこぼし",
+      body: "リスナーの入室は分散して発生し、コメントを打っている間に次の入室が重なる。手打ちでは反応が間に合わず、一声が抜けやすい。",
+    },
+    {
+      n: "02",
+      icon: "🎁",
+      title: "ギフトお礼の重複・漏れ",
+      body: "コンボ中に複数のギフトが連続すると、誰に何を返したかを目視で追いきれない。同じ相手に二重に返してしまったり、お礼自体が漏れたりする。",
+    },
+    {
+      n: "03",
+      icon: "📋",
+      title: "配信後の記録欠落",
+      body: "配信終了後、誰がどのギフトを何 BC 贈ったかが残らない。ライバーへの報告や次回の対応に活かせず、毎回スクショを遡ることになる。",
+    },
+  ];
+
   return (
     <section className="border-y border-line bg-surface">
-      <div className="mx-auto w-full max-w-4xl px-6 py-24">
+      <div className="mx-auto w-full max-w-6xl px-6 py-24">
         <SectionHead
           tag="Why this exists"
-          title="気づけば、毎晩 PC の前。"
-          lead="配信の少し前から張り付いて、入室への挨拶、迷惑な人の見張り、定期的な盛り上げ、ライバーさんへの報告。"
+          title="ガーディアン業務の、こんな課題に。"
+          lead="配信中の応対と配信後の記録は、手作業のままだと取りこぼしや重複が起きやすい作業です。OchaComet はその3つの典型的な負荷を対象にしています。"
         />
-        <div className="grid gap-4 text-[15px] leading-relaxed text-ink md:grid-cols-2">
-          <p>
-            ガーディアンを続けていると、いつのまにか配信中はずっと
-            コメント欄から目が離せなくなります。新しく入ってきたリスナーへの一声、
-            大ギフトを贈ってくれたギフターへのお礼、コンボへの反応 ——
-            一つひとつは小さくても、積み重なると 3 時間 4 時間と続きます。
-          </p>
-          <p>
-            OchaComet は、その<strong className="font-extrabold">「あと一言」を素早く届ける</strong>ためだけの補助です。
-            あなたの代わりに喋るのではなく、入室通知や大ギフトを見逃さないようにし、
-            候補テンプレを横に並べておくだけ。<strong className="font-extrabold">送るかどうかはあなたが決めます。</strong>
-          </p>
+        <div className="grid gap-6 md:grid-cols-3">
+          {items.map((it) => (
+            <article
+              key={it.n}
+              className="relative overflow-hidden rounded-2xl border border-line bg-canvas p-8"
+            >
+              <span
+                aria-hidden
+                className="absolute right-5 top-4 font-[var(--font-nunito)] text-[44px] font-black leading-none text-line"
+              >
+                {it.n}
+              </span>
+              <div
+                aria-hidden
+                className="mb-4 grid h-[52px] w-[52px] place-items-center rounded-2xl bg-primary-soft text-2xl"
+              >
+                {it.icon}
+              </div>
+              <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
+              <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+            </article>
+          ))}
         </div>
-        <p className="mt-8 text-center text-[13px] text-ink-soft">
-          認証ライバーの方も、配信中の細かな対応を軽くするためにお使いいただけます。
+        <p className="mt-10 text-center text-[13px] text-ink-soft">
+          いずれも、自動化ではなく「気付かせる + 候補を出す」補助で十分に軽くできる作業です。
         </p>
       </div>
     </section>
@@ -144,20 +194,23 @@ function HowItHelps() {
     {
       n: "01",
       icon: "🔔",
-      title: "入室・退出を見逃さない",
-      body: "新規リスナーやリピーターの入退室を検知し、popup に通知。横に並んだ候補テンプレからワンタップで一声を送れます。",
+      title: "入室・退出を検知して通知",
+      body: "リスナーの入退室を popup に通知。横に並んだ候補テンプレからワンタップで送信できるため、手打ちの遅延をなくす。",
+      addresses: "課題01 への対応",
     },
     {
       n: "02",
       icon: "📝",
-      title: "テンプレートとニックネーム挿入",
-      body: "挨拶・お礼・告知のテンプレを最大 20 件登録。リスナーごとのニックネームを差し込んで、テンプレ感のない一言に。",
+      title: "テンプレ + ニックネーム差し込み",
+      body: "挨拶・お礼・告知のテンプレを最大 20 件登録。リスナーごとのニックネームを自動挿入し、コピペ感のない送信を可能にする。",
+      addresses: "課題02 への対応",
     },
     {
       n: "03",
       icon: "📒",
-      title: "ガチイベ期の見守り記録",
-      body: "ギフターの大ギフト・コンボ・イベントギフトをセッション単位で記録。配信後の振り返りや、ライバーさんへの報告に使えます。",
+      title: "ギフトをセッション単位で記録",
+      body: "BOX・通常・イベントギフトを送信者・BC 数とともに自動記録。配信後に CSV / JSON で書き出し、ライバーへの報告に使える。",
+      addresses: "課題03 への対応",
     },
   ];
 
@@ -166,8 +219,8 @@ function HowItHelps() {
       <div className="mx-auto w-full max-w-6xl px-6 py-24">
         <SectionHead
           tag="How it helps"
-          title="あなたの会話は、あなたのまま。"
-          lead="代行ではなく補助。通知 → 承認 → 送信の手動フローを中心に、定型の作業だけを軽くします。"
+          title="課題を、こう解決します。"
+          lead="Why で挙げた3つの課題に対し、検知 → 通知 → 候補テンプレ提示の流れで、手動承認のまま処理時間を短縮します。"
         />
         <div className="grid gap-6 md:grid-cols-3">
           {items.map((it) => (
@@ -189,6 +242,9 @@ function HowItHelps() {
               </div>
               <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
               <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+              <p className="mt-3 text-[12px] font-bold text-primary">
+                ▶ {it.addresses}
+              </p>
             </article>
           ))}
         </div>
@@ -206,25 +262,25 @@ function OurPolicy() {
       <div className="mx-auto w-full max-w-4xl px-6 py-20">
         <SectionHead
           tag="Our Policy"
-          title="補助に徹するための、設計思想。"
-          lead="ガーディアン文化を壊さず、17LIVE のルールも壊さない使い方を、ツール側から後押しします。"
+          title="設計上のスタンス。"
+          lead="定型作業を軽くしつつ、配信中の会話の質を落とさないために、ツール側で守っている設計上のルールです。"
         />
         <div className="grid gap-4 md:grid-cols-2">
           <PolicyCard
-            title="完全自動より、手動承認を推奨"
-            body="既定の動作モードは「通知 → 承認 → 送信」。完全自動モードも切り替えで選べますが、初期画面では推奨されません。"
+            title="既定モードは手動承認"
+            body="起動時の動作モードは「通知 → 承認 → 送信」。送信ボタンを押すのは常に利用者で、自動化モードは設定で明示的に切り替えた場合のみ動作する。"
           />
           <PolicyCard
-            title="17LIVE 利用規約に準拠した使い方を"
-            body="自動化に該当しうる挙動はリスクが伴います。完全自動の常用ではなく、補助としての利用をお願いしています。ご利用は配信者ご自身の責任において。"
+            title="代行ではなく補助に限定"
+            body="テンプレ送信前のランダム遅延、複数バリエーションのテンプレ、ニックネーム差し込みなど、機械的な送信にならないための機構を標準搭載。会話の主導権は利用者側に残す設計。"
           />
           <PolicyCard
-            title="データはあなたの PC に留めます"
-            body="設定・テンプレート・ギフト記録は Chrome のローカルストレージに保存。配信中のコメントやリスナー情報を外部サーバーへ送ることはありません。"
+            title="データはローカル保存"
+            body="設定・テンプレート・ギフト記録は Chrome のローカルストレージに保存。配信中のコメントやリスナー情報を外部サーバーへ送信しない。"
           />
           <PolicyCard
-            title="人間味を残す細部"
-            body="送信前のランダム遅延、テンプレのバリエーション、ニックネーム差し込みなど、ファミリー感を保つための仕掛けを標準搭載しています。"
+            title="送信パターンを単調にしない"
+            body="送信前のランダム遅延、複数候補テンプレからの選択、ニックネーム差し込みにより、同一文言の連投を回避する設計。"
           />
         </div>
       </div>
@@ -261,10 +317,62 @@ function PolicyCard({ title, body }: { title: string; body: string }) {
 }
 
 /* ============================================================
+   Who it's for
+   ============================================================ */
+function WhoFor() {
+  const items = [
+    {
+      icon: "🛡",
+      title: "17LIVE ガーディアン",
+      body: "推しの配信を毎回見守り、入室応対・ギフトお礼・コンボ反応を担当している方。1配信あたりの応対量が多く、手打ちでの追従が難しくなっている方に。",
+    },
+    {
+      icon: "🎤",
+      title: "17LIVE ライバー",
+      body: "配信中、コメント返しと進行を同時にこなしている方。定型のリアクションをテンプレ化して、リスナーへの応対に集中したい方に。",
+    },
+    {
+      icon: "📊",
+      title: "ガチイベ期の記録担当",
+      body: "配信後にギフター別の集計や CSV / JSON でのエクスポートが必要な方。手動での記録が現実的でない量のギフトを扱う配信向け。",
+    },
+  ];
+
+  return (
+    <section className="bg-canvas">
+      <div className="mx-auto w-full max-w-6xl px-6 py-24">
+        <SectionHead
+          tag="Who it's for"
+          title="対象ユーザー。"
+          lead="配信中の応対と配信後の記録を、手作業で抱えている方を対象にしています。"
+        />
+        <div className="grid gap-6 md:grid-cols-3">
+          {items.map((it) => (
+            <article
+              key={it.title}
+              className="rounded-2xl border border-line bg-surface p-8"
+            >
+              <div
+                aria-hidden
+                className="mb-4 grid h-[52px] w-[52px] place-items-center rounded-2xl bg-primary-soft text-2xl"
+              >
+                {it.icon}
+              </div>
+              <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
+              <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
    Pricing
    ============================================================
    フリーミアム構成 (Free + Pro Monthly + Pro Yearly)。
-   Lemon Squeezy 審査で参照される価格表示の根拠 (詳細は /pricing)。
+   Stripe 審査で参照される価格表示の根拠 (詳細は /pricing)。
 */
 function Pricing() {
   return (
@@ -273,7 +381,7 @@ function Pricing() {
         <SectionHead
           tag="Pricing"
           title="料金プラン。"
-          lead="基本機能は Free でずっと無料。配信の振り返りには Pro を 14 日無料で。"
+          lead="応対の補助機能は Free で無料利用可。配信記録・集計・エクスポートが必要な場合は Pro(14 日間無料トライアル)。"
         />
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -294,7 +402,7 @@ function Pricing() {
             tier="Pro Monthly"
             price="¥1,480"
             unit="/ 月 (税込)"
-            description="ガチイベ期の見守り記録・ランキング・エクスポートまで"
+            description="ギフト集計・ユーザー別ランキング・記録エクスポートを追加"
             highlighted
             features={[
               "Free の全機能",
@@ -324,12 +432,12 @@ function Pricing() {
         <p className="mt-10 text-center text-[13px] text-ink-soft">
           決済は{" "}
           <a
-            href="https://www.lemonsqueezy.com/"
+            href="https://stripe.com/jp"
             target="_blank"
             rel="noreferrer"
             className="underline hover:text-primary"
           >
-            Lemon Squeezy
+            Stripe
           </a>{" "}
           を通じて行われます。クレジットカード (Visa / Mastercard / AmEx / JCB)
           に対応。
@@ -439,7 +547,7 @@ function HowToUse() {
         <SectionHead
           tag="How to use"
           title="使い始めるまでの流れ。"
-          lead="登録から実際に使えるまで 10 分ほど。Free プランはクレジットカード不要です。"
+          lead="アカウント登録から拡張機能の組み込みまで、所要時間およそ 10 分。Free プランの利用にクレジットカード登録は不要です。"
         />
         <ol className="relative grid gap-8 md:grid-cols-4">
           <div
@@ -471,12 +579,8 @@ function HowToUse() {
 function Faq() {
   const items = [
     {
-      q: "17LIVE の利用規約に違反しませんか？",
-      a: "OchaComet は「通知 → 承認 → 送信」の手動フローを推奨設定としており、完全自動の常用は想定していません。ただし自動化に該当しうる挙動を含むため、最終的な利用範囲は配信者ご自身の判断と責任でお願いしています。17LIVE の規約は適宜ご確認ください。",
-    },
-    {
-      q: "使うとアカウントが BAN されることはありますか？",
-      a: "弊社が BAN を保証することも、回避を保証することもできません。手動承認モードでの利用 + 送信前のランダム遅延 + 人間らしいバリエーションのテンプレ、という設計上の配慮はありますが、最終的なリスクは利用者側にあります。",
+      q: "OchaComet の動作モードは？",
+      a: "既定では「通知 → 承認 → 送信」の手動承認フローで動作します。リスナーの入退室やギフト受領をフックに popup へ通知し、候補テンプレを横に並べて表示します。送信ボタンを押すのは利用者です。完全自動モードは設定で明示的に切り替えた場合のみ動作し、初期画面では選ばれていません。送信前のランダム遅延、複数バリエーションのテンプレ、ニックネーム差し込みなど、同一文言の連投を避けるための機構が標準搭載されています。",
     },
     {
       q: "配信のコメントやリスナー情報は外部に送られますか？",
@@ -492,11 +596,11 @@ function Faq() {
     },
     {
       q: "解約や返金はできますか？",
-      a: "解約はマイページまたは Lemon Squeezy のカスタマーポータルからいつでも可能です。解約後も契約期間の終了まで Pro 機能をご利用いただけます。返金は原則行いませんが、不具合・誤課金などは個別にご相談ください (詳細は返金ポリシー)。",
+      a: "解約はマイページまたは Stripe のカスタマーポータルからいつでも可能です。解約後も契約期間の終了まで Pro 機能をご利用いただけます。返金は原則行いませんが、不具合・誤課金などは個別にご相談ください (詳細は返金ポリシー)。",
     },
     {
-      q: "認証ライバーですが、使えますか？",
-      a: "はい、ご利用いただけます。配信中のリスナー対応の細部を軽くする補助として設計されており、ライバー側の利用も歓迎しています。",
+      q: "ライバー側でも使えますか？",
+      a: "はい、ご利用いただけます。配信中のリスナー応対を補助する用途で設計されており、ライバー側からの利用にも対応しています。コメント返しと進行を同時にこなす場面で、定型リアクションをテンプレ化してお使いください。",
     },
   ];
 
@@ -506,7 +610,7 @@ function Faq() {
         <SectionHead
           tag="FAQ"
           title="よくあるご質問。"
-          lead="ご利用前に、特に気になりやすい点をまとめました。"
+          lead="動作仕様・プラン・トライアル・解約・対象ユーザーに関する代表的な質問をまとめています。"
         />
         <div className="space-y-3">
           {items.map((it) => (
@@ -561,7 +665,7 @@ function FinalCta() {
           className="pointer-events-none absolute -bottom-28 -left-24 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(126,194,143,0.18)_0%,transparent_60%)]"
         />
         <h2 className="relative mb-3 text-[32px] font-black sm:text-[38px]">
-          今日から、推しの配信を、もう少しだけ支えよう。
+          次の配信から、応対と記録を軽くする。
         </h2>
         <p className="relative mx-auto mb-8 max-w-md text-[16px] text-white/75">
           1 分で会員登録 → 拡張機能をダウンロードしてすぐに使えます。

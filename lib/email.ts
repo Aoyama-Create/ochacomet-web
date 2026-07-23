@@ -63,6 +63,28 @@ export async function sendPasswordResetEmail(
   });
 }
 
+/** 管理者ログインの二段階認証コード (チェックリスト §1b)。10 分有効。 */
+export async function sendAdminOtpEmail(
+  to: Recipient,
+  code: string,
+): Promise<SendTransactionalResult> {
+  const tpl = templateId("BREVO_TPL_ADMIN_OTP");
+  if (tpl) {
+    return sendTransactional({
+      to: [to],
+      templateId: tpl,
+      params: { code },
+      tags: ["admin-otp"],
+    });
+  }
+  return sendTransactional({
+    to: [to],
+    subject: "[OchaComet] 管理画面ログインの確認コード",
+    textContent: `管理画面ログインの確認コードです。\n\n確認コード: ${code}\n\n10 分以内に入力してください。心当たりがない場合はこのメールを破棄し、パスワードの変更をご検討ください。`,
+    tags: ["admin-otp"],
+  });
+}
+
 export async function sendWelcomeEmail(
   to: Recipient,
 ): Promise<SendTransactionalResult> {

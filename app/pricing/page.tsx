@@ -1,6 +1,6 @@
 // /pricing — 料金プラン詳細ページ
 //
-// Lemon Squeezy 店舗審査で参照される独立ページ。
+// Stripe 店舗審査で参照される独立ページ。
 // LP の Pricing セクションより詳しい比較表、支払い方法、トライアル詳細、FAQ を持つ。
 // CTA は /signup → 会員登録後 /account/subscription から LS チェックアウト。
 import type { Metadata } from "next";
@@ -239,7 +239,7 @@ function PaymentInfo() {
   const items = [
     {
       title: "支払い方法",
-      body: "クレジットカード (Visa / Mastercard / American Express / JCB)。Lemon Squeezy を通じて安全に決済します。",
+      body: "クレジットカード (Visa / Mastercard / American Express / JCB)。Stripe を通じて安全に決済します。",
     },
     {
       title: "14 日間の無料トライアル",
@@ -301,7 +301,7 @@ function PricingFaq() {
     },
     {
       q: "途中で月額 → 年額 (またはその逆) に変更できますか?",
-      a: "はい、可能です。マイページから切り替えていただけます。差額の精算は Lemon Squeezy の標準ルールに従います。",
+      a: "はい、可能です。マイページから切り替えていただけます。差額の精算は Stripe の標準ルールに従います。",
     },
     {
       q: "トライアル期間中に解約するとどうなりますか?",
@@ -309,7 +309,7 @@ function PricingFaq() {
     },
     {
       q: "領収書・請求書は発行できますか?",
-      a: "Lemon Squeezy のカスタマーポータルから領収書 (PDF) をいつでもダウンロードいただけます。個別の請求書フォーマットが必要な場合はお問い合わせください。",
+      a: "Stripe のカスタマーポータルから領収書 (PDF) をいつでもダウンロードいただけます。個別の請求書フォーマットが必要な場合はお問い合わせください。",
     },
   ];
 

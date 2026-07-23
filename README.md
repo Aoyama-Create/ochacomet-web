@@ -45,6 +45,29 @@ npm run dev
 # → http://localhost:3000
 ```
 
+### Stripe (決済) のローカルテスト
+
+Pro サブスクは Stripe (テストモード) で検証する。
+
+```bash
+# 1. Stripe CLI をインストール & ログイン
+#    brew install stripe/stripe-cli/stripe && stripe login
+
+# 2. Webhook をローカルへ転送 (出力される whsec_... を .env.local の STRIPE_WEBHOOK_SECRET に貼る)
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+
+# 3. .env.local に以下を設定
+#    STRIPE_SECRET_KEY        = sk_test_...   (ダッシュボード → 開発者 → API キー)
+#    STRIPE_PRICE_ID_MONTHLY  = price_...      (テストモードで Product/Price を作成)
+#    STRIPE_PRICE_ID_YEARLY   = price_...
+
+# 4. /account/subscription からアップグレード → テストカード 4242 4242 4242 4242 で決済
+#    → checkout.session.completed を受信し、users.licenseKey が発行される
+# 5. 拡張は GET /api/license/validate?key=<発行キー> でこのキーを検証する
+```
+
+> 補足: `BLOB_READ_WRITE_TOKEN` (Pro 版 ZIP ダウンロード) と `KV_REST_API_*` (`lib/rateLimit.ts` のレート制限) はローカルでは空のままでよい。Stripe 決済〜ライセンス検証の動作確認には不要 — 該当機能を使う画面だけ無効化される。
+
 ### よく使うコマンド
 
 | コマンド              | 用途                                                          |

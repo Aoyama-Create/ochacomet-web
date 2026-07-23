@@ -1,13 +1,16 @@
 // POST /api/account/checkout
 //
-// 認証必須。`{ variant: 'monthly' | 'yearly' }` を受け取り、Lemon Squeezy の
-// Checkouts API でユーザー固有の signed URL を発行 → クライアントはこの URL に遷移する。
+// 認証必須。`{ variant: 'monthly' | 'yearly' }` を受け取り、Stripe の
+// Checkout Session でユーザー固有の signed URL を発行 → クライアントはこの URL に遷移する。
 //
 // 200: { ok: true, url: <checkout_url> }
 // 4xx: { ok: false, reason, message }
 import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import { createCheckoutUrl, resolveVariantId } from "@/lib/lemonsqueezy";
+import { db } from "@/lib/db";
+import { users } from "@/db/schema";
+import { createCheckoutSession, resolvePriceId } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
@@ -61,32 +64,40 @@ export async function POST(req: Request) {
     );
   }
 
-  const variantId = resolveVariantId(variant);
-  if (!variantId) {
+  const priceId = resolvePriceId(variant);
+  if (!priceId) {
     return NextResponse.json(
       {
         ok: false,
-        reason: "variant_not_configured",
-        message: `${variant} の Variant ID が未設定です (env LEMONSQUEEZY_VARIANT_ID_${variant.toUpperCase()})。`,
+        reason: "price_not_configured",
+        message: `${variant} の Price ID が未設定です (env STRIPE_PRICE_ID_${variant.toUpperCase()})。`,
       },
       { status: 500 },
     );
   }
 
+  // 既存の Stripe 顧客がいれば再利用し、重複顧客を防ぐ
+  const [row] = await db
+    .select({ stripeCustomerId: users.stripeCustomerId })
+    .from(users)
+    .where(eq(users.id, Number(session.user.id)))
+    .limit(1);
+
   try {
-    const url = await createCheckoutUrl({
-      variantId,
+    const url = await createCheckoutSession({
+      priceId,
       email: session.user.email,
       userId: Number(session.user.id),
       variantTag: variant,
+      stripeCustomerId: row?.stripeCustomerId ?? null,
     });
     return NextResponse.json({ ok: true, url });
   } catch (e) {
-    console.error("[checkout] createCheckoutUrl failed", e);
+    console.error("[checkout] createCheckoutSession failed", e);
     return NextResponse.json(
       {
         ok: false,
-        reason: "ls_error",
+        reason: "stripe_error",
         message: "チェックアウト URL の発行に失敗しました。",
       },
       { status: 502 },

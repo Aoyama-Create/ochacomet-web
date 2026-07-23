@@ -14,10 +14,10 @@
   --color-ink-soft: #5c6b57;
   --color-line: #e5e3d8;
 
-  /* Fonts */
-  --font-sans: var(--font-zen-kaku), "Nunito", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", sans-serif;
-  --font-en: var(--font-nunito), var(--font-zen-kaku), sans-serif;
+  /* Fonts — M PLUS Rounded 1c (柔らかい丸ゴシック) + Hiragino フォールバック */
+  --font-sans: var(--font-m-plus-rounded), "Nunito", "Hiragino Maru Gothic ProN",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-en: var(--font-nunito), var(--font-m-plus-rounded), sans-serif;
 }
 
 :root {

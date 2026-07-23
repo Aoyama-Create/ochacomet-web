@@ -3,7 +3,7 @@
 // 認証必須 (middleware で /account/* ガード済、ここでは redirect で防御的にも対応)。
 // users の tier / proStatus / proSource から現状を判断して 5 つの状態 UI を出し分ける。
 //
-// アップグレード / 解約 / カード変更は LS Customer Portal に委譲することで実装最小化。
+// アップグレード / 解約 / カード変更は Stripe Billing Portal に委譲することで実装最小化。
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
@@ -41,9 +41,10 @@ export default async function SubscriptionPage({
       tier: users.tier,
       proStatus: users.proStatus,
       proSource: users.proSource,
-      lsCustomerId: users.lsCustomerId,
-      lsSubscriptionId: users.lsSubscriptionId,
-      lsTrialEndsAt: users.lsTrialEndsAt,
+      stripeCustomerId: users.stripeCustomerId,
+      stripeSubscriptionId: users.stripeSubscriptionId,
+      proPeriodEndsAt: users.proPeriodEndsAt,
+      licenseKey: users.licenseKey,
       friendExpiresAt: users.friendExpiresAt,
     })
     .from(users)
@@ -58,11 +59,15 @@ export default async function SubscriptionPage({
     tier: u.tier,
     proStatus: u.proStatus,
     proSource: u.proSource,
-    lsTrialEndsAt: u.lsTrialEndsAt,
+    proPeriodEndsAt: u.proPeriodEndsAt,
     friendExpiresAt: u.friendExpiresAt,
   });
 
-  const hasLsCustomer = !!u.lsCustomerId;
+  const hasStripeCustomer = !!u.stripeCustomerId;
+  // ライセンスキーは Pro (trialing / active) のときだけ表示する
+  const showLicenseKey =
+    !!u.licenseKey &&
+    (u.proStatus === "trialing" || u.proStatus === "active");
 
   return (
     <main className="flex flex-1 flex-col bg-canvas">
@@ -79,7 +84,7 @@ export default async function SubscriptionPage({
 
         {showCheckoutSuccess ? (
           <div className="mt-4 rounded-xl border border-primary/30 bg-primary-soft px-5 py-4 text-sm text-primary-deep">
-            ご購入ありがとうございます! Lemon Squeezy からの確定通知を反映中です。
+            ご購入ありがとうございます! Stripe からの確定通知を反映中です。
             数分後に表示が更新されない場合は再読み込みしてください。
           </div>
         ) : null}
@@ -106,9 +111,9 @@ export default async function SubscriptionPage({
             <Field label="Tier">{u.tier}</Field>
             <Field label="Pro Status">{u.proStatus ?? "—"}</Field>
             <Field label="Pro Source">{u.proSource ?? "—"}</Field>
-            <Field label="トライアル終了">
-              {u.lsTrialEndsAt
-                ? new Date(u.lsTrialEndsAt).toLocaleString()
+            <Field label="有効期限">
+              {u.proPeriodEndsAt
+                ? new Date(u.proPeriodEndsAt).toLocaleString()
                 : "—"}
             </Field>
             <Field label="フレンド期限">
@@ -118,6 +123,22 @@ export default async function SubscriptionPage({
             </Field>
           </dl>
         </section>
+
+        {/* ライセンスキー: Pro のときだけ表示。拡張のキー入力欄に貼り付けて Pro を有効化する */}
+        {showLicenseKey && (
+          <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
+            <h2 className="text-lg font-extrabold text-ink">
+              拡張機能のライセンスキー
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              OchaComet 拡張機能の設定画面でこのキーを入力すると Pro 機能が有効になります。
+              解約・期限切れになると自動的に無効化されます。
+            </p>
+            <div className="mt-4 rounded-xl border border-line bg-canvas px-4 py-3 font-mono text-sm font-bold tracking-wider text-ink break-all">
+              {u.licenseKey}
+            </div>
+          </section>
+        )}
 
         {/* アップグレード CTA: free / friend / past_due / cancelled で表示 */}
         {(view.status === "free" ||
@@ -157,18 +178,18 @@ export default async function SubscriptionPage({
           </section>
         )}
 
-        {/* Customer Portal リンク: LS と紐付いている全ステータス */}
-        {hasLsCustomer && (
+        {/* Billing Portal リンク: Stripe と紐付いている全ステータス */}
+        {hasStripeCustomer && (
           <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
             <h2 className="text-lg font-extrabold text-ink">
-              プランの管理 (Customer Portal)
+              プランの管理 (Billing Portal)
             </h2>
             <p className="mt-2 text-sm text-ink-soft">
-              プラン変更 (月額 ↔ 年額)、支払い方法の変更、解約は Lemon Squeezy の
-              Customer Portal から行えます。
+              プラン変更 (月額 ↔ 年額)、支払い方法の変更、解約、領収書の確認は Stripe の
+              Billing Portal から行えます。
             </p>
             <div className="mt-6">
-              <CustomerPortalButton label="Customer Portal を開く" />
+              <CustomerPortalButton label="Billing Portal を開く" />
             </div>
           </section>
         )}
@@ -224,10 +245,10 @@ function computeStateView(args: {
   tier: string;
   proStatus: string | null;
   proSource: string | null;
-  lsTrialEndsAt: Date | null;
+  proPeriodEndsAt: Date | null;
   friendExpiresAt: Date | null;
 }): StateView {
-  const { tier, proStatus, lsTrialEndsAt } = args;
+  const { tier, proStatus, proPeriodEndsAt } = args;
 
   if (tier === "banned") {
     return {
@@ -252,11 +273,11 @@ function computeStateView(args: {
   }
 
   if (proStatus === "trialing") {
-    const daysRemaining = lsTrialEndsAt
+    const daysRemaining = proPeriodEndsAt
       ? Math.max(
           0,
           Math.ceil(
-            (lsTrialEndsAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
+            (proPeriodEndsAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
           ),
         )
       : null;

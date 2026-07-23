@@ -1,6 +1,6 @@
 // 利用規約 (Terms of Service)
 //
-// Lemon Squeezy 店舗審査の必須要件。
+// Stripe 店舗審査の必須要件。
 // 内容は汎用的なオンラインサービス利用規約をベースに、OchaComet 固有の事情
 // (17LIVE 補助ツール / Chrome 拡張 / 招待制ベータ / フレンドコード) を反映。
 // 法務的に厳密にチェックされたものではないので、運用開始前に弁護士レビュー推奨。
@@ -62,7 +62,7 @@ export default function TermsPage() {
           <a href="/pricing">/pricing</a> に記載のとおりとします。
         </li>
         <li>
-          有料プランの決済は Lemon Squeezy を通じて行われ、サブスクリプション形式で月額または年額が請求されます。
+          有料プランの決済は Stripe を通じて行われ、サブスクリプション形式で月額または年額が請求されます。
         </li>
         <li>有料プランの解約・返金については <a href="/refund">/refund</a> に従います。</li>
         <li>
@@ -98,7 +98,7 @@ export default function TermsPage() {
       </p>
       <ol>
         <li>本サービスのシステム保守、点検、更新を行う場合</li>
-        <li>地震、火災、停電、通信障害、外部サービス (17LIVE / Lemon Squeezy / Brevo / Vercel / Neon 等) の障害により本サービスの提供が困難となった場合</li>
+        <li>地震、火災、停電、通信障害、外部サービス (17LIVE / Stripe / Brevo / Vercel / Neon 等) の障害により本サービスの提供が困難となった場合</li>
         <li>その他、提供者がやむを得ないと判断した場合</li>
       </ol>
 

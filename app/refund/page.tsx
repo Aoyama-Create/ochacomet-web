@@ -1,6 +1,6 @@
 // 返金ポリシー
 //
-// Lemon Squeezy 店舗審査の必須要件。
+// Stripe 店舗審査の必須要件。
 // 14 日トライアル + サブスク開始後は原則返金不可 + 例外として申請受付の方針。
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal/LegalPage";
@@ -70,13 +70,13 @@ export default function RefundPage() {
           に以下を記載してメール送信
           <ul>
             <li>ご登録メールアドレス</li>
-            <li>Lemon Squeezy の注文番号 (購入完了メールに記載)</li>
+            <li>Stripe の決済 ID または領収書番号 (購入完了メールに記載)</li>
             <li>返金を希望する理由 (上記第 3 条のいずれに該当するか)</li>
           </ul>
         </li>
         <li>受領から 5 営業日以内に当方より返答いたします。</li>
         <li>
-          返金が認められた場合、Lemon Squeezy を通じて原則として元の支払い方法 (クレジットカード等) に返金されます。
+          返金が認められた場合、Stripe を通じて原則として元の支払い方法 (クレジットカード等) に返金されます。
           銀行・カード会社の処理状況により、口座への反映までに 5-15 営業日かかります。
         </li>
       </ol>
@@ -85,7 +85,7 @@ export default function RefundPage() {
       <ol>
         <li>
           解約は本サービスの <a href="/account/subscription">/account/subscription</a> から、
-          または Lemon Squeezy のカスタマーポータルから行えます。
+          または Stripe のカスタマーポータルから行えます。
         </li>
         <li>
           解約後も、現契約期間の終了まで Pro 機能はご利用いただけます。期間終了後、自動的に Free プランに移行します。

@@ -15,6 +15,20 @@
       "when": 1779240509506,
       "tag": "0001_flimsy_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782110181444,
+      "tag": "0002_flat_dreadnoughts",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784181018570,
+      "tag": "0003_fresh_guardian",
+      "breakpoints": true
     }
   ]
 }
