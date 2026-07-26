@@ -37,8 +37,9 @@ cp .env.local.example .env.local
 # AUTH_SECRET / WATERMARK_SECRET / CRON_SECRET / BREVO_WEBHOOK_SECRET を生成して埋める:
 #   openssl rand -base64 32
 
-# 4. DB マイグレーション
+# 4. DB マイグレーション (ローカル)
 npm run db:migrate
+# ※ 本番(Neon)への適用は落とし穴があるため必ず docs/db-migrations.md に従うこと
 
 # 5. dev server
 npm run dev
