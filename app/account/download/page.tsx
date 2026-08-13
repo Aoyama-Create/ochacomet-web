@@ -106,13 +106,14 @@ export default async function DownloadPage() {
           </section>
         ) : null}
 
-        {/* 最新版 */}
-        <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
+        {/* Chrome 拡張版（ダウンロード・手順・過去版を 1 つにまとめる） */}
+        <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
+          <p className="text-xs font-extrabold uppercase tracking-wider text-ink-soft">
+            Chrome 拡張版
+          </p>
+
           {latest ? (
             <>
-              <p className="text-xs font-extrabold uppercase tracking-wider text-ink-soft">
-                Chrome 拡張版
-              </p>
               <div className="mt-3 flex items-baseline gap-3">
                 <h2 className="text-3xl font-black text-ink">
                   v{latest.version}
@@ -141,69 +142,70 @@ export default async function DownloadPage() {
                   </a>
                 ) : null}
               </div>
+
+              {/* 手順はダウンロードボタンの直下に置く。別カードに離すと見落とされる。 */}
+              <h3 className="mt-8 text-sm font-extrabold text-ink">
+                インストール手順
+              </h3>
+              <ol className="mt-3 space-y-3 text-sm text-ink">
+                <Step n={1}>ZIP を解凍する</Step>
+                <Step n={2}>
+                  Chrome で{" "}
+                  <code className="rounded bg-canvas px-1.5 py-0.5 text-[12px]">
+                    chrome://extensions
+                  </code>{" "}
+                  を開く
+                </Step>
+                <Step n={3}>右上の「デベロッパーモード」を ON</Step>
+                <Step n={4}>
+                  「パッケージ化されていない拡張機能を読み込む」→
+                  解凍したフォルダを選択
+                </Step>
+                <Step n={5}>
+                  拡張アイコンが表示されたら、Pro
+                  タブにフレンドコードまたはライセンスキーを入力
+                </Step>
+              </ol>
+              <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
+                ⚠ 解凍フォルダを移動すると拡張 ID
+                が変わるため、読み込んだ後はフォルダを移動しないでください。
+              </p>
+
+              {past.length > 0 ? (
+                <details className="mt-6 border-t border-line pt-4">
+                  <summary className="cursor-pointer text-sm font-extrabold text-ink-soft hover:text-primary">
+                    過去バージョン（{past.length}）
+                  </summary>
+                  <ul className="mt-3 divide-y divide-line text-sm">
+                    {past.map((r) => (
+                      <li
+                        key={r.version}
+                        className="flex items-center justify-between py-3"
+                      >
+                        <span className="text-ink">
+                          v{r.version}
+                          <span className="ml-2 text-xs text-ink-soft">
+                            ({new Date(r.uploadedAt).toLocaleDateString()})
+                          </span>
+                        </span>
+                        <a
+                          href={`/api/download/ochacomet-v${r.version}`}
+                          className="text-xs font-extrabold text-primary hover:text-primary-hover"
+                        >
+                          ダウンロード →
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
             </>
           ) : (
-            <p className="text-sm text-ink-soft">
+            <p className="mt-3 text-sm text-ink-soft">
               まだリリースが公開されていません。準備中です。
             </p>
           )}
         </section>
-
-        {/* インストール手順 */}
-        <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
-          <h2 className="text-lg font-extrabold text-ink">インストール手順</h2>
-          <ol className="mt-4 space-y-3 text-sm text-ink">
-            <Step n={1}>ZIP を解凍する</Step>
-            <Step n={2}>
-              Chrome で{" "}
-              <code className="rounded bg-canvas px-1.5 py-0.5 text-[12px]">
-                chrome://extensions
-              </code>{" "}
-              を開く
-            </Step>
-            <Step n={3}>右上の「デベロッパーモード」を ON</Step>
-            <Step n={4}>
-              「パッケージ化されていない拡張機能を読み込む」→
-              解凍したフォルダを選択
-            </Step>
-            <Step n={5}>
-              拡張アイコンが表示されたら、Pro
-              タブにフレンドコードまたはライセンスキーを入力
-            </Step>
-          </ol>
-          <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
-            ⚠ 解凍フォルダを移動すると拡張 ID
-            が変わるため、読み込んだ後はフォルダを移動しないでください。
-          </p>
-        </section>
-
-        {/* 過去バージョン */}
-        {past.length > 0 ? (
-          <section className="mt-6 rounded-2xl border border-line bg-surface p-8">
-            <h2 className="text-lg font-extrabold text-ink">過去バージョン</h2>
-            <ul className="mt-4 divide-y divide-line text-sm">
-              {past.map((r) => (
-                <li
-                  key={r.version}
-                  className="flex items-center justify-between py-3"
-                >
-                  <span className="text-ink">
-                    v{r.version}
-                    <span className="ml-2 text-xs text-ink-soft">
-                      ({new Date(r.uploadedAt).toLocaleDateString()})
-                    </span>
-                  </span>
-                  <a
-                    href={`/api/download/ochacomet-v${r.version}`}
-                    className="text-xs font-extrabold text-primary hover:text-primary-hover"
-                  >
-                    ダウンロード →
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
       </div>
     </main>
   );

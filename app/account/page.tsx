@@ -1,7 +1,7 @@
 // マイページ。LP と同じ緑単色基調 (canvas / surface / ink / primary)。
 // 主な動線:
 //   - プロフィール編集 (/account/profile)
-//   - 拡張ダウンロード (/account/download)
+//   - アプリのダウンロード (/account/download)
 //   - サブスク状態 (/account/subscription)
 //   - サインアウト (Server Action)
 import Link from "next/link";
@@ -36,19 +36,19 @@ export default async function AccountPage() {
         <p className="mt-1 text-sm text-ink-soft">
           {displayName ? (
             <>
-              <span className="font-extrabold text-ink">{displayName}</span> さん、こんにちは。
+              <span className="font-extrabold text-ink">{displayName}</span>{" "}
+              さん、こんにちは。
             </>
           ) : (
-            "ご登録情報の確認と、拡張機能のダウンロードはこちらから。"
+            "ご登録情報の確認と、アプリのダウンロードはこちらから。"
           )}
         </p>
 
         {!verified ? (
           <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            <strong className="font-extrabold">メール認証が未完了です。</strong>
-            {" "}
+            <strong className="font-extrabold">メール認証が未完了です。</strong>{" "}
             登録時に届いた認証メールのリンクを開いて完了させてください。
-            拡張機能のダウンロード等、一部の機能が制限されます。
+            アプリのダウンロード等、一部の機能が制限されます。
           </div>
         ) : null}
 
@@ -64,7 +64,12 @@ export default async function AccountPage() {
             </Link>
           </div>
           <dl className="mt-5 space-y-2 text-sm">
-            <Row label="お名前" value={displayName || <span className="text-amber-700">未設定</span>} />
+            <Row
+              label="お名前"
+              value={
+                displayName || <span className="text-amber-700">未設定</span>
+              }
+            />
             <Row label="メール" value={email} />
             <Row label="プラン" value={tier ?? "—"} />
             <Row
@@ -104,8 +109,8 @@ export default async function AccountPage() {
           />
           <ActionCard
             href="/account/download"
-            title="拡張をダウンロード"
-            body="最新版の Chrome 拡張機能を取得します。"
+            title="アプリをダウンロード"
+            body="デスクトップ版と Chrome 拡張版を取得します。"
             cta="ダウンロードへ →"
           />
           <ActionCard
@@ -119,9 +124,7 @@ export default async function AccountPage() {
         {/* admin 専用 */}
         {isAdmin ? (
           <section className="mt-6 rounded-2xl border border-violet-200 bg-violet-50/40 p-6">
-            <h2 className="text-sm font-extrabold text-violet-900">
-              Admin
-            </h2>
+            <h2 className="text-sm font-extrabold text-violet-900">Admin</h2>
             <div className="mt-3 flex flex-wrap gap-3 text-sm">
               <Link
                 href="/admin/users"
@@ -160,13 +163,7 @@ export default async function AccountPage() {
   );
 }
 
-function Row({
-  label,
-  value,
-}: {
-  label: string;
-  value: React.ReactNode;
-}) {
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between border-b border-line/60 py-2.5">
       <dt className="text-ink-soft">{label}</dt>
