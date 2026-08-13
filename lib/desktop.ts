@@ -30,18 +30,34 @@ export type DesktopRelease = {
   installers: DesktopInstaller[];
 };
 
-/** フィード（YAML）から version と files[] を取り出す。1 行ずつしか要らないのでパーサは入れない。 */
+/**
+ * フィード（YAML）から version と files[] を取り出す。
+ *
+ * 正規表現で 1 発で取ろうとしないこと。以前 `(?=...|\Z)` を終端の意図で書いていたが、
+ * **JavaScript の正規表現に `\Z` は無く、ただの文字 `Z` として扱われる**。
+ * sha512 の base64 に `Z` が含まれるフィードで解析が途中で打ち切られ、
+ * size が 0 になった（1.23.0 は偶然 `Z` を含まず、1.23.1 で発覚）。
+ * 行単位で読むほうが短く、壊れにくい。
+ */
 function parseFeed(
   text: string,
 ): { version: string; files: { url: string; size: number }[] } | null {
   const version = text.match(/^version:\s*(\S+)/m)?.[1];
   if (!version) return null;
+
   const files: { url: string; size: number }[] = [];
-  // "- url: X" と、それに続く "size: N" を対にする
-  const re = /^\s*-\s*url:\s*(\S+)\s*$([\s\S]*?)(?=^\s*-\s*url:|^\S|\Z)/gm;
-  for (const m of text.matchAll(re)) {
-    const size = Number(m[2]?.match(/^\s*size:\s*(\d+)/m)?.[1] ?? 0);
-    files.push({ url: m[1], size });
+  let current: { url: string; size: number } | null = null;
+  for (const line of text.split(/\r?\n/)) {
+    const url = line.match(/^\s*-\s*url:\s*(\S+)\s*$/);
+    if (url) {
+      current = { url: url[1], size: 0 };
+      files.push(current);
+      continue;
+    }
+    const size = line.match(/^\s*size:\s*(\d+)\s*$/);
+    if (size && current) current.size = Number(size[1]);
+    // インデントの無い行が来たら files ブロックは終わり
+    if (/^\S/.test(line)) current = null;
   }
   return { version, files };
 }
