@@ -16,20 +16,9 @@
 // 監査ログ付きで、こちらは公開。詳細は
 // 17-auto-comment-sender/docs/design/10-electron-migration.md を参照。
 import { NextResponse } from "next/server";
+import { blobPublicBase } from "@/lib/desktop";
 
 export const runtime = "nodejs";
-
-/** Blob の公開ホスト。明示指定が無ければトークンから導出する。 */
-function blobPublicBase(): string | null {
-  const explicit = process.env.BLOB_PUBLIC_BASE_URL;
-  if (explicit) return explicit.replace(/\/+$/, "");
-
-  // vercel_blob_rw_<storeId>_<secret> の storeId が公開ホストになる。
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  const storeId = token?.split("_")[3];
-  if (!storeId) return null;
-  return `https://${storeId.toLowerCase()}.public.blob.vercel-storage.com`;
-}
 
 function resolve(segments: string[]): string | null {
   // ディレクトリを抜けさせない。

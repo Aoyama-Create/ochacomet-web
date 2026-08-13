@@ -5,6 +5,7 @@ import { desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { releases } from "@/db/schema";
+import { getLatestDesktop } from "@/lib/desktop";
 
 export const metadata = { title: "ダウンロード" };
 
@@ -26,6 +27,7 @@ export default async function DownloadPage() {
 
   const latest = all[0] ?? null;
   const past = all.slice(1);
+  const desktop = await getLatestDesktop();
 
   return (
     <main className="flex flex-1 flex-col bg-canvas">
@@ -40,19 +42,78 @@ export default async function DownloadPage() {
           OchaComet のダウンロード
         </h1>
 
+        {/* デスクトップアプリ（推奨） */}
+        {desktop ? (
+          <section className="mt-8 rounded-2xl border-2 border-primary/30 bg-surface p-8">
+            <div className="flex flex-wrap items-baseline gap-3">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                デスクトップアプリ
+              </p>
+              <span className="rounded-full bg-primary-soft px-2.5 py-0.5 text-[11px] font-extrabold text-primary">
+                おすすめ
+              </span>
+            </div>
+            <h2 className="mt-3 text-3xl font-black text-ink">
+              v{desktop.version}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              配信画面と設定を1つのウィンドウにまとめたアプリ版です。Chrome
+              拡張の読み込み作業が不要で、更新も自動で届きます。
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {desktop.installers.map((ins) => (
+                <a
+                  key={ins.url}
+                  href={ins.url}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
+                >
+                  <DownloadIcon />
+                  {ins.platform} 版
+                  <span className="font-bold opacity-75">
+                    {(ins.sizeBytes / 1024 / 1024).toFixed(0)} MB
+                  </span>
+                </a>
+              ))}
+              {desktop.installers.every((i) => i.platform !== "Windows") ? (
+                <span className="text-xs text-ink-soft">
+                  Windows 版は準備中です
+                </span>
+              ) : null}
+            </div>
+
+            {/* 未署名なので OS が警告を出す。ここを書いておかないと詰まる。 */}
+            <div className="mt-6 rounded-xl bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
+              <p className="font-extrabold">⚠ 初回起動時に OS の警告が出ます</p>
+              <p className="mt-1.5">
+                <b>macOS</b>: アプリを右クリック →「開く」→
+                ダイアログの「開く」。
+                ダブルクリックだと開けないので注意してください。
+              </p>
+              <p className="mt-1">
+                <b>Windows</b>:
+                「WindowsによってPCが保護されました」→「詳細情報」→「実行」。
+              </p>
+              <p className="mt-1.5 opacity-80">
+                開発元の署名を付けていないためで、2回目以降は出ません。
+              </p>
+            </div>
+          </section>
+        ) : null}
+
         {/* 最新版 */}
         <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
           {latest ? (
             <>
-              <p className="text-xs font-extrabold uppercase tracking-wider text-primary">
-                最新版
+              <p className="text-xs font-extrabold uppercase tracking-wider text-ink-soft">
+                Chrome 拡張版
               </p>
               <div className="mt-3 flex items-baseline gap-3">
                 <h2 className="text-3xl font-black text-ink">
                   v{latest.version}
                 </h2>
                 <p className="text-xs text-ink-soft">
-                  公開: {new Date(latest.uploadedAt).toLocaleDateString()} · {" "}
+                  公開: {new Date(latest.uploadedAt).toLocaleDateString()} ·{" "}
                   {(latest.sizeBytes / 1024 / 1024).toFixed(2)} MB
                 </p>
               </div>
@@ -89,18 +150,25 @@ export default async function DownloadPage() {
           <ol className="mt-4 space-y-3 text-sm text-ink">
             <Step n={1}>ZIP を解凍する</Step>
             <Step n={2}>
-              Chrome で <code className="rounded bg-canvas px-1.5 py-0.5 text-[12px]">chrome://extensions</code> を開く
+              Chrome で{" "}
+              <code className="rounded bg-canvas px-1.5 py-0.5 text-[12px]">
+                chrome://extensions
+              </code>{" "}
+              を開く
             </Step>
             <Step n={3}>右上の「デベロッパーモード」を ON</Step>
             <Step n={4}>
-              「パッケージ化されていない拡張機能を読み込む」→ 解凍したフォルダを選択
+              「パッケージ化されていない拡張機能を読み込む」→
+              解凍したフォルダを選択
             </Step>
             <Step n={5}>
-              拡張アイコンが表示されたら、Pro タブにフレンドコードまたはライセンスキーを入力
+              拡張アイコンが表示されたら、Pro
+              タブにフレンドコードまたはライセンスキーを入力
             </Step>
           </ol>
           <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
-            ⚠ 解凍フォルダを移動すると拡張 ID が変わるため、読み込んだ後はフォルダを移動しないでください。
+            ⚠ 解凍フォルダを移動すると拡張 ID
+            が変わるため、読み込んだ後はフォルダを移動しないでください。
           </p>
         </section>
 
