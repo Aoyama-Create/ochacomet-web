@@ -87,8 +87,9 @@ export async function getLatestDesktop(): Promise<DesktopRelease | null> {
   for (const f of feeds) {
     try {
       const res = await fetch(`${base}/desktop/${f.file}`, {
-        // 公開直後に古い内容を返さないよう、こちらではキャッシュしない
-        cache: "no-store",
+        // no-store にすると毎回ネットワーク待ちになり、ページ表示が体感で遅くなる。
+        // 版数の鮮度は 1 分あれば十分なので短い revalidate にする。
+        next: { revalidate: 60 },
       });
       if (!res.ok) continue; // その OS 向けは未ビルド
       const parsed = parseFeed(await res.text());
