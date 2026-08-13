@@ -86,9 +86,14 @@ export default async function DownloadPage() {
             <div className="mt-6 rounded-xl bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
               <p className="font-extrabold">⚠ 初回起動時に OS の警告が出ます</p>
               <p className="mt-1.5">
-                <b>macOS</b>: アプリを右クリック →「開く」→
+                <b>macOS 15 以降</b>:
+                一度開こうとして拒否されたあと、システム設定 →
+                プライバシーとセキュリティ →
+                下の方にある「このまま開く」を押します。
+              </p>
+              <p className="mt-1">
+                <b>macOS 14 以前</b>: アプリを右クリック →「開く」→
                 ダイアログの「開く」。
-                ダブルクリックだと開けないので注意してください。
               </p>
               <p className="mt-1">
                 <b>Windows</b>:
