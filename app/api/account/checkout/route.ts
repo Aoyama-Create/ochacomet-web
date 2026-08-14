@@ -12,8 +12,6 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { createCheckoutSession, resolvePriceId } from "@/lib/stripe";
 
-export const runtime = "nodejs";
-
 type Body = { variant?: unknown };
 
 export async function POST(req: Request) {

@@ -18,8 +18,6 @@ import { putRelease, releaseBlobPath } from "@/lib/blob";
 import { logAdminAction } from "@/lib/audit";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
-export const runtime = "nodejs";
-
 const VERSION_RE = /^\d+\.\d+\.\d+$/;
 const MAX_BYTES = 50 * 1024 * 1024; // 50 MB (拡張は数 MB なのでこれで十分)
 

@@ -23,8 +23,6 @@ import {
 } from "@/lib/stripe";
 import { generateLicenseKey } from "@/lib/license/generate";
 
-export const runtime = "nodejs";
-
 export async function POST(req: Request) {
   const raw = await req.text();
   const sig = req.headers.get("stripe-signature");

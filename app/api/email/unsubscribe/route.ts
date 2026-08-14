@@ -15,8 +15,6 @@ import {
 } from "@/db/schema";
 import { parseUnsubscribeToken } from "@/lib/unsubscribeToken";
 
-export const runtime = "nodejs";
-
 async function handle(token: string | null): Promise<Response> {
   const parsed = token ? parseUnsubscribeToken(token) : null;
   if (!parsed) {

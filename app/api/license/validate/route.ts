@@ -10,8 +10,6 @@
 import { NextResponse } from "next/server";
 import { validateLicenseKey } from "@/lib/license/validate";
 
-export const runtime = "nodejs";
-
 const NO_STORE_HEADERS = {
   "Cache-Control": "no-store, max-age=0",
   "X-Robots-Tag": "noindex",

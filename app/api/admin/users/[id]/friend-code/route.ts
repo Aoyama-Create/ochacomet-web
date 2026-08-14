@@ -10,8 +10,6 @@ import { NextResponse } from "next/server";
 import { issueFriendCode } from "@/lib/friendCodes/issue";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
-export const runtime = "nodejs";
-
 type Params = { id: string };
 type Body = { durationDays?: unknown; note?: unknown };
 

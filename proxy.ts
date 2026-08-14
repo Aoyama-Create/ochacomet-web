@@ -99,8 +99,13 @@ export default auth(async (req) => {
   return NextResponse.next();
 });
 
+// 認証が必要な経路だけで動かす。
+//
+// 以前は「静的アセット以外の全パス」にマッチしていたため、トップページや規約ページでも
+// Edge で JWT 復号が走っていた。公開ページには不要なので外す。
+//
+// なお matcher は「どのパスでこの関数を動かすか」であって認可判定そのものではない。
+// 判定側の PROTECTED_PREFIXES / isAdminArea は**そのまま残す**（二重に持つ）。
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|svg|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/account/:path*", "/admin/:path*", "/api/admin/:path*"],
 };

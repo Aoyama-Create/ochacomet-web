@@ -1,12 +1,17 @@
-// 共通ヘッダー。ログイン状態で出し分け (Server Component で auth() を呼ぶ)。
+// 共通ヘッダー。
+//
+// **このコンポーネント自体は同期（静的）に保つこと。**
+// ここで `await auth()` を呼ぶと root layout 経由で配下の全ページが動的になり、
+// 規約ページのような完全に静的な文書まで CDN キャッシュも静的プリレンダも効かなくなる
+// （実際そうなっており、/terms の TTFB が 400ms、コールドスタートが 1.8 秒だった）。
+//
+// ログイン状態で出し分ける部分は HeaderAuth に切り出し、Suspense でストリーミングする。
 import Link from "next/link";
 import Image from "next/image";
-import { auth } from "@/auth";
+import { Suspense } from "react";
+import { HeaderAuth, HeaderAuthFallback } from "./HeaderAuth";
 
-export async function Header() {
-  const session = await auth();
-  const user = session?.user;
-
+export function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-canvas/80 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-6">
@@ -26,41 +31,9 @@ export async function Header() {
           OchaComet
         </Link>
 
-        <nav className="flex items-center gap-1 text-sm">
-          {user ? (
-            <>
-              <Link
-                href="/account"
-                className="rounded-md px-3 py-1.5 text-ink-soft hover:bg-primary-soft hover:text-primary"
-              >
-                マイページ
-              </Link>
-              {user.isAdmin ? (
-                <Link
-                  href="/admin/users"
-                  className="rounded-md px-3 py-1.5 text-violet-700 hover:bg-violet-50"
-                >
-                  Admin
-                </Link>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="rounded-md px-3 py-1.5 text-ink-soft hover:bg-primary-soft hover:text-primary"
-              >
-                ログイン
-              </Link>
-              <Link
-                href="/signup"
-                className="rounded-full bg-primary px-4 py-1.5 font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] transition-colors hover:bg-primary-hover"
-              >
-                会員登録
-              </Link>
-            </>
-          )}
-        </nav>
+        <Suspense fallback={<HeaderAuthFallback />}>
+          <HeaderAuth />
+        </Suspense>
       </div>
     </header>
   );

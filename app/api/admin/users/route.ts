@@ -6,8 +6,6 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
-export const runtime = "nodejs";
-
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
 

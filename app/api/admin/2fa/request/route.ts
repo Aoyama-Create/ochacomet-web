@@ -12,8 +12,6 @@ import { users } from "@/db/schema";
 import { sendAdminOtpEmail } from "@/lib/email";
 import { generateOtpCode, hashOtp, otpExpiryFromNow } from "@/lib/adminOtp";
 
-export const runtime = "nodejs";
-
 export async function POST() {
   const session = await auth();
   if (!session?.user?.id) {

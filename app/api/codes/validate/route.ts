@@ -10,8 +10,6 @@
 import { NextResponse } from "next/server";
 import { validateFriendCode } from "@/lib/friendCodes/validate";
 
-export const runtime = "nodejs";
-
 const NO_STORE_HEADERS = {
   "Cache-Control": "no-store, max-age=0",
   // 拡張からの呼び出しは host_permissions で許可済みだが、念のため

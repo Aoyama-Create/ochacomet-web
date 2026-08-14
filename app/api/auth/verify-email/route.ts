@@ -9,8 +9,6 @@
 import { NextResponse } from "next/server";
 import { consumeVerificationToken } from "@/lib/auth/verifyEmail";
 
-export const runtime = "nodejs";
-
 async function handle(token: string | null) {
   const result = await consumeVerificationToken(token ?? "");
   return NextResponse.json(result, {

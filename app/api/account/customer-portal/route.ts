@@ -12,8 +12,6 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { createBillingPortalSession } from "@/lib/stripe";
 
-export const runtime = "nodejs";
-
 export async function POST() {
   const session = await auth();
   if (!session?.user?.id) {

@@ -17,8 +17,6 @@ import { db } from "@/lib/db";
 import { releases } from "@/db/schema";
 import { compareSemver, maxSemver } from "@/lib/semver";
 
-export const runtime = "nodejs";
-
 const CACHE_HEADERS = {
   "Cache-Control": "public, max-age=300",
   "Access-Control-Allow-Origin": "*",

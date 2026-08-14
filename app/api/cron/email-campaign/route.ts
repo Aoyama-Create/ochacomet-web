@@ -27,7 +27,6 @@ import {
 import { sendFriendStepEmail } from "@/lib/email";
 import { buildUnsubscribeUrl } from "@/lib/unsubscribeToken";
 
-export const runtime = "nodejs";
 // 1 回の cron で大きなバッチを処理する可能性があるので timeout を伸ばす
 export const maxDuration = 60;
 

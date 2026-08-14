@@ -8,8 +8,6 @@
 import { NextResponse } from "next/server";
 import { signup } from "@/lib/auth/signup";
 
-export const runtime = "nodejs";
-
 type Body = {
   email?: unknown;
   password?: unknown;

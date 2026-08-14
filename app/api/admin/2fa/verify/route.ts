@@ -16,8 +16,6 @@ import {
   signAdmin2faToken,
 } from "@/lib/admin2faCookie";
 
-export const runtime = "nodejs";
-
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {

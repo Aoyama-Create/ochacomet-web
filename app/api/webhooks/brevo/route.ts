@@ -14,8 +14,6 @@ import {
 } from "@/db/schema";
 import { verifyBrevoWebhookSecret } from "@/lib/brevo";
 
-export const runtime = "nodejs";
-
 type BrevoEvent = {
   event?: string; // "delivered" | "opened" | "click" | "soft_bounce" | "hard_bounce" | "blocked" | "spam" | "unsubscribed" | ...
   email?: string;

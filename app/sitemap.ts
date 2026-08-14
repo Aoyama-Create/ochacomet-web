@@ -1,12 +1,16 @@
 import type { MetadataRoute } from "next";
 
 const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  "https://ochacomet.aoyamacreate.com";
+  process.env.NEXT_PUBLIC_APP_URL || "https://ochacomet.aoyamacreate.com";
 
 // 公開している、検索エンジンに見せたいページのみ列挙する。
 // /friends, /admin/*, /account/*, /api/*, /verify-email* は意図的に除外。
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Cache Components 下では new Date() が非決定的な値として扱われ、これが無いと
+  // sitemap.xml がリクエストごとの動的生成になる（以前は静的だった）。
+  // use cache 内なら**ビルド時に 1 度だけ**評価されるので静的に戻る。
+  // lastModified はデプロイ時刻になるが、ページが変わるのはデプロイ時なので意味も合う。
+  "use cache";
   const now = new Date();
   return [
     {

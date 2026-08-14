@@ -6,8 +6,6 @@ import { db } from "@/lib/db";
 import { friendCodes, users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
-export const runtime = "nodejs";
-
 type Params = { id: string };
 
 export async function GET(

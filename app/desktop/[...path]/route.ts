@@ -18,8 +18,6 @@
 import { NextResponse } from "next/server";
 import { blobPublicBase } from "@/lib/desktop";
 
-export const runtime = "nodejs";
-
 function resolve(segments: string[]): string | null {
   // ディレクトリを抜けさせない。
   //

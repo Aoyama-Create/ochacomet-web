@@ -16,8 +16,6 @@ import { injectWatermark } from "@/lib/watermark";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { clientIpFromHeaders, logDownload } from "@/lib/audit";
 
-export const runtime = "nodejs";
-
 const VERSION_RE = /^ochacomet-v(\d+\.\d+\.\d+)$/;
 
 type Params = { artifact: string };

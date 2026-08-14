@@ -11,8 +11,6 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 
-export const runtime = "nodejs";
-
 const MAX_NAME = 80;
 const MAX_PHONE = 32;
 const MAX_POSTAL = 16;
