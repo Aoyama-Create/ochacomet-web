@@ -4,7 +4,7 @@
 // 配色: 緑単色基調 (拡張 popup.css の #48875b 系)
 import Link from "next/link";
 import { AuthAwareCta } from "@/components/AuthAwareCta";
-import { OchaCometPopup } from "@/components/lp/OchaCometPopup";
+import { OchaCometDesktop } from "@/components/lp/OchaCometDesktop";
 import { NotificationToast } from "@/components/lp/NotificationToast";
 
 export default function Home() {
@@ -35,7 +35,14 @@ export default function Home() {
    ============================================================ */
 function Hero({ heroOnly }: { heroOnly?: boolean }) {
   return (
-    <section className="relative overflow-hidden bg-primary-soft">
+    <section
+      className={`relative overflow-hidden bg-primary-soft ${
+        // heroOnly のときはヒーローがページ唯一のセクションになる。余白を詰めた結果、
+        // main に余った高さが素の背景色で残り、ヒーローとフッターの間に白い帯が出る。
+        // 残りの高さまで伸ばして緑を届かせ、中身は縦中央に置く。
+        heroOnly ? "flex flex-1 flex-col justify-center" : ""
+      }`}
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute -right-40 -top-52 h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(72,135,91,0.18)_0%,transparent_65%)]"
@@ -45,7 +52,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
         className="pointer-events-none absolute -bottom-72 -left-52 h-[700px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(72,135,91,0.10)_0%,transparent_65%)]"
       />
 
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-24">
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-16">
         <div className="min-w-0 text-center md:text-left">
           <span className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-surface px-3.5 py-1 text-[11px] font-bold tracking-wide text-primary shadow-[0_1px_2px_rgba(72,135,91,0.08)] sm:text-[12px]">
             <span
@@ -66,7 +73,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
               <span className="relative z-10">サポートツール</span>
               <span
                 aria-hidden
-                className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-canvas"
+                className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-primary/15"
               />
             </span>
           </h1>
@@ -120,12 +127,21 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
           </ul>
         </div>
 
-        <div className="relative mx-auto mt-6 w-full min-w-0 max-w-[320px] sm:max-w-[380px] md:mx-0 md:mt-0 md:w-fit">
-          {/* 通知トースト: 全 viewport で popup 左上に被せて「通知 → 承認 → 送信」の瞬間を可視化 */}
-          <div className="absolute -left-2 -top-6 z-20 w-[240px] -rotate-3 sm:-left-6 sm:w-[280px] md:-left-14 md:-top-8 md:w-auto">
+        <div className="relative mx-auto mt-8 w-full min-w-0 max-w-[420px] sm:max-w-[480px] md:mx-0 md:mt-0 md:max-w-none">
+          {/*
+            通知トースト:「通知 → 承認 → 送信」の瞬間を可視化する。
+            主役はウィンドウなので、**タイトルバーとサイドバーを隠さない**こと。
+            左上の角に少しだけ掛ける位置に留める。
+          */}
+          {/*
+            スマホ幅では非表示。トーストは本文が折り返して縦に伸びるため、
+            狭い画面ではウィンドウの下にはみ出してステータスバーまで隠してしまう。
+            その幅ではウィンドウ単体で十分伝わる。
+          */}
+          <div className="absolute left-0 top-10 z-20 hidden w-[200px] -rotate-3 sm:block sm:w-[215px] md:-left-6 md:top-12 md:w-[225px]">
             <NotificationToast />
           </div>
-          <OchaCometPopup />
+          <OchaCometDesktop />
         </div>
       </div>
     </section>

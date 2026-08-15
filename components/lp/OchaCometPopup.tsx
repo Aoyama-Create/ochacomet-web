@@ -1,4 +1,10 @@
-// Hero ビジュアル: 拡張本体 popup の忠実再現コンポーネント。
+// 拡張本体 popup の忠実再現コンポーネント。
+//
+// **現在 LP からは未使用。** ヒーローはデスクトップ版のウィンドウ (OchaCometDesktop) に
+// 差し替えた。拡張版は現役なので、拡張の説明で再び使う可能性があり残してある。
+//
+// ★重要な制約: LP に 17LIVE の配信画面を具体的に描かない（商標模倣リスク回避）。
+//   company-os の 70_products/ochacomet/overview.md にも記載している。
 // 17-auto-comment-sender/popup.css と popup.html のクラス・余白・カラーをそのまま転写。
 // LP では「配信画面」を一切描かず、popup 単体を主役に据える (D 案 / 商標模倣リスク回避)。
 //
@@ -9,10 +15,12 @@
 // 拡張本体は body width: 380px、.app-container padding: 16px。
 import Image from "next/image";
 
-const CARD = "rounded-[12px] border border-[#e5e3d8] bg-[#f7f5ee] p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+const CARD =
+  "rounded-[12px] border border-[#e5e3d8] bg-[#f7f5ee] p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
 const SECTION_LABEL = "block px-0.5 text-[12px] font-bold text-[#5c6b57]";
 const FIELD_LABEL = "mb-1 block text-[11px] font-semibold text-[#5c6b57]";
-const FIELD_INPUT = "w-full rounded-[8px] border border-[#e5e3d8] bg-white px-2.5 py-2 text-[14px] text-[#1d2939]";
+const FIELD_INPUT =
+  "w-full rounded-[8px] border border-[#e5e3d8] bg-white px-2.5 py-2 text-[14px] text-[#1d2939]";
 
 export function OchaCometPopup() {
   return (
@@ -69,7 +77,12 @@ export function OchaCometPopup() {
           <div className={CARD}>
             <div className="mb-2.5">
               <label className={FIELD_LABEL}>最小コイン数</label>
-              <input readOnly value="100" className={FIELD_INPUT} aria-readonly />
+              <input
+                readOnly
+                value="100"
+                className={FIELD_INPUT}
+                aria-readonly
+              />
             </div>
             <div>
               <label className={FIELD_LABEL}>返信メッセージ</label>
@@ -192,9 +205,7 @@ function RadioItem({ label, checked }: { label: string; checked?: boolean }) {
         }`}
         aria-hidden
       >
-        {checked && (
-          <span className="h-1.5 w-1.5 rounded-full bg-[#48875b]" />
-        )}
+        {checked && <span className="h-1.5 w-1.5 rounded-full bg-[#48875b]" />}
       </span>
       <span>{label}</span>
     </label>
