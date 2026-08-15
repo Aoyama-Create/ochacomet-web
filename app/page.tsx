@@ -52,7 +52,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
               aria-hidden
               className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary"
             />
-            17LIVE ガーディアン・ライバー向け Chrome 拡張
+            ガーディアン・ライバー向け
           </span>
           <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] lg:text-[48px]">
             <span className="text-[1.08em] font-semibold">17LIVE</span>
@@ -63,10 +63,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             <span className="text-[0.88em]">する</span>
             <br />
             <span className="relative inline-block text-primary">
-              <span className="relative z-10">
-                <span className="text-[1.08em] font-semibold">chrome</span>
-                拡張ツール
-              </span>
+              <span className="relative z-10">サポートツール</span>
               <span
                 aria-hidden
                 className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-canvas"
@@ -81,7 +78,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             <br />
             手作業で抱えがちな定型対応を、テンプレ+ワンタップで処理する
             <br />
-            Chrome 拡張型 サポートツールです。
+            サポートツールです。
           </p>
           {/* <p className="mb-8 max-w-[520px] text-[14px] leading-relaxed text-ink-soft">
             動作は「<strong className="font-extrabold text-ink">通知 → 承認 → 送信</strong>」の手動承認フロー。<br />
@@ -112,13 +109,13 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
 
           <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-ink-soft md:justify-start">
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> Free プランは無料で永続利用可
+              <CheckIcon /> 基本機能はずっと無料
             </li>
             <li className="inline-flex items-center gap-1.5">
               <CheckIcon /> Pro は 14 日間無料トライアル
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> いつでも解約できます
+              <CheckIcon /> いつでも解約OK
             </li>
           </ul>
         </div>
@@ -558,18 +555,18 @@ function HowToUse() {
     },
     {
       n: 2,
-      title: "拡張をダウンロード",
-      body: "マイページから最新版の ZIP を取得。Free プランはすぐに使えます。",
+      title: "アプリをダウンロード",
+      body: "マイページから macOS / Windows 版を取得。Free プランはすぐに使えます。",
     },
     {
       n: 3,
-      title: "Chrome に読み込む",
-      body: "chrome://extensions で「パッケージ化されていない拡張機能を読み込む」から選択。5〜10 分ほど。",
+      title: "インストールしてログイン",
+      body: "インストーラを実行し、アプリ内で 17LIVE にログイン。5 分ほどで終わります。",
     },
     {
       n: 4,
       title: "推しの配信で使う",
-      body: "配信ページを開けばすぐに通知が動き始めます。Pro は popup からライセンスキーを入力。",
+      body: "配信ページを開けばすぐに通知が動き始めます。Pro は設定画面からライセンスキーを入力。",
     },
   ];
 
@@ -579,7 +576,7 @@ function HowToUse() {
         <SectionHead
           tag="How to use"
           title="使い始めるまでの流れ。"
-          lead="アカウント登録から拡張機能の組み込みまで、所要時間およそ 10 分。Free プランの利用にクレジットカード登録は不要です。"
+          lead="アカウント登録からインストールまで、所要時間およそ 10 分。Free プランの利用にクレジットカード登録は不要です。"
         />
         <ol className="relative grid gap-8 md:grid-cols-4">
           <div
@@ -702,7 +699,7 @@ function FinalCta() {
           次の配信から、応対と記録を軽くする。
         </h2>
         <p className="relative mx-auto mb-8 max-w-md text-[16px] text-white/75">
-          1 分で会員登録 → 拡張機能をダウンロードしてすぐに使えます。 Free
+          1 分で会員登録 → アプリをダウンロードしてすぐに使えます。 Free
           プランは永続無料、Pro は 14 日間無料でお試しいただけます。
         </p>
         <AuthAwareCta

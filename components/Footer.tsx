@@ -72,7 +72,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <p className="font-extrabold text-ink">OchaComet</p>
             <p className="mt-2 leading-relaxed">
-              17LIVE 配信を支えるガーディアン向け Chrome 拡張。
+              17LIVE 配信を支えるガーディアン向けサポートツール。
             </p>
             <p className="mt-3 text-[11px]">© {YEAR} OchaComet</p>
           </div>

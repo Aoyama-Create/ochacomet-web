@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "OchaComet における個人情報の取り扱いについて",
 };
 
-const LAST_UPDATED = "2026年5月19日";
+const LAST_UPDATED = "2026年8月14日";
 
 export default function PrivacyPage() {
   return (
@@ -39,8 +39,9 @@ export default function PrivacyPage() {
           <strong>メール配信状況</strong>: 送信ログ、配信完了 / 開封 / バウンス / 配信停止の状態 (Brevo Webhook 経由)
         </li>
         <li>
-          <strong>拡張機能 (Chrome 拡張) のローカルデータ</strong>: 配信中に検知したギフト・入退室イベント、テンプレート、
-          ニックネーム等の設定情報。これらは <strong>ユーザーのブラウザ内 (chrome.storage.local) に保存</strong>され、
+          <strong>アプリ / 拡張機能のローカルデータ</strong>: 配信中に検知したギフト・入退室イベント、テンプレート、
+          ニックネーム等の設定情報。これらは <strong>ユーザーの端末内に保存</strong>され
+          (デスクトップアプリはお使いのコンピュータ内、Chrome 拡張版はブラウザ内)、
           当方のサーバには送信されません。ただし、メール認証時のメールアドレス、ライセンス検証時のライセンスキー、
           フレンドコード検証時のコード等、認証目的のデータは当方のサーバに送信されます。
         </li>

@@ -128,10 +128,10 @@ export default async function SubscriptionPage({
         {showLicenseKey && (
           <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
             <h2 className="text-lg font-extrabold text-ink">
-              拡張機能のライセンスキー
+              ライセンスキー
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              OchaComet 拡張機能の設定画面でこのキーを入力すると Pro 機能が有効になります。
+              OchaComet の設定画面でこのキーを入力すると Pro 機能が有効になります。
               解約・期限切れになると自動的に無効化されます。
             </p>
             <div className="mt-4 rounded-xl border border-line bg-canvas px-4 py-3 font-mono text-sm font-bold tracking-wider text-ink break-all">

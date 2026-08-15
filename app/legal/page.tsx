@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "OchaComet の事業者情報",
 };
 
-const LAST_UPDATED = "2026年5月19日";
+const LAST_UPDATED = "2026年8月14日";
 
 export default function LegalPage_() {
   return (
@@ -99,7 +99,7 @@ export default function LegalPage_() {
             <th>商品の引渡し時期</th>
             <td>
               お申し込み後、即時に Pro 機能をご利用いただけます。
-              拡張機能はマイページからいつでもダウンロード可能です。
+              アプリはマイページからいつでもダウンロード可能です。
             </td>
           </tr>
           <tr>
@@ -114,9 +114,11 @@ export default function LegalPage_() {
           <tr>
             <th>動作環境</th>
             <td>
-              Google Chrome (バージョン 114 以上) / Chromium ベースのブラウザ
+              デスクトップアプリ: macOS / Windows
               <br />
-              17LIVE Web 版 (https://www.17.live/) のアカウントが必要です
+              Chrome 拡張版: Google Chrome (バージョン 114 以上) / Chromium ベースのブラウザ
+              <br />
+              いずれも 17LIVE Web 版 (https://www.17.live/) のアカウントが必要です
             </td>
           </tr>
         </tbody>

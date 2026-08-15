@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "OchaComet の返金・解約に関する規定",
 };
 
-const LAST_UPDATED = "2026年5月19日";
+const LAST_UPDATED = "2026年8月14日";
 
 export default function RefundPage() {
   return (
@@ -91,7 +91,8 @@ export default function RefundPage() {
           解約後も、現契約期間の終了まで Pro 機能はご利用いただけます。期間終了後、自動的に Free プランに移行します。
         </li>
         <li>
-          解約後にダウンロードした拡張機能の WATERMARK.txt 内 ID は引き続き有効ですが、Pro 機能のロックが解除されることはありません。
+          解約後もダウンロード済みのアプリ・拡張機能はお手元に残りますが、Pro 機能のロックが解除されることはありません
+          (Chrome 拡張版の ZIP に含まれる WATERMARK.txt の ID も同様で、Pro 機能の有効化には使えません)。
         </li>
       </ol>
 

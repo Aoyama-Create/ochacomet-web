@@ -17,9 +17,9 @@ const nunito = Nunito({
 });
 
 const APP_NAME = "OchaComet";
-const APP_TAGLINE = "17LIVE ガーディアンのコメント送信を支える Chrome 拡張";
+const APP_TAGLINE = "17LIVE ガーディアンのコメント送信を支えるサポートツール";
 const APP_DESCRIPTION =
-  "OchaComet は 17LIVE のガーディアン (トップリスナー) と認証ライバーのための Chrome 拡張です。入室通知・大ギフトへのお礼・テンプレート送信を「通知 → 承認 → 送信」の手動フローで補助。あなたの会話を肩代わりせず、定型のひと押しだけを引き受けます。Free プランは永続無料、Pro プランは 14 日間無料トライアル付き。";
+  "OchaComet は 17LIVE のガーディアン (トップリスナー) と認証ライバーのためのサポートツールです。入室通知・大ギフトへのお礼・テンプレート送信を「通知 → 承認 → 送信」の手動フローで補助。あなたの会話を肩代わりせず、定型のひと押しだけを引き受けます。macOS / Windows 対応のデスクトップアプリと Chrome 拡張版を提供。基本機能は無料、Pro プランは 14 日間無料トライアル付き。";
 
 export const metadata: Metadata = {
   title: {
