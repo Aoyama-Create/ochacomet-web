@@ -7,12 +7,24 @@ type Props = {
   description?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
+  /**
+   * 入力欄を 2 列に並べるページ用の広いカード。
+   * 会員登録は項目が 4 つあり、1 列だとログイン (2 つ) と高さが揃わないため、
+   * 2 列に組んで同じ行数にしている。
+   */
+  wide?: boolean;
 };
 
-export function AuthCard({ title, description, children, footer }: Props) {
+export function AuthCard({
+  title,
+  description,
+  children,
+  footer,
+  wide,
+}: Props) {
   return (
     <main className="flex flex-1 items-center justify-center bg-canvas px-6 py-12">
-      <div className="w-full max-w-md">
+      <div className={`w-full ${wide ? "max-w-xl" : "max-w-md"}`}>
         <div className="rounded-2xl border border-line bg-surface p-8 shadow-[0_8px_24px_rgba(72,135,91,0.06)]">
           <h1 className="text-2xl font-black tracking-tight text-ink">
             {title}
