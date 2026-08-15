@@ -122,7 +122,7 @@ export function OchaCometDesktop() {
               設定
             </span>
             <span className="flex-1 py-0.5 text-center text-[6px] text-[#5c6b57]">
-              Pro
+              分析
             </span>
           </div>
 

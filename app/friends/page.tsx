@@ -69,9 +69,9 @@ export default function FriendsPage() {
               </p>
             </Step>
 
-            <Step n={3} title="Pro タブを開いてフレンドコードを入力">
+            <Step n={3} title="分析タブを開いてフレンドコードを入力">
               <p>
-                ツールバーの拡張アイコン (☕) → 「Pro」タブを開き、
+                ツールバーの拡張アイコン (☕) → 「分析」タブを開き、
                 招待されたフレンドコードを入力してください。
               </p>
               <p className="mt-2 text-xs text-zinc-500">

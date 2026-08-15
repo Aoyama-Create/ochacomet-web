@@ -225,7 +225,7 @@ export async function sendFriendCodeIssuedEmail(
       "",
       `使い方ガイド: ${friendsUrl}`,
       "",
-      "拡張の Pro タブにこのコードを入力すると、Pro 機能を期間限定で試せます。",
+      "「分析」タブにこのコードを入力すると、Pro 機能を期間限定で試せます。",
     ].join("\n"),
     tags: ["friend-code-issued"],
   });
