@@ -8,9 +8,12 @@ type Props = {
   children: ReactNode;
   footer?: ReactNode;
   /**
-   * 入力欄を 2 列に並べるページ用の広いカード。
+   * 入力欄を 2 列に並べるページ用の、少しだけ広いカード。
    * 会員登録は項目が 4 つあり、1 列だとログイン (2 つ) と高さが揃わないため、
    * 2 列に組んで同じ行数にしている。
+   *
+   * ログイン (max-w-md / 448px) との差は 64px に留める。ページを行き来したときに
+   * カードの大きさが変わって見えるため、2 列が成立する最小限の幅にする。
    */
   wide?: boolean;
 };
@@ -24,7 +27,7 @@ export function AuthCard({
 }: Props) {
   return (
     <main className="flex flex-1 items-center justify-center bg-canvas px-6 py-12">
-      <div className={`w-full ${wide ? "max-w-xl" : "max-w-md"}`}>
+      <div className={`w-full ${wide ? "max-w-lg" : "max-w-md"}`}>
         <div className="rounded-2xl border border-line bg-surface p-8 shadow-[0_8px_24px_rgba(72,135,91,0.06)]">
           <h1 className="text-2xl font-black tracking-tight text-ink">
             {title}
@@ -61,14 +64,22 @@ export function Field({
 }) {
   return (
     <div>
-      <label
-        htmlFor={htmlFor}
-        className="block text-[13px] font-extrabold text-ink"
-      >
-        {label}
-      </label>
+      {/*
+        hint はラベルの横に置く。入力欄の下に出すとその行だけ背が高くなり、
+        2 列に組んだときに行の高さが揃わなくなる。
+      */}
+      <div className="flex items-baseline gap-2">
+        <label
+          htmlFor={htmlFor}
+          className="text-[13px] font-extrabold text-ink"
+        >
+          {label}
+        </label>
+        {hint ? (
+          <span className="shrink-0 text-[11px] text-ink-soft">{hint}</span>
+        ) : null}
+      </div>
       <div className="mt-1.5">{children}</div>
-      {hint ? <p className="mt-1 text-xs text-ink-soft">{hint}</p> : null}
     </div>
   );
 }

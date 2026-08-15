@@ -38,11 +38,8 @@ export default function SignupPage() {
           狭い画面では 1 列に落とす。
         */}
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field
-            label="お名前"
-            htmlFor="displayName"
-            hint="サポート時や領収書の宛名に使います"
-          >
+          {/* hint はラベル横に並ぶので、カラム幅 (約 214px) に収まる長さに保つ */}
+          <Field label="お名前" htmlFor="displayName" hint="領収書の宛名に使用">
             <input
               id="displayName"
               name="displayName"
