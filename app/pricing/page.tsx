@@ -5,6 +5,7 @@
 // CTA は /signup → 会員登録後 /account/subscription から LS チェックアウト。
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AuthAwareCta } from "@/components/AuthAwareCta";
 
 export const metadata: Metadata = {
   title: "料金プラン",
@@ -36,12 +37,15 @@ function PageHeader() {
           料金プラン
         </h1>
         <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-ink-soft">
-          Free からはじめて、必要に応じて Pro へ。
-          すべての有料プランに <strong className="font-extrabold text-ink">14 日間の無料トライアル</strong>{" "}
+          Free からはじめて、必要に応じて Pro へ。 すべての有料プランに{" "}
+          <strong className="font-extrabold text-ink">
+            14 日間の無料トライアル
+          </strong>{" "}
           が付きます。トライアル中はいつでも無料で解約できます。
         </p>
         <p className="mt-4 inline-block rounded-full bg-primary-soft px-4 py-1.5 text-[13px] text-primary-deep">
-          Free プランはクレジットカード不要。Pro は 14 日無料で全機能をお試しいただけます。
+          Free プランはクレジットカード不要。Pro は 14
+          日無料で全機能をお試しいただけます。
         </p>
       </div>
     </section>
@@ -119,16 +123,19 @@ function PlanCard({
         <span className="text-[40px] font-black text-ink">{price}</span>
         <span className="text-[12px] text-ink-soft">{unit}</span>
       </div>
-      <Link
-        href={cta.href}
+      <AuthAwareCta
         className={
           highlighted
             ? "mb-3 inline-flex w-full items-center justify-center rounded-full bg-primary py-3 text-[14px] font-extrabold text-white hover:bg-primary-hover"
             : "mb-3 inline-flex w-full items-center justify-center rounded-full border border-line bg-canvas py-3 text-[14px] font-extrabold text-ink hover:border-primary hover:text-primary"
         }
-      >
-        {cta.label}
-      </Link>
+        signedOutHref={cta.href}
+        signedOut={cta.label}
+        // Pro は 3 枚のうち Monthly だけ highlighted なので、Free 以外は
+        // ログイン済みならサブスク管理へ送る
+        signedInHref={name === "Free" ? "/account" : "/account/subscription"}
+        signedIn={name === "Free" ? "マイページへ" : "プランを見る"}
+      />
       {note ? (
         <p className="text-[11px] leading-relaxed text-ink-soft">{note}</p>
       ) : null}
@@ -137,7 +144,11 @@ function PlanCard({
 }
 
 function FeatureMatrix() {
-  const rows: { feature: string; free: string | boolean; pro: string | boolean }[] = [
+  const rows: {
+    feature: string;
+    free: string | boolean;
+    pro: string | boolean;
+  }[] = [
     { feature: "自動コメント送信 (手動承認モード)", free: true, pro: true },
     { feature: "完全自動モード (切替式)", free: true, pro: true },
     { feature: "テンプレート管理 (最大 20 件)", free: true, pro: true },
@@ -145,7 +156,11 @@ function FeatureMatrix() {
     { feature: "ギフト・入退室・フォロー・シェア検知", free: true, pro: true },
     { feature: "通知設定 (デスクトップ通知)", free: true, pro: true },
     { feature: "ランダム遅延 (人間らしさ)", free: true, pro: true },
-    { feature: "ギフト集計 (BOX / 通常 / イベント自動分類)", free: false, pro: true },
+    {
+      feature: "ギフト集計 (BOX / 通常 / イベント自動分類)",
+      free: false,
+      pro: true,
+    },
     { feature: "ユーザー別ランキング (BC 降順)", free: false, pro: true },
     { feature: "日付別記録 / セッション管理", free: false, pro: true },
     { feature: "CSV / JSON エクスポート", free: false, pro: true },
@@ -277,7 +292,10 @@ function PaymentInfo() {
           ))}
         </div>
         <p className="mt-8 text-center text-[12px] text-ink-soft">
-          詳細は <Link href="/refund" className="underline hover:text-primary">返金ポリシー</Link>{" "}
+          詳細は{" "}
+          <Link href="/refund" className="underline hover:text-primary">
+            返金ポリシー
+          </Link>{" "}
           /{" "}
           <Link href="/legal" className="underline hover:text-primary">
             特定商取引法に基づく表記
@@ -364,14 +382,14 @@ function BottomCta() {
           まずは Free から、必要に応じて Pro へ。
         </h2>
         <p className="mx-auto mb-8 max-w-md text-[14px] leading-relaxed text-ink-soft">
-          会員登録は 1 分で完了。Pro プランには 14 日間の無料トライアルが付きます。
+          会員登録は 1 分で完了。Pro プランには 14
+          日間の無料トライアルが付きます。
         </p>
-        <Link
-          href="/signup"
+        <AuthAwareCta
           className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] hover:-translate-y-px hover:bg-primary-hover"
-        >
-          会員登録して始める
-        </Link>
+          signedOut="会員登録して始める"
+          signedIn="マイページへ"
+        />
       </div>
     </section>
   );

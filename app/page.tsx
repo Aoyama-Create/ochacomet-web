@@ -3,6 +3,7 @@
 // ポジショニング: ガーディアン中心 + ライバーも歓迎 / 「自動」ではなく「通知 → 承認 → 送信の補助」 / JTBD 型 課題→解決訴求
 // 配色: 緑単色基調 (拡張 popup.css の #48875b 系)
 import Link from "next/link";
+import { AuthAwareCta } from "@/components/AuthAwareCta";
 import { OchaCometPopup } from "@/components/lp/OchaCometPopup";
 import { NotificationToast } from "@/components/lp/NotificationToast";
 
@@ -47,18 +48,24 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-24">
         <div className="min-w-0 text-center md:text-left">
           <span className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-surface px-3.5 py-1 text-[11px] font-bold tracking-wide text-primary shadow-[0_1px_2px_rgba(72,135,91,0.08)] sm:text-[12px]">
-            <span aria-hidden className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary" />
+            <span
+              aria-hidden
+              className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary"
+            />
             17LIVE ガーディアン・ライバー向け Chrome 拡張
           </span>
           <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] lg:text-[48px]">
             <span className="text-[1.08em] font-semibold">17LIVE</span>
-            <span className="text-[0.88em]">の</span>お茶だし<span className="text-[0.88em]">と</span>
+            <span className="text-[0.88em]">の</span>お茶だし
+            <span className="text-[0.88em]">と</span>
             <br />
-            ギフト反応<span className="text-[0.88em]">を</span>補助<span className="text-[0.88em]">する</span>
+            ギフト反応<span className="text-[0.88em]">を</span>補助
+            <span className="text-[0.88em]">する</span>
             <br />
             <span className="relative inline-block text-primary">
               <span className="relative z-10">
-                <span className="text-[1.08em] font-semibold">chrome</span>拡張ツール
+                <span className="text-[1.08em] font-semibold">chrome</span>
+                拡張ツール
               </span>
               <span
                 aria-hidden
@@ -70,8 +77,11 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             — 毎晩の「あと一言」を、もう少し楽に。
           </p> */}
           <p className="mx-auto mb-3 max-w-[520px] text-[17px] leading-relaxed text-ink-soft md:mx-0">
-            入室通知、ギフトへのお礼、配信中の記録...<br />
-            手作業で抱えがちな定型対応を、テンプレ+ワンタップで処理する<br />Chrome 拡張型 サポートツールです。
+            入室通知、ギフトへのお礼、配信中の記録...
+            <br />
+            手作業で抱えがちな定型対応を、テンプレ+ワンタップで処理する
+            <br />
+            Chrome 拡張型 サポートツールです。
           </p>
           {/* <p className="mb-8 max-w-[520px] text-[14px] leading-relaxed text-ink-soft">
             動作は「<strong className="font-extrabold text-ink">通知 → 承認 → 送信</strong>」の手動承認フロー。<br />
@@ -79,13 +89,16 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
           </p> */}
 
           <div className="mb-8 flex flex-wrap justify-center gap-3 md:justify-start">
-            <Link
-              href="/signup"
+            <AuthAwareCta
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
-            >
-              <MailIcon />
-              無料で始める
-            </Link>
+              signedOut={
+                <>
+                  <MailIcon />
+                  無料で始める
+                </>
+              }
+              signedIn="マイページへ"
+            />
             {/* 料金セクション非表示 (heroOnly) のときはアンカー切れになるため隠す */}
             {!heroOnly && (
               <a
@@ -174,12 +187,15 @@ function WhyThisExists() {
                 {it.icon}
               </div>
               <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
-              <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+              <p className="text-[14px] leading-relaxed text-ink-soft">
+                {it.body}
+              </p>
             </article>
           ))}
         </div>
         <p className="mt-10 text-center text-[13px] text-ink-soft">
-          いずれも、自動化ではなく「気付かせる + 候補を出す」補助で十分に軽くできる作業です。
+          いずれも、自動化ではなく「気付かせる +
+          候補を出す」補助で十分に軽くできる作業です。
         </p>
       </div>
     </section>
@@ -241,7 +257,9 @@ function HowItHelps() {
                 {it.icon}
               </div>
               <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
-              <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+              <p className="text-[14px] leading-relaxed text-ink-soft">
+                {it.body}
+              </p>
               <p className="mt-3 text-[12px] font-bold text-primary">
                 ▶ {it.addresses}
               </p>
@@ -359,7 +377,9 @@ function WhoFor() {
                 {it.icon}
               </div>
               <h3 className="mb-2 text-[19px] font-black">{it.title}</h3>
-              <p className="text-[14px] leading-relaxed text-ink-soft">{it.body}</p>
+              <p className="text-[14px] leading-relaxed text-ink-soft">
+                {it.body}
+              </p>
             </article>
           ))}
         </div>
@@ -443,9 +463,19 @@ function Pricing() {
           に対応。
         </p>
         <p className="mt-2 text-center text-[12px] text-ink-soft">
-          価格・支払条件の詳細は <Link href="/pricing" className="underline hover:text-primary">料金ページ</Link>{" "}
-          / <Link href="/refund" className="underline hover:text-primary">返金ポリシー</Link>{" "}
-          / <Link href="/legal" className="underline hover:text-primary">特定商取引法に基づく表記</Link> をご確認ください。
+          価格・支払条件の詳細は{" "}
+          <Link href="/pricing" className="underline hover:text-primary">
+            料金ページ
+          </Link>{" "}
+          /{" "}
+          <Link href="/refund" className="underline hover:text-primary">
+            返金ポリシー
+          </Link>{" "}
+          /{" "}
+          <Link href="/legal" className="underline hover:text-primary">
+            特定商取引法に基づく表記
+          </Link>{" "}
+          をご確認ください。
         </p>
       </div>
     </section>
@@ -500,16 +530,18 @@ function PricingCard({
           </li>
         ))}
       </ul>
-      <Link
-        href={cta.href}
+      <AuthAwareCta
         className={
           highlighted
             ? "inline-flex w-full items-center justify-center rounded-full bg-primary py-2.5 text-[14px] font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
             : "inline-flex w-full items-center justify-center rounded-full border border-line bg-canvas py-2.5 text-[14px] font-extrabold text-ink hover:border-primary hover:text-primary"
         }
-      >
-        {cta.label}
-      </Link>
+        signedOutHref={cta.href}
+        signedOut={cta.label}
+        // 有料プランはログイン済みならサブスク管理へ送るのが自然
+        signedInHref={highlighted ? "/account/subscription" : "/account"}
+        signedIn={highlighted ? "プランを見る" : "マイページへ"}
+      />
     </article>
   );
 }
@@ -564,7 +596,9 @@ function HowToUse() {
                 {s.n}
               </div>
               <h4 className="mb-2 text-[16px] font-extrabold">{s.title}</h4>
-              <p className="text-[13px] leading-relaxed text-ink-soft">{s.body}</p>
+              <p className="text-[13px] leading-relaxed text-ink-soft">
+                {s.body}
+              </p>
             </li>
           ))}
         </ol>
@@ -668,16 +702,19 @@ function FinalCta() {
           次の配信から、応対と記録を軽くする。
         </h2>
         <p className="relative mx-auto mb-8 max-w-md text-[16px] text-white/75">
-          1 分で会員登録 → 拡張機能をダウンロードしてすぐに使えます。
-          Free プランは永続無料、Pro は 14 日間無料でお試しいただけます。
+          1 分で会員登録 → 拡張機能をダウンロードしてすぐに使えます。 Free
+          プランは永続無料、Pro は 14 日間無料でお試しいただけます。
         </p>
-        <Link
-          href="/signup"
+        <AuthAwareCta
           className="relative inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-[15px] font-extrabold text-primary-deep shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-px"
-        >
-          <MailIcon />
-          無料で始める
-        </Link>
+          signedOut={
+            <>
+              <MailIcon />
+              無料で始める
+            </>
+          }
+          signedIn="マイページへ"
+        />
       </div>
     </section>
   );

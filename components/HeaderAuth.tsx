@@ -4,7 +4,7 @@
 // 切り離して Suspense に包むことで、**ページの静的シェルは CDN から即座に返し、
 // この部分だけ後からストリーミングする**（Cache Components / PPR）。
 import Link from "next/link";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/session";
 
 const NAV = "flex items-center gap-1 text-sm";
 const LINK =
@@ -13,7 +13,7 @@ const CTA =
   "rounded-full bg-primary px-4 py-1.5 font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] transition-colors hover:bg-primary-hover";
 
 export async function HeaderAuth() {
-  const session = await auth();
+  const session = await getSession();
   const user = session?.user;
 
   return (

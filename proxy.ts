@@ -17,6 +17,28 @@ const { auth } = NextAuth(authConfig);
 
 const PROTECTED_PREFIXES = ["/account", "/admin"];
 
+// ログイン済みなら見せる意味が無いページ。
+// **/verify-email* は入れない。** メール未認証のログイン中ユーザーが認証リンクを
+// 踏む経路であり、ここを塞ぐと認証を完了できなくなる。
+const AUTH_ONLY_PAGES = ["/login", "/signup"];
+
+/**
+ * ログイン済みユーザーを /login /signup から追い出すときの行き先。
+ *
+ * callbackUrl があればそれを尊重する（/account/download を開こうとして /login に
+ * 飛ばされた人を /account に流すと、行きたかった場所を捨ててしまうため）。
+ *
+ * ただし **callbackUrl をそのまま使うとオープンリダイレクトになる**。
+ * `?callbackUrl=https://evil.example` を踏ませると外部サイトへ飛ばせてしまうので、
+ * 自サイト内の相対パス（`/` 始まり、かつ `//` で始まらない）だけを許可する。
+ */
+function safeCallbackUrl(raw: string | null): string {
+  if (!raw) return "/account";
+  if (!raw.startsWith("/")) return "/account"; // 絶対 URL・スキーム付きを弾く
+  if (raw.startsWith("//")) return "/account"; // プロトコル相対 (//evil.example) を弾く
+  return raw;
+}
+
 function isAdminArea(path: string): boolean {
   return (
     path === "/admin" ||
@@ -57,6 +79,12 @@ export default auth(async (req) => {
       status: 401,
       headers: { "WWW-Authenticate": 'Basic realm="OchaComet Admin"' },
     });
+  }
+
+  // ログイン済みなら登録フローは見せない (紛らわしいため)
+  if (AUTH_ONLY_PAGES.includes(path) && req.auth?.user?.id) {
+    const to = safeCallbackUrl(req.nextUrl.searchParams.get("callbackUrl"));
+    return NextResponse.redirect(new URL(to, req.url));
   }
 
   const requiresAuth = PROTECTED_PREFIXES.some(
@@ -107,5 +135,13 @@ export default auth(async (req) => {
 // なお matcher は「どのパスでこの関数を動かすか」であって認可判定そのものではない。
 // 判定側の PROTECTED_PREFIXES / isAdminArea は**そのまま残す**（二重に持つ）。
 export const config = {
-  matcher: ["/account/:path*", "/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/account/:path*",
+    "/admin/:path*",
+    "/api/admin/:path*",
+    // ログイン済みを追い出すためだけに通す。未ログイン時は next() で素通りするので
+    // キャッシュ済みシェルの配信は維持される。
+    "/login",
+    "/signup",
+  ],
 };

@@ -1,6 +1,68 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { getSession } from "@/lib/session";
 
 const YEAR = new Date().getFullYear();
+
+const FOOTER_LINK = "hover:text-primary";
+
+/**
+ * フッターのログイン導線。
+ *
+ * ログイン済みの人に「ログイン / 会員登録」を出し続けるのは紛らわしいので、
+ * マイページ 1 本に畳む。
+ *
+ * Footer は root layout に置かれているため、**ここで直接 getSession() を呼ぶと
+ * 全ページが動的になる**（公開ページの静的配信が壊れる）。必ず Suspense で包む。
+ */
+function FooterAuthLinks() {
+  return (
+    <Suspense fallback={<FooterAuthFallback />}>
+      <FooterAuthResolved />
+    </Suspense>
+  );
+}
+
+async function FooterAuthResolved() {
+  const session = await getSession();
+  if (session?.user) {
+    return (
+      <li>
+        <Link href="/account" className={FOOTER_LINK}>
+          マイページ
+        </Link>
+      </li>
+    );
+  }
+  return (
+    <>
+      <li>
+        <Link href="/login" className={FOOTER_LINK}>
+          ログイン
+        </Link>
+      </li>
+      <li>
+        <Link href="/signup" className={FOOTER_LINK}>
+          会員登録
+        </Link>
+      </li>
+    </>
+  );
+}
+
+/** 未ログイン時と同じ行数・文字数を透明で確保し、確定時に行がずれないようにする。 */
+function FooterAuthFallback() {
+  return (
+    <>
+      <li aria-hidden className="text-transparent select-none">
+        ログイン
+      </li>
+      <li aria-hidden className="text-transparent select-none">
+        会員登録
+      </li>
+    </>
+  );
+}
 
 export function Footer() {
   return (
@@ -28,16 +90,7 @@ export function Footer() {
                   料金
                 </Link>
               </li>
-              <li>
-                <Link href="/login" className="hover:text-primary">
-                  ログイン
-                </Link>
-              </li>
-              <li>
-                <Link href="/signup" className="hover:text-primary">
-                  会員登録
-                </Link>
-              </li>
+              <FooterAuthLinks />
             </ul>
           </nav>
 
