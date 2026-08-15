@@ -112,3 +112,74 @@ export async function getLatestDesktop(): Promise<DesktopRelease | null> {
   if (!version || installers.length === 0) return null;
   return { version, installers };
 }
+
+export type DesktopArchiveEntry = {
+  version: string;
+  installers: DesktopInstaller[];
+  /** 公開日（Blob へ上げた日時）。フィードには過去版の日付が残らないため Blob 側を使う。 */
+  releasedAt: string;
+};
+
+/** `OchaComet-1.23.3-arm64.dmg` → `1.23.3`。Windows は命名が違いうるので緩く拾う。 */
+function versionFromArtifact(pathname: string): string | null {
+  const name = pathname.slice(pathname.lastIndexOf("/") + 1);
+  if (!/\.(dmg|exe)$/i.test(name)) return null;
+  return name.match(/(\d+\.\d+\.\d+)/)?.[1] ?? null;
+}
+
+function compareVersionDesc(a: string, b: string): number {
+  const pa = a.split(".").map(Number);
+  const pb = b.split(".").map(Number);
+  for (let i = 0; i < 3; i++) if (pa[i] !== pb[i]) return pb[i] - pa[i];
+  return 0;
+}
+
+/**
+ * 過去に公開したデスクトップ版を Blob の中身から列挙する。
+ *
+ * **現行版の判定にはこれを使わないこと。** 現行版は必ずフィード
+ * (`getLatestDesktop`) を見る。切り戻すとフィードは古い版を指すが Blob には
+ * 新しい版が残るため、「Blob にある最新 = 公開中」にはならない。
+ * ここは一覧を作るだけで、`currentVersion` は結果から除く。
+ */
+export async function listDesktopArchive(
+  currentVersion: string,
+): Promise<DesktopArchiveEntry[]> {
+  "use cache";
+
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
+
+  const byVersion = new Map<string, DesktopArchiveEntry>();
+  try {
+    const { list } = await import("@vercel/blob");
+    let cursor: string | undefined;
+    do {
+      const res = await list({ prefix: "desktop/", cursor, limit: 1000 });
+      for (const b of res.blobs) {
+        const version = versionFromArtifact(b.pathname);
+        if (!version || version === currentVersion) continue;
+        const name = b.pathname.slice(b.pathname.lastIndexOf("/") + 1);
+        const entry = byVersion.get(version) ?? {
+          version,
+          installers: [],
+          releasedAt: b.uploadedAt.toISOString(),
+        };
+        entry.installers.push({
+          platform: /\.exe$/i.test(name) ? "Windows" : "macOS",
+          // Blob を直接指さない（getLatestDesktop と同じ理由）。
+          url: `/desktop/${name}`,
+          sizeBytes: b.size,
+        });
+        byVersion.set(version, entry);
+      }
+      cursor = res.cursor;
+    } while (cursor);
+  } catch {
+    // 一覧が取れなくてもページ自体は出す。現行版の導線は別経路なので影響しない。
+    return [];
+  }
+
+  return [...byVersion.values()].sort((a, b) =>
+    compareVersionDesc(a.version, b.version),
+  );
+}

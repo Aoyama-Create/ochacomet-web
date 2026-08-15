@@ -5,7 +5,7 @@ import { desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { releases } from "@/db/schema";
-import { getLatestDesktop } from "@/lib/desktop";
+import { getLatestDesktop, listDesktopArchive } from "@/lib/desktop";
 
 export const metadata = { title: "ダウンロード" };
 
@@ -28,6 +28,8 @@ export default async function DownloadPage() {
   const latest = all[0] ?? null;
   const past = all.slice(1);
   const desktop = await getLatestDesktop();
+  // 現行版はフィードが真実。過去版だけ Blob の中身から拾う。
+  const desktopPast = desktop ? await listDesktopArchive(desktop.version) : [];
 
   return (
     <main className="flex flex-1 flex-col bg-canvas">
@@ -103,6 +105,44 @@ export default async function DownloadPage() {
                 開発元の署名を付けていないためで、2回目以降は出ません。
               </p>
             </div>
+
+            {desktopPast.length > 0 ? (
+              <details className="mt-6 border-t border-line pt-4">
+                <summary className="cursor-pointer text-sm font-extrabold text-ink-soft hover:text-primary">
+                  過去バージョン（{desktopPast.length}）
+                </summary>
+                <p className="mt-2 text-xs text-ink-soft">
+                  最新版で問題が出たときの切り戻し用です。通常は上の v
+                  {desktop.version} をお使いください。
+                </p>
+                <ul className="mt-3 divide-y divide-line text-sm">
+                  {desktopPast.map((r) => (
+                    <li
+                      key={r.version}
+                      className="flex flex-wrap items-center justify-between gap-2 py-3"
+                    >
+                      <span className="text-ink">
+                        v{r.version}
+                        <span className="ml-2 text-xs text-ink-soft">
+                          ({new Date(r.releasedAt).toLocaleDateString()})
+                        </span>
+                      </span>
+                      <span className="flex flex-wrap items-center gap-4">
+                        {r.installers.map((ins) => (
+                          <a
+                            key={ins.url}
+                            href={ins.url}
+                            className="text-xs font-extrabold text-primary hover:text-primary-hover"
+                          >
+                            {ins.platform} →
+                          </a>
+                        ))}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : null}
           </section>
         ) : null}
 
@@ -162,8 +202,7 @@ export default async function DownloadPage() {
                   解凍したフォルダを選択
                 </Step>
                 <Step n={5}>
-                  拡張アイコンが表示されたら、Pro
-                  タブにフレンドコードまたはライセンスキーを入力
+                  拡張アイコンが表示されたら、「分析」タブにフレンドコードまたはライセンスキーを入力
                 </Step>
               </ol>
               <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
