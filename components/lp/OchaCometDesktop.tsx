@@ -11,6 +11,10 @@
 // サイドバーは実物の比率（1600 中 400 = 25%）より広く取っている。比率どおりだと
 // ヒーローの幅では文字が読めず、「何ができるか」が伝わらなくなるため。
 //
+// ★「動作モード（手動/自動）」は意図的に描いていない。自動モードに切り替えられることを
+//   LP で明示しない、という訴求上の判断。実アプリには存在する機能なので、
+//   「実物にあるから」という理由で描き戻さないこと。
+//
 // 配色は popup.css 由来（OchaCometPopup.tsx と同じ値）:
 //   --primary: #48875b / --card: #f7f5ee / --text: #1d2939 / --border: #e5e3d8
 
@@ -31,23 +35,6 @@ function Toggle({ small }: { small?: boolean }) {
           small ? "h-2 w-2" : "h-2.5 w-2.5"
         }`}
       />
-    </span>
-  );
-}
-
-/** 動作モードのラジオ */
-function Radio({ label, checked }: { label: string; checked?: boolean }) {
-  return (
-    <span className="flex items-center gap-1">
-      <i
-        aria-hidden
-        className={`block h-2 w-2 rounded-full border ${
-          checked
-            ? "border-[3px] border-[#48875b] bg-white"
-            : "border-[#e5e3d8] bg-white"
-        }`}
-      />
-      <span className="text-[6px] text-[#1d2939]">{label}</span>
     </span>
   );
 }
@@ -142,15 +129,6 @@ export function OchaCometDesktop() {
             </div>
             <div className="rounded-full bg-[#48875b] py-0.5 text-center text-[7px] font-black text-white">
               送信
-            </div>
-          </div>
-
-          {/* 動作モード */}
-          <div className={CARD}>
-            <p className={LABEL}>動作モード</p>
-            <div className="flex items-center gap-2">
-              <Radio label="手動" checked />
-              <Radio label="自動" />
             </div>
           </div>
 
