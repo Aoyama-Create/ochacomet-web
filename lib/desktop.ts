@@ -87,9 +87,11 @@ export async function getLatestDesktop(): Promise<DesktopRelease | null> {
   for (const f of feeds) {
     try {
       const res = await fetch(`${base}/desktop/${f.file}`, {
-        // no-store にすると毎回ネットワーク待ちになり、ページ表示が体感で遅くなる。
-        // 版数の鮮度は 1 分あれば十分なので短い revalidate にする。
-        next: { revalidate: 60 },
+        // 毎回読む。revalidate を挟むと stale が返り、**公開直後に「現行版が古いまま」**
+        // になる。そのとき listDesktopArchive は Blob を直接見て新しい版を拾うので、
+        // 出したばかりの版が過去バージョン一覧に落ちる（実際に 1.23.4 で起きた）。
+        // このページは認証必須で表示回数も少なく、往復 1 回ぶんより正しさが優先。
+        cache: "no-store",
       });
       if (!res.ok) continue; // その OS 向けは未ビルド
       const parsed = parseFeed(await res.text());
@@ -140,7 +142,10 @@ function compareVersionDesc(a: string, b: string): number {
  * **現行版の判定にはこれを使わないこと。** 現行版は必ずフィード
  * (`getLatestDesktop`) を見る。切り戻すとフィードは古い版を指すが Blob には
  * 新しい版が残るため、「Blob にある最新 = 公開中」にはならない。
- * ここは一覧を作るだけで、`currentVersion` は結果から除く。
+ *
+ * 同じ理由で、**現行版より新しい版も出さない**。Blob にあってフィードが指していない
+ * 版は「まだ公開していない」か「切り戻して引っ込めた」のどちらかで、
+ * どちらも過去版として配ってよいものではない。
  */
 export async function listDesktopArchive(
   currentVersion: string,
@@ -157,7 +162,10 @@ export async function listDesktopArchive(
       const res = await list({ prefix: "desktop/", cursor, limit: 1000 });
       for (const b of res.blobs) {
         const version = versionFromArtifact(b.pathname);
-        if (!version || version === currentVersion) continue;
+        if (!version) continue;
+        // 現行版と、それより新しい版は載せない（compareVersionDesc は
+        // 新しいほうが前に来る＝負を返す）。
+        if (compareVersionDesc(version, currentVersion) <= 0) continue;
         const name = b.pathname.slice(b.pathname.lastIndexOf("/") + 1);
         const entry = byVersion.get(version) ?? {
           version,
