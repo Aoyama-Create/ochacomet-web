@@ -19,13 +19,14 @@ export function Header() {
           href="/"
           className="flex items-center gap-2 text-base font-extrabold text-ink"
         >
+          {/* 透過のマーク。角丸は掛けない（丸める対象の面が無い） */}
           <Image
-            src="/ochacomet-icon.png"
+            src="/ochacomet-mark.svg"
             width={28}
             height={28}
             alt=""
             aria-hidden
-            className="h-7 w-7 rounded-md"
+            className="h-7 w-7"
             unoptimized
           />
           OchaComet

@@ -13,6 +13,11 @@ export function NotificationToast() {
     >
       {/* Header + body */}
       <div className="flex gap-3 px-3.5 py-3">
+        {/*
+          ここだけ濃紺の板つきアイコンのまま。実物のデスクトップ通知は
+          拡張のアイコン（assets/icons/128.png = 板つき）で表示されるので、
+          モックもそれに合わせる。透過にすると実物と食い違う。
+        */}
         <Image
           src="/ochacomet-icon.png"
           width={40}

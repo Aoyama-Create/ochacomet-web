@@ -33,13 +33,14 @@ export function OchaCometPopup() {
         {/* Header */}
         <header className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {/* 実物の popup も透過のマークなので、モックもそちらに合わせる */}
             <Image
-              src="/ochacomet-icon.png"
+              src="/ochacomet-mark.svg"
               width={28}
               height={28}
               alt=""
               aria-hidden
-              className="h-7 w-7 rounded-md"
+              className="h-7 w-7"
               unoptimized
             />
             <h2 className="m-0 text-[19px] font-black leading-none text-[#1d2939]">

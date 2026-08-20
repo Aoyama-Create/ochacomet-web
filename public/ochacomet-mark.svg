@@ -3,7 +3,7 @@
     ★ 自動生成。手で編集しないこと。
     原本は 17-auto-comment-sender/assets/icon.svg で、
     そちらを直してから `npm run icons` を実行する。
-    favicon。タブバーは OS の明暗に追従するので媒体クエリを持つ。
+    このサイトはライト固定なので、明るい地の上で成立する配色に固定してある。
   -->
   <style>
     svg {
@@ -26,8 +26,6 @@
   <path class="ocm-spark" transform="translate(26.7 99.3) scale(22)"
         d="M 0,-1 C 0.08,-0.34 0.34,-0.08 1,0 C 0.34,0.08 0.08,0.34 0,1 C -0.08,0.34 -0.34,0.08 -1,0 C -0.34,-0.08 -0.08,-0.34 0,-1 Z"/>
   <style>
-    @media (prefers-color-scheme: light) {
-      svg { --spark: #8a8474; --ray1: #5c8a3c; }
-    }
+    svg { --spark: #8a8474; --ray1: #5c8a3c; }
   </style>
 </svg>

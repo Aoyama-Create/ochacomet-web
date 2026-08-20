@@ -8,6 +8,11 @@ OchaComet (旧: 17 Auto Comment Sender) Chrome 拡張のクローズド DRM 配�
 - 設計書: `../17-auto-comment-sender/docs/design/`
 - 1st リリース実装プラン: `~/.claude/plans/1st-lp-zip-plan-fizzy-alpaca.md`
 
+> **ロゴ画像は自動生成物。手で編集しないこと。**
+> `app/icon.svg` `app/apple-icon.png` `public/ochacomet-icon.png`
+> `public/ochacomet-mark.svg` の 4 つは、拡張本体リポの `assets/icon.svg` を原本として
+> `cd ../17-auto-comment-sender && npm run icons` が生成する。直すのは原本のほう。
+
 ## スタック
 
 - Next.js 16.2 (App Router) + React 19 + TypeScript + Tailwind CSS 4
