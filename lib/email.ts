@@ -99,7 +99,7 @@ export async function sendWelcomeEmail(
   return sendTransactional({
     to: [to],
     subject: "[OchaComet] ご登録ありがとうございます",
-    textContent: `OchaComet にご登録いただきありがとうございます。\n\nマイページから拡張をダウンロードできます: ${APP_URL}/account/download`,
+    textContent: `OchaComet にご登録いただきありがとうございます。\n\nマイページからアプリをダウンロードできます: ${APP_URL}/account/download`,
     tags: ["welcome"],
   });
 }

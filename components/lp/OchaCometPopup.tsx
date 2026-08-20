@@ -27,7 +27,7 @@ export function OchaCometPopup() {
     <div
       className="oc-tilt mx-auto w-[380px] max-w-full overflow-hidden rounded-[14px] border border-[#e5e3d8] bg-white text-[#1d2939] shadow-[0_20px_48px_rgba(15,23,42,0.12),0_6px_16px_rgba(15,23,42,0.06)]"
       role="img"
-      aria-label="OchaComet 拡張機能の popup UI プレビュー"
+      aria-label="OchaComet のサイドバー UI プレビュー"
     >
       <div className="p-4">
         {/* Header */}

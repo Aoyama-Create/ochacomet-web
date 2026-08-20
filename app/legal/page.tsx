@@ -116,8 +116,6 @@ export default function LegalPage_() {
             <td>
               デスクトップアプリ: macOS / Windows
               <br />
-              Chrome 拡張版: Google Chrome (バージョン 114 以上) / Chromium ベースのブラウザ
-              <br />
               いずれも 17LIVE Web 版 (https://www.17.live/) のアカウントが必要です
             </td>
           </tr>

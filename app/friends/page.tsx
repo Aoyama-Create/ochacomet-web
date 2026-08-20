@@ -26,10 +26,10 @@ export default function FriendsPage() {
         <section className="mt-8">
           <h2 className="text-xl font-bold text-zinc-900">使い方</h2>
           <ol className="mt-4 space-y-6">
-            <Step n={1} title="会員登録 → 拡張 ZIP をダウンロード">
+            <Step n={1} title="会員登録 → アプリをダウンロード">
               <p>
                 先に会員登録 (無料)
-                を済ませ、マイページから拡張のダウンロードに進んでください。
+                を済ませ、マイページからアプリのダウンロードに進んでください。
               </p>
               {/*
                 ログイン済みなら会員登録／ログインの2択は意味が無いので、
@@ -51,27 +51,20 @@ export default function FriendsPage() {
               </div>
             </Step>
 
-            <Step n={2} title="拡張を Chrome に読み込む">
+            <Step n={2} title="アプリをインストールして開く">
               <ul className="ml-4 list-disc text-sm text-zinc-700 space-y-1">
-                <li>ダウンロードした ZIP を任意の場所に解凍します</li>
                 <li>
-                  Chrome で <code>chrome://extensions</code> を開く
+                  ダウンロードしたファイル (macOS は .dmg / Windows は .exe)
+                  を開いてインストールします
                 </li>
-                <li>右上の「デベロッパーモード」を ON</li>
-                <li>
-                  「パッケージ化されていない拡張機能を読み込む」→
-                  解凍したフォルダを選択
-                </li>
+                <li>OchaComet を起動します</li>
+                <li>アプリ内で 17LIVE にログインします</li>
               </ul>
-              <p className="mt-3 rounded-md bg-amber-50 p-3 text-xs text-amber-800">
-                ⚠ 解凍フォルダを移動すると拡張 ID
-                が変わってしまいます。読み込んだ後はフォルダを移動しないでください。
-              </p>
             </Step>
 
             <Step n={3} title="分析タブを開いてフレンドコードを入力">
               <p>
-                ツールバーの拡張アイコン (☕) → 「分析」タブを開き、
+                アプリ上部の「分析」タブを開き、
                 招待されたフレンドコードを入力してください。
               </p>
               <p className="mt-2 text-xs text-zinc-500">

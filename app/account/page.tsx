@@ -110,7 +110,7 @@ export default async function AccountPage() {
           <ActionCard
             href="/account/download"
             title="アプリをダウンロード"
-            body="デスクトップ版と Chrome 拡張版を取得します。"
+            body="macOS / Windows 版のアプリを取得します。"
             cta="ダウンロードへ →"
           />
           <ActionCard

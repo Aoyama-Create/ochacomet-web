@@ -1,7 +1,7 @@
 // 公開 LP — Free + Pro 並立型 (フリーミアム)。
 // セクション: Hero / Why this exists / How it helps / Our Policy / Who it's for / Pricing / How to Use / FAQ / Final CTA
 // ポジショニング: ガーディアン中心 + ライバーも歓迎 / 「自動」ではなく「通知 → 承認 → 送信の補助」 / JTBD 型 課題→解決訴求
-// 配色: 緑単色基調 (拡張 popup.css の #48875b 系)
+// 配色: 緑単色基調 (アプリ popup.css の #48875b 系)
 import Link from "next/link";
 import { AuthAwareCta } from "@/components/AuthAwareCta";
 import { OchaCometDesktop } from "@/components/lp/OchaCometDesktop";
@@ -307,7 +307,7 @@ function OurPolicy() {
           />
           <PolicyCard
             title="データはローカル保存"
-            body="設定・テンプレート・ギフト記録は Chrome のローカルストレージに保存。配信中のコメントやリスナー情報を外部サーバーへ送信しない。"
+            body="設定・テンプレート・ギフト記録はお使いの端末内に保存。配信中のコメントやリスナー情報を外部サーバーへ送信しない。"
           />
           <PolicyCard
             title="送信パターンを単調にしない"
@@ -631,7 +631,7 @@ function Faq() {
     },
     {
       q: "配信のコメントやリスナー情報は外部に送られますか？",
-      a: "送りません。設定・テンプレ・ギフト記録などはすべて Chrome のローカルストレージに保存され、当方のサーバーへ送信されることはありません。会員サイトに送るのはメールアドレスとログイン情報、サポート連絡先などプロフィール情報のみです。",
+      a: "送りません。設定・テンプレ・ギフト記録などはすべてお使いの端末内に保存され、当方のサーバーへ送信されることはありません。会員サイトに送るのはメールアドレスとログイン情報、サポート連絡先などプロフィール情報のみです。",
     },
     {
       q: "Free と Pro の違いは？",
