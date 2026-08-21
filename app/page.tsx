@@ -61,7 +61,15 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             />
             ガーディアン・ライバー向け
           </span>
-          <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] lg:text-[48px]">
+          {/*
+            md: で 2 カラムに切り替わると、テキスト列が 768px 幅で 340px まで半減する。
+            そこだけ文字を落とさないと 3 行すべてが溢れ、h1 が 6 行に割れる
+            （実測: 列 340px に対し各行の自然幅 364 / 386 / 358px）。
+            lg で列が 468px に戻るところで 48px へ上げ直す。
+            ★最終行はマーカー下線が 1 行前提（inline-block）なので、
+              折り返すと下線が文字幅とズレる。行が溢れないことが前提条件。
+          */}
+          <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] md:text-[33px] lg:text-[48px]">
             <span className="text-[1.08em] font-semibold">17LIVE</span>
             <span className="text-[0.88em]">の</span>お茶だし
             <span className="text-[0.88em]">と</span>
@@ -70,7 +78,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             <span className="text-[0.88em]">する</span>
             <br />
             <span className="relative inline-block text-primary">
-              <span className="relative z-10">サポートツール</span>
+              <span className="relative z-10">配信サポートアプリ</span>
               <span
                 aria-hidden
                 className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-primary/15"
@@ -85,14 +93,14 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             <br />
             手作業で抱えがちな定型対応を、テンプレ+ワンタップで処理する
             <br />
-            サポートツールです。
+            配信サポートアプリです。
           </p>
           {/* <p className="mb-8 max-w-[520px] text-[14px] leading-relaxed text-ink-soft">
             動作は「<strong className="font-extrabold text-ink">通知 → 承認 → 送信</strong>」の手動承認フロー。<br />
             会話の代行ではなく、候補テンプレを横に出して、送るかどうかは利用者が決めます。
           </p> */}
 
-          <div className="mb-8 flex flex-wrap justify-center gap-3 md:justify-start">
+          <div className="mb-5 flex flex-wrap justify-center gap-3 md:justify-start">
             <AuthAwareCta
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
               signedOut={
@@ -112,6 +120,23 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
                 料金プランを見る
               </a>
             )}
+          </div>
+
+          {/*
+            対応OS。ロゴは使わず文言で出す（Apple ロゴは商標で、ガイドライン上
+            許諾なくマーケティングには使えない）。
+            Windows は未ビルド・未配布なので「準備中」と明記する。
+            /account/download も「Windows 版は準備中です」と出すので表示が揃う。
+            出せるようになったら Windows 側の span を macOS 側と同じ形にするだけ。
+            左カラムは text-center md:text-left なので、揃えの切り替えを必ず添える。
+          */}
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+            <span className="inline-flex items-center rounded-full border border-primary/20 bg-surface px-3 py-1 text-[12px] font-bold text-primary">
+              macOS 対応
+            </span>
+            <span className="inline-flex items-center rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-bold text-ink-soft">
+              Windows 準備中
+            </span>
           </div>
 
           <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-ink-soft md:justify-start">
@@ -572,7 +597,7 @@ function HowToUse() {
     {
       n: 2,
       title: "アプリをダウンロード",
-      body: "マイページから macOS / Windows 版を取得。Free プランはすぐに使えます。",
+      body: "マイページから macOS 版を取得。Free プランはすぐに使えます。",
     },
     {
       n: 3,
