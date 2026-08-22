@@ -54,20 +54,27 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
 
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-16">
         <div className="min-w-0 text-center md:text-left">
-          <span className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-surface px-3.5 py-1 text-[11px] font-bold tracking-wide text-primary shadow-[0_1px_2px_rgba(72,135,91,0.08)] sm:text-[12px]">
-            <span
-              aria-hidden
-              className="oc-pulse h-1.5 w-1.5 rounded-full bg-primary"
-            />
-            ガーディアン・ライバー向け
-          </span>
+          {/*
+            対応OS。ロゴは使わず文言で出す（Apple ロゴは商標で、ガイドライン上
+            許諾なくマーケティングには使えない）。
+            Windows は未ビルド・未配布なので「準備中」と明記する。
+            /account/download も「Windows 版は準備中です」と出すので表示が揃う。
+            出せるようになったら Windows 側の span を macOS 側と同じ形にするだけ。
+            左カラムは text-center md:text-left なので、揃えの切り替えを必ず添える。
+          */}
+          <div className="mb-5 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+            <span className="inline-flex items-center rounded-full border border-primary/20 bg-surface px-3 py-1 text-[12px] font-bold text-primary">
+              macOS 対応
+            </span>
+            <span className="inline-flex items-center rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-bold text-ink-soft">
+              Windows 準備中
+            </span>
+          </div>
           {/*
             md: で 2 カラムに切り替わると、テキスト列が 768px 幅で 340px まで半減する。
             そこだけ文字を落とさないと 3 行すべてが溢れ、h1 が 6 行に割れる
             （実測: 列 340px に対し各行の自然幅 364 / 386 / 358px）。
             lg で列が 468px に戻るところで 48px へ上げ直す。
-            ★最終行はマーカー下線が 1 行前提（inline-block）なので、
-              折り返すと下線が文字幅とズレる。行が溢れないことが前提条件。
           */}
           <h1 className="mb-4 text-[30px] font-black leading-tight tracking-normal [text-shadow:0_0_1px_currentColor] sm:text-[40px] md:text-[33px] lg:text-[48px]">
             <span className="text-[1.08em] font-semibold">17LIVE</span>
@@ -77,13 +84,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             ギフト反応<span className="text-[0.88em]">を</span>補助
             <span className="text-[0.88em]">する</span>
             <br />
-            <span className="relative inline-block text-primary">
-              <span className="relative z-10">配信サポートアプリ</span>
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-1 z-0 h-3 rounded bg-primary/15"
-              />
-            </span>
+            <span className="text-primary">配信サポートアプリ</span>
           </h1>
           {/* <p className="mb-5 max-w-[520px] text-[15px] font-bold text-primary-deep">
             — 毎晩の「あと一言」を、もう少し楽に。
@@ -100,7 +101,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             会話の代行ではなく、候補テンプレを横に出して、送るかどうかは利用者が決めます。
           </p> */}
 
-          <div className="mb-5 flex flex-wrap justify-center gap-3 md:justify-start">
+          <div className="mb-8 flex flex-wrap justify-center gap-3 md:justify-start">
             <AuthAwareCta
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
               signedOut={
@@ -120,23 +121,6 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
                 料金プランを見る
               </a>
             )}
-          </div>
-
-          {/*
-            対応OS。ロゴは使わず文言で出す（Apple ロゴは商標で、ガイドライン上
-            許諾なくマーケティングには使えない）。
-            Windows は未ビルド・未配布なので「準備中」と明記する。
-            /account/download も「Windows 版は準備中です」と出すので表示が揃う。
-            出せるようになったら Windows 側の span を macOS 側と同じ形にするだけ。
-            左カラムは text-center md:text-left なので、揃えの切り替えを必ず添える。
-          */}
-          <div className="mb-5 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-            <span className="inline-flex items-center rounded-full border border-primary/20 bg-surface px-3 py-1 text-[12px] font-bold text-primary">
-              macOS 対応
-            </span>
-            <span className="inline-flex items-center rounded-full border border-line bg-surface px-3 py-1 text-[12px] font-bold text-ink-soft">
-              Windows 準備中
-            </span>
           </div>
 
           <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-ink-soft md:justify-start">
@@ -159,11 +143,21 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
             左上の角に少しだけ掛ける位置に留める。
           */}
           {/*
-            スマホ幅では非表示。トーストは本文が折り返して縦に伸びるため、
-            狭い画面ではウィンドウの下にはみ出してステータスバーまで隠してしまう。
-            その幅ではウィンドウ単体で十分伝わる。
+            スマホ幅では縮小して出す。以前は非表示にしていたが、実測では
+            ウィンドウ高 331px に対しトーストは 250px 程度で縦には収まる。
+            収まらないのは横で、素の 200px 幅だとサイドバー（ウィンドウ幅の
+            右 42%、375px 幅では 199px から）に掛かってしまう。
+            0.85 倍で 170px になり、サイドバーの手前で止まる。
+
+            ★ origin-top-left が必須。付けないと中心基準で縮み、left-0 top-10 の
+              見かけ位置がずれる。
+            ★ 0.85 より下げないこと。本文は 13px なので、これ以上縮めると
+              11px を割って読めなくなる。「出ているが読めない」では意味がない。
+            ★ globals.css の prefers-reduced-motion は .oc-pulse / .oc-float /
+              .oc-tilt に transform: none を当てている。ここにそれらのクラスを
+              足すと scale が解除されて崩れる。
           */}
-          <div className="absolute left-0 top-10 z-20 hidden w-[200px] -rotate-3 sm:block sm:w-[215px] md:-left-6 md:top-12 md:w-[225px]">
+          <div className="absolute left-0 top-10 z-20 w-[200px] origin-top-left -rotate-3 scale-[0.85] sm:w-[215px] sm:scale-100 md:-left-6 md:top-12 md:w-[225px]">
             <NotificationToast />
           </div>
           <OchaCometDesktop />

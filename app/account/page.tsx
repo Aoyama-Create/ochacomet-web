@@ -29,7 +29,13 @@ export default async function AccountPage() {
 
   return (
     <main className="flex flex-1 flex-col bg-canvas">
-      <div className="mx-auto w-full max-w-3xl px-6 py-12">
+      {/*
+        横幅を max-w-5xl まで広げ、上下を py-10 に詰めてある。
+        以前は max-w-3xl の縦積みで、フッター（約 280px）とヘッダー（57px）を
+        足すとファーストビューに収まらなかった。横が余っていたので、
+        基本情報の dl を 2 列に、Admin とサインアウトを 1 行にまとめている。
+      */}
+      <div className="mx-auto w-full max-w-5xl px-6 py-8">
         <h1 className="text-2xl font-black tracking-tight text-ink">
           マイページ
         </h1>
@@ -53,7 +59,7 @@ export default async function AccountPage() {
         ) : null}
 
         {/* 基本情報 */}
-        <section className="mt-8 rounded-2xl border border-line bg-surface p-8">
+        <section className="mt-5 rounded-2xl border border-line bg-surface p-6">
           <div className="flex items-baseline justify-between">
             <h2 className="text-lg font-extrabold text-ink">基本情報</h2>
             <Link
@@ -63,7 +69,8 @@ export default async function AccountPage() {
               プロフィールを編集 →
             </Link>
           </div>
-          <dl className="mt-5 space-y-2 text-sm">
+          {/* 2 列化で縦を約半分にする。app/account/subscription/page.tsx と同じ作法 */}
+          <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
             <Row
               label="お名前"
               value={
@@ -100,7 +107,7 @@ export default async function AccountPage() {
         </section>
 
         {/* アクション */}
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <section className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <ActionCard
             href="/account/profile"
             title="プロフィール編集"
@@ -121,29 +128,34 @@ export default async function AccountPage() {
           />
         </section>
 
-        {/* admin 専用 */}
-        {isAdmin ? (
-          <section className="mt-6 rounded-2xl border border-violet-200 bg-violet-50/40 p-6">
-            <h2 className="text-sm font-extrabold text-violet-900">Admin</h2>
-            <div className="mt-3 flex flex-wrap gap-3 text-sm">
-              <Link
-                href="/admin/users"
-                className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
-              >
-                ユーザー管理
-              </Link>
-              <Link
-                href="/admin/releases"
-                className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
-              >
-                リリース管理
-              </Link>
-            </div>
-          </section>
-        ) : null}
-
-        {/* サインアウト */}
-        <section className="mt-10 flex justify-end">
+        {/*
+          Admin とサインアウトを 1 行にまとめる。以前は別々のブロックで
+          縦に約 90px 使っていた。Admin はカードの外枠と p-6 をやめ、
+          violet はリンクの色と枠にだけ残して管理者向けの区別を保つ。
+          Admin 非表示のときはサインアウトだけが右端に残り、従来と同じ見た目になる。
+        */}
+        <section className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            {isAdmin ? (
+              <>
+                <span className="text-xs font-extrabold text-violet-900">
+                  Admin
+                </span>
+                <Link
+                  href="/admin/users"
+                  className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+                >
+                  ユーザー管理
+                </Link>
+                <Link
+                  href="/admin/releases"
+                  className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+                >
+                  リリース管理
+                </Link>
+              </>
+            ) : null}
+          </div>
           <form
             action={async () => {
               "use server";
@@ -165,9 +177,9 @@ export default async function AccountPage() {
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between border-b border-line/60 py-2.5">
+    <div className="flex items-center justify-between gap-3 border-b border-line/60 py-2">
       <dt className="text-ink-soft">{label}</dt>
-      <dd className="font-mono text-xs text-ink">{value}</dd>
+      <dd className="min-w-0 truncate font-mono text-xs text-ink">{value}</dd>
     </div>
   );
 }
@@ -186,11 +198,11 @@ function ActionCard({
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-line bg-surface p-6 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_6px_18px_rgba(72,135,91,0.12)]"
+      className="group rounded-2xl border border-line bg-surface p-5 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_6px_18px_rgba(72,135,91,0.12)]"
     >
       <h3 className="text-base font-extrabold text-ink">{title}</h3>
       <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">{body}</p>
-      <p className="mt-4 text-[13px] font-extrabold text-primary group-hover:text-primary-hover">
+      <p className="mt-3 text-[13px] font-extrabold text-primary group-hover:text-primary-hover">
         {cta}
       </p>
     </Link>

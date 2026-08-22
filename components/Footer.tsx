@@ -72,7 +72,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <p className="font-extrabold text-ink">OchaComet</p>
             <p className="mt-2 leading-relaxed">
-              17LIVE 配信を支えるガーディアン向け配信サポートアプリ。
+              17LIVEを効率化する配信サポートアプリ。
             </p>
             <p className="mt-3 text-[11px]">© {YEAR} OchaComet</p>
           </div>
@@ -123,9 +123,18 @@ export function Footer() {
           <nav aria-label="Support">
             <p className="mb-2 font-bold text-ink">Support</p>
             <ul className="space-y-1.5">
+              {/*
+                外部の Google フォームへ。
+                ★ 法務ページ（利用規約・プライバシー・特商法・返金ポリシー）の
+                  mailto は変えないこと。特商法は連絡手段の表示義務、
+                  プライバシーは開示請求の窓口、返金は申請手順の一部で、
+                  フォームに置き換えると法定表示として弱くなる。
+              */}
               <li>
                 <a
-                  href="mailto:support@ochacomet.aoyamacreate.com"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLScoBqE5Xe0j2skILcqeDnlNzXLWOyZPbKyWftEs13qfskRQiQ/viewform"
+                  target="_blank"
+                  rel="noreferrer"
                   className="hover:text-primary"
                 >
                   お問い合わせ
