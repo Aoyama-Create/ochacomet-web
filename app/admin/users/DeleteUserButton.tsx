@@ -13,6 +13,13 @@ import { deleteUserAction, type DeleteUserFormState } from "./actions";
 
 const initialState: DeleteUserFormState = { ok: true };
 
+// m-auto は必須。ブラウザの UA スタイルは dialog:modal を `inset: 0` +
+// `margin: auto` で中央に置くが、Tailwind の preflight が
+// `*,:after,:before,::backdrop { margin: 0 }` を当てて打ち消してしまう。
+// 付けないとダイアログが画面の左上に貼り付く。
+const dialogClass =
+  "m-auto w-[min(28rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-0 text-ink backdrop:bg-black/40";
+
 export function DeleteUserButton({
   userId,
   email,
@@ -51,7 +58,7 @@ export function DeleteUserButton({
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
-        className="w-[min(28rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-0 text-ink backdrop:bg-black/40"
+        className={dialogClass}
       >
         <div className="p-6">
           <h2 className="text-base font-extrabold text-ink">
