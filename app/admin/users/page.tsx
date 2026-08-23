@@ -156,7 +156,11 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                       {u.isAdmin ? (
                         <span className="text-[11px] text-ink-soft">—</span>
                       ) : (
-                        <DeleteUserButton userId={u.id} email={u.email} />
+                        <DeleteUserButton
+                          userId={u.id}
+                          email={u.email}
+                          displayName={u.displayName}
+                        />
                       )}
                     </td>
                   </tr>
