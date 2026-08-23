@@ -25,7 +25,7 @@ export default function LegalPage_() {
         <tbody>
           <tr>
             <th>販売事業者名</th>
-            <td>青山 あるは (Aluha Aoyama)</td>
+            <td>青山或葉 (屋号: Aoyama Create)</td>
           </tr>
           <tr>
             <th>所在地</th>
@@ -57,7 +57,7 @@ export default function LegalPage_() {
           </tr>
           <tr>
             <th>運営責任者</th>
-            <td>青山 あるは</td>
+            <td>青山或葉</td>
           </tr>
           <tr>
             <th>販売価格</th>

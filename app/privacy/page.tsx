@@ -22,20 +22,21 @@
 //   - 第 6 条 (委託先) ................... lib/stripe.ts / lib/brevo.ts / lib/blob.ts /
 //                                          lib/rateLimit.ts / components/Footer.tsx の問い合わせ導線
 //   - 第 10 条 (Cookie) .................. auth.config.ts の maxAge、lib/admin2faCookie.ts
+//   - 第 9 条 2 項 (保存期間の日数) ...... lib/audit.ts の RETENTION_DAYS が単一の情報源。
+//                                          消すのは app/api/cron/purge-audit-logs (日次)
+//   - 第 9 条 3 項 (退会) ................ app/account/delete + lib/account/deleteUser.ts
+//   - 第 4 条 2 項 (マーケ同意) .......... signup / profile のチェックボックス、
+//                                          lib/account/marketingOptin.ts
 //
 // 意図的に書いていないこと:
-//   - 保存期間の具体的な年数 ... 削除する仕組みが未実装。書くと守れない約束になる
 //   - クラウドの保存リージョン ... コード・設定のどこにも無く確定できない
 //   - Cookie の名前 ............ auth.config.ts に cookies 指定が無くライブラリ既定に委ねている
 //   - 安全管理措置の具体的な設定値・構成 ... 公開するとかえって risk になる
 //
 // 未解決 (company-os の 30_decisions/_questions に記録済み):
-//   - 監査ログの削除ジョブが無く download_audit / admin_actions が無期限蓄積
-//   - users の FK が ON DELETE no action のため退会時に行を物理削除できない
-//   - Neon / Vercel / Upstash のリージョンが未確認
-//   - email_optin_marketing を true にする経路が無くマーケメールが 1 通も配信されない
-//   - Vercel Function ログにメールアドレスが出力される箇所がある
-//   - 事業者名が本ポリシー / 利用規約は "Aoyama Create"、/legal は "青山 あるは" で不一致
+//   - Neon / Vercel / Upstash のリージョンが未確認 (第 7 条をこれ以上具体化できない理由)
+//   - 0004 マイグレーション (FK を SET NULL 化) の本番適用が未実施
+//   - JWT セッションのため、管理者削除では対象ユーザーの Cookie を失効させられない
 //
 // 法務的に厳密にチェックされたものではないので、公開前に弁護士レビュー推奨。
 import type { Metadata } from "next";
@@ -52,7 +53,7 @@ export default function PrivacyPage() {
   return (
     <LegalPage title="プライバシーポリシー" lastUpdated={LAST_UPDATED}>
       <p>
-        Aoyama Create (以下「当方」) は、OchaComet (以下「本サービス」) におけるユーザーの個人情報を、
+        青山或葉 (以下「当方」) は、OchaComet (以下「本サービス」) におけるユーザーの個人情報を、
         以下のとおり取り扱います。本サービスを利用する前に、本ポリシーをよくお読みください。
       </p>
 
@@ -267,6 +268,7 @@ export default function PrivacyPage() {
             <li>管理用画面へのアクセスに認証および二要素認証を要求する</li>
             <li>ログインの試行回数を制限し、一定回数を超えた場合に一時的に制限する</li>
             <li>API キー等の秘密情報をソースコードに含めず、実行環境の設定として管理する</li>
+            <li>サーバーのログに個人情報を出力しないよう制限する</li>
             <li>委託先に対する必要かつ適切な監督 (第 6 条)</li>
             <li>個人データを取り扱う外国の制度等の把握 (第 7 条)</li>
           </ul>
@@ -284,26 +286,31 @@ export default function PrivacyPage() {
           <strong>不要となったときは遅滞なく消去するよう努めます。</strong>
         </li>
         <li>
-          情報の種類ごとの取扱いは次のとおりです。
+          情報の種類ごとの保存期間は次のとおりです。保存期間を経過したものは、
+          <strong>日次の自動処理により削除されます。</strong>
           <ul>
+            <li>
+              <strong>ダウンロード履歴</strong> (IP アドレス・User-Agent を含む):
+              ダウンロードの日から <strong>180 日</strong>
+            </li>
+            <li><strong>管理操作の記録</strong>: 記録の日から <strong>1 年</strong></li>
+            <li><strong>メール配信状況</strong>: 記録の日から <strong>1 年</strong></li>
             <li>
               <strong>アカウント情報・取引情報・決済情報</strong>: 利用契約の終了後、
               法令 (会計、税務等) により保存が必要な期間
             </li>
-            <li>
-              <strong>ダウンロード履歴・管理操作の記録</strong>: 不正な利用の防止および監査のために必要な期間
-            </li>
-            <li><strong>メール配信状況</strong>: 配信状況の確認および不達への対応のために必要な期間</li>
             <li>
               <strong>メールアドレス確認用のトークン</strong>: 確認の完了時または再発行時に削除
             </li>
           </ul>
         </li>
         <li>
-          <strong>退会</strong>を希望する場合は、お問い合わせ窓口までご連絡ください。
-          退会の手続完了後、法令により保存が必要なものおよび不正な利用の防止のために必要なものを除き、
-          アカウント情報を<strong>削除または利用できない状態にします</strong>。
-          有料プランの契約中に退会する場合の取扱いは、利用規約第 16 条に定めるとおりです。
+          <strong>退会</strong>は、会員サイトのマイページからいつでもお手続きいただけます。
+          退会すると、アカウント情報・取引情報・決済情報を削除します。
+          ダウンロード履歴および管理操作の記録は、不正な利用の防止と監査のため、
+          <strong>アカウントとの紐付けを外したうえで</strong>前項の保存期間まで残ります。
+          有料プランの契約中は、先に解約手続を完了していただく必要があります
+          (利用規約第 16 条)。
         </li>
       </ol>
 
@@ -372,7 +379,7 @@ export default function PrivacyPage() {
 
       <h2>お問い合わせ</h2>
       <p>
-        個人情報を取り扱う事業者: <strong>Aoyama Create</strong>
+        個人情報を取り扱う事業者: <strong>青山或葉</strong> (屋号: Aoyama Create)
       </p>
       <p>
         本ポリシーに関するお問い合わせ、および第 11 条の開示等の請求は{" "}
