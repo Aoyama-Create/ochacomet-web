@@ -87,6 +87,10 @@ export function Field({
 export const inputClass =
   "block w-full rounded-xl border border-line bg-canvas px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
 
+// 任意同意のチェックボックス。既定オフで使うこと (オプトイン)。
+export const checkboxClass =
+  "mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[#48875b] focus:outline-none focus:ring-2 focus:ring-primary/20";
+
 export const primaryButtonClass =
   "inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50";
 

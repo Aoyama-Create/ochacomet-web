@@ -13,6 +13,7 @@ type Body = {
   password?: unknown;
   passwordConfirm?: unknown;
   displayName?: unknown;
+  optinMarketing?: unknown;
 };
 
 export async function POST(req: Request) {
@@ -32,12 +33,15 @@ export async function POST(req: Request) {
     typeof body.passwordConfirm === "string" ? body.passwordConfirm : undefined;
   const displayName =
     typeof body.displayName === "string" ? body.displayName : "";
+  const optinMarketing =
+    typeof body.optinMarketing === "boolean" ? body.optinMarketing : false;
 
   const result = await signup({
     email,
     password,
     passwordConfirm,
     displayName,
+    optinMarketing,
   });
   if (!result.ok) {
     return NextResponse.json(result, { status: 400 });

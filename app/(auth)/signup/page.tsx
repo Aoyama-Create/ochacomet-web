@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import {
   AuthCard,
+  checkboxClass,
   Field,
   inputClass,
   primaryButtonClass,
@@ -47,7 +48,7 @@ export default function SignupPage() {
               required
               maxLength={80}
               autoComplete="name"
-              placeholder="例: 青山 あるは"
+              placeholder="例: 山田 太郎"
               className={inputClass}
             />
           </Field>
@@ -87,6 +88,25 @@ export default function SignupPage() {
             />
           </Field>
         </div>
+
+        {/*
+          マーケティングメールの同意。既定オフ (defaultChecked を付けない)。
+          サービスメール (認証・決済・重要なお知らせ) はこの設定に関わらず届く。
+          プライバシーポリシー 第 4 条と対応している。
+        */}
+        <label className="flex cursor-pointer items-start gap-2.5 text-xs leading-relaxed text-ink-soft">
+          <input
+            type="checkbox"
+            name="optinMarketing"
+            className={checkboxClass}
+          />
+          <span>
+            新機能・キャンペーンのお知らせをメールで受け取る (任意)
+            <span className="mt-0.5 block text-[11px] text-ink-soft/80">
+              いつでも配信を停止できます。認証・決済など大切なお知らせは、この設定に関わらずお送りします。
+            </span>
+          </span>
+        </label>
 
         {state && !state.ok && state.error ? (
           <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">

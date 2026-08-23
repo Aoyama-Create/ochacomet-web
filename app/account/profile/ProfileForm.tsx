@@ -11,6 +11,7 @@ type InitialProfile = {
   addressLine1: string;
   addressLine2: string;
   email: string;
+  emailOptinMarketing: boolean;
 };
 
 const inputClass =
@@ -24,6 +25,9 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
   const [addressCity, setAddressCity] = useState(initial.addressCity);
   const [addressLine1, setAddressLine1] = useState(initial.addressLine1);
   const [addressLine2, setAddressLine2] = useState(initial.addressLine2);
+  const [emailOptinMarketing, setEmailOptinMarketing] = useState(
+    initial.emailOptinMarketing,
+  );
   const [pending, start] = useTransition();
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +48,7 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
             addressCity,
             addressLine1,
             addressLine2,
+            emailOptinMarketing,
           }),
         });
         const body = (await res.json()) as { ok: boolean; message?: string };
@@ -233,6 +238,29 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
             />
           </div>
         </div>
+      </section>
+
+      {/*
+        マーケティングメールの同意。プライバシーポリシー 第 4 条と対応。
+        既定オフで、OFF → ON にしたときは送信予定が未来のキャンペーンだけ再開する
+        (lib/account/marketingOptin.ts)。
+      */}
+      <section>
+        <h2 className="text-sm font-extrabold text-ink">メールのお知らせ</h2>
+        <label className="mt-3 flex cursor-pointer items-start gap-2.5 text-sm text-ink">
+          <input
+            type="checkbox"
+            checked={emailOptinMarketing}
+            onChange={(e) => setEmailOptinMarketing(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[#48875b] focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <span>
+            新機能・キャンペーンのお知らせを受け取る
+            <span className="mt-0.5 block text-xs text-ink-soft">
+              認証・決済・重要なお知らせは、この設定に関わらずお送りします。
+            </span>
+          </span>
+        </label>
       </section>
 
       {error ? (

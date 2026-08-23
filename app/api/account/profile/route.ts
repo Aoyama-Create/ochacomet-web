@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
+import { setMarketingOptin } from "@/lib/account/marketingOptin";
 
 const MAX_NAME = 80;
 const MAX_PHONE = 32;
@@ -26,12 +27,18 @@ type Body = {
   addressCity?: unknown;
   addressLine1?: unknown;
   addressLine2?: unknown;
+  emailOptinMarketing?: unknown;
 };
 
 function pickString(v: unknown, max: number): string | null {
   if (typeof v !== "string") return null;
   const trimmed = v.trim();
   return trimmed.slice(0, max);
+}
+
+/** boolean 以外は「指定なし」として扱う (既存値を保つ)。 */
+function pickBool(v: unknown): boolean | null {
+  return typeof v === "boolean" ? v : null;
 }
 
 export async function POST(req: Request) {
@@ -77,6 +84,7 @@ export async function POST(req: Request) {
   const addressCity = pickString(body.addressCity, MAX_CITY) ?? "";
   const addressLine1 = pickString(body.addressLine1, MAX_LINE) ?? "";
   const addressLine2 = pickString(body.addressLine2, MAX_LINE) ?? "";
+  const optinMarketing = pickBool(body.emailOptinMarketing);
 
   // 空文字は null として保存する (DB 上は未設定として扱う)
   const orNull = (s: string): string | null => (s.length > 0 ? s : null);
@@ -94,6 +102,12 @@ export async function POST(req: Request) {
       updatedAt: new Date(),
     })
     .where(eq(users.id, Number(session.user.id)));
+
+  // 同意フラグは専用のヘルパ経由。false -> true のときに、止まっていた
+  // キャンペーンのうち送信予定が未来のものだけを再開する。
+  if (optinMarketing !== null) {
+    await setMarketingOptin(Number(session.user.id), optinMarketing);
+  }
 
   return NextResponse.json({ ok: true });
 }

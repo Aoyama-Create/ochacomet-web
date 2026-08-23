@@ -36,11 +36,14 @@ export async function signup(input: {
   password: string;
   passwordConfirm?: string;
   displayName: string;
+  /** 新機能・キャンペーンのお知らせを受け取ることへの同意。既定 false (オプトイン)。 */
+  optinMarketing?: boolean;
 }): Promise<SignupResult> {
   const email = input.email.toLowerCase().trim();
   const password = input.password;
   const confirm = input.passwordConfirm;
   const displayName = (input.displayName ?? "").trim().slice(0, MAX_NAME_LENGTH);
+  const optinMarketing = input.optinMarketing === true;
 
   if (!displayName) {
     return {
@@ -78,26 +81,36 @@ export async function signup(input: {
     .limit(1);
 
   let resultStatus: "created" | "already_verified" | "resent";
+  // ログに email を出さないために id を持ち回る (末尾の console.error 参照)。
+  let userId: number;
   if (existing.length > 0) {
     if (existing[0].emailVerifiedAt) {
       // 既に認証済 → 何も書かず "already_verified" を返す。
       // UI 側でも「メールを送信しました」を出す (列挙対策)。
       return { ok: true, status: "already_verified" };
     }
-    // 未認証のスタブが残っているケース: displayName を最新値で上書き
+    // 未認証のスタブが残っているケース: displayName を最新値で上書き。
+    // emailOptinMarketing は触らない。既に本人が意思表示している値を、
+    // 再 signup フォームの状態で上書きしてしまわないため。
     await db
       .update(users)
       .set({ displayName, updatedAt: new Date() })
       .where(eq(users.id, existing[0].id));
+    userId = existing[0].id;
     resultStatus = "resent";
   } else {
     const passwordHash = await hashPassword(password);
-    await db.insert(users).values({
-      email,
-      passwordHash,
-      displayName,
-      tier: "free",
-    });
+    const [created] = await db
+      .insert(users)
+      .values({
+        email,
+        passwordHash,
+        displayName,
+        tier: "free",
+        emailOptinMarketing: optinMarketing,
+      })
+      .returning({ id: users.id });
+    userId = created.id;
     resultStatus = "created";
   }
 
@@ -111,9 +124,10 @@ export async function signup(input: {
   await db.insert(verificationTokens).values({ identifier: email, token, expires });
 
   // メール送信失敗はログのみ。signup 自体は成功扱い。
+  // ログに email は出さない (userId で追跡できる)。
   const sent = await sendVerificationEmail({ email }, token);
   if (!sent.ok) {
-    console.error("[signup] verification email failed", { email, error: sent.error });
+    console.error("[signup] verification email failed", { userId, error: sent.error });
   }
 
   return { ok: true, status: resultStatus };

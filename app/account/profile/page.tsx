@@ -25,6 +25,7 @@ export default async function ProfilePage() {
       addressCity: users.addressCity,
       addressLine1: users.addressLine1,
       addressLine2: users.addressLine2,
+      emailOptinMarketing: users.emailOptinMarketing,
     })
     .from(users)
     .where(eq(users.id, Number(session.user.id)))
@@ -60,6 +61,7 @@ export default async function ProfilePage() {
               addressLine1: u.addressLine1 ?? "",
               addressLine2: u.addressLine2 ?? "",
               email: u.email,
+              emailOptinMarketing: u.emailOptinMarketing,
             }}
           />
         </div>

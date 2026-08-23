@@ -16,12 +16,15 @@ export async function signupAction(
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const passwordConfirm = String(formData.get("passwordConfirm") ?? "");
+  // 未チェックのとき formData にキー自体が現れないので、"on" との一致で判定する。
+  const optinMarketing = formData.get("optinMarketing") === "on";
 
   const result = await signup({
     email,
     password,
     passwordConfirm,
     displayName,
+    optinMarketing,
   });
   if (!result.ok) {
     return { ok: false, error: result.message };
