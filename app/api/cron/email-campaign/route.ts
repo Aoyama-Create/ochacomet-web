@@ -123,7 +123,12 @@ async function processCampaign(): Promise<Response> {
     // referenceId は friend_codes.id (string)。code/expiresAt を取りに行く
     const friendCodeId = parseInt(row.referenceId ?? "", 10);
     if (!Number.isInteger(friendCodeId)) {
-      console.error("[cron] invalid referenceId", row);
+      // row には email が入っている。ログに個人情報を出さないよう ID だけを出す。
+      console.error("[cron] invalid referenceId", {
+        subId: row.subId,
+        userId: row.userId,
+        referenceId: row.referenceId,
+      });
       skipped += 1;
       continue;
     }

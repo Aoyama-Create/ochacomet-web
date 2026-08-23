@@ -91,7 +91,13 @@ async function handleCheckoutCompleted(
 
   const userId = await resolveUserId({ userIdMeta, email, customerId });
   if (!userId) {
-    console.warn("[stripe webhook] no user for checkout", { event, email });
+    // email はログに出さない。customerId / client_reference_id で追跡できる
+    // (同ファイルの subscription 側と同じ形)。
+    console.warn("[stripe webhook] no user for checkout", {
+      event,
+      customerId,
+      clientReferenceId: userIdMeta ?? null,
+    });
     return;
   }
 
@@ -283,10 +289,8 @@ async function resolveUserId(args: {
         statusClaimed: false,
       })
       .returning({ id: users.id });
-    console.log("[stripe webhook] created unclaimed stub", {
-      email,
-      userId: row.id,
-    });
+    // email はログに出さない (userId で引ける)。
+    console.log("[stripe webhook] created unclaimed stub", { userId: row.id });
     return row.id;
   } catch {
     // UNIQUE 競合 → 引き直し

@@ -182,6 +182,7 @@ ochacomet-web/
 | `BREVO_API_KEY`, `BREVO_WEBHOOK_SECRET`   | Brevo (メール送信 + Webhook 署名検証)               |
 | `BREVO_SENDER_EMAIL`, `BREVO_SENDER_NAME` | 送信元                                              |
 | `BREVO_TPL_*`                             | Brevo Template ID (作成後の数値)                    |
+| `BREVO_DEV_LOG_PARAMS`                    | dev 限定。`1` で送信内容 (宛先・OTP・コード) を console に出す。**本番では設定しない** |
 | `CRON_SECRET`                             | Vercel Cron が `/api/cron/*` を叩く Bearer トークン |
 
 ## デプロイ (Vercel)

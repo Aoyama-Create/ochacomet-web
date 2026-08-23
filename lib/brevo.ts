@@ -2,6 +2,15 @@
 // (upsertContact / verifyWebhookSignature は Phase 5 で追加予定。)
 //
 // 本番では実際の Brevo API を叩く。dev では BREVO_API_KEY が無いとき console fallback。
+//
+// ★ fail-open を塞いである (2026-08-23)。以前はこうなっていた:
+//    - BREVO_API_KEY / BREVO_SENDER_EMAIL が無いと NODE_ENV を見ずに fallback へ落ち、
+//      args を丸ごと console.log していた。args には宛先メールに加えて params が入る
+//      = 認証 URL・パスワード再設定 URL・管理者 OTP・フレンドコードが平文でログに出る。
+//    - しかも { ok: true } を返すので、呼び元は「送れた」と誤解する。本番で env が
+//      欠けると、認証メールが届かないことに誰も気づけない (signup は成功扱い、
+//      管理者 2FA は 200 を返して永久に来ない OTP を待つ)。
+//   → 本番では fallback せず ok:false を返す。dev の出力からも宛先と params を落とす。
 
 const BREVO_BASE_URL = "https://api.brevo.com/v3";
 
@@ -31,10 +40,28 @@ export async function sendTransactional(
   const senderName = process.env.BREVO_SENDER_NAME ?? "OchaComet";
 
   if (!apiKey || !senderEmail) {
+    // 本番は fail-closed。設定漏れを「送れたこと」にしない。
+    if (process.env.NODE_ENV === "production") {
+      console.error("[brevo] not configured (BREVO_API_KEY / BREVO_SENDER_EMAIL)");
+      return { ok: false, error: "brevo_not_configured" };
+    }
+
     // dev fallback: メール送信せずに console に出力。
+    // 既定では宛先 (to) と params を出さない。params には認証 URL・OTP・
+    // フレンドコードが入るため。ローカルでそれらを見たいときだけ
+    // BREVO_DEV_LOG_PARAMS=1 で明示的にオプトインする。
+    const detail = process.env.BREVO_DEV_LOG_PARAMS === "1"
+      ? { ...args }
+      : {
+          to: `${args.to.length} recipient(s)`,
+          templateId: args.templateId,
+          subject: args.subject,
+          tags: args.tags,
+          _redacted: "to / params は既定で伏せています (BREVO_DEV_LOG_PARAMS=1 で表示)",
+        };
     console.log(
       "[brevo:dev-fallback]",
-      JSON.stringify({ ...args, _note: "BREVO_API_KEY 未設定のため送信をスキップしました" }, null, 2),
+      JSON.stringify({ ...detail, _note: "BREVO_API_KEY 未設定のため送信をスキップしました" }, null, 2),
     );
     return { ok: true, messageId: `dev-${Date.now()}` };
   }
@@ -67,7 +94,9 @@ export async function sendTransactional(
   }
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
+    // Brevo のエラー body は宛先アドレスをエコーすることがある。この文字列は
+    // ログにも email_send_log.error_message にも入るので、長さを切って持ち回る。
+    const text = (await res.text().catch(() => "")).slice(0, 200);
     return { ok: false, error: `http ${res.status}: ${text}` };
   }
 
