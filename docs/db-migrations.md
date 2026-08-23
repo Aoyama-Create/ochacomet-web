@@ -56,6 +56,45 @@ PROD='postgresql://…/neondb?sslmode=require' node _apply.mjs && rm -f _apply.m
 
 > 実績: 2026-07 に 0002(Stripe) / 0003(lockout・OTP) のカラムをこの方式で本番へ手当てした。
 
+### 0004 (退会のための FK 変更) — **本番未適用**
+
+`db/migrations/0004_productive_lyja.sql` はローカルにのみ適用済み。**本番にはまだ流していない。**
+
+退会機能 (`lib/account/deleteUser.ts`) はこの FK 変更を前提にしているので、
+**適用するまで本番では退会もユーザー削除も失敗する** (FK 制約違反)。
+
+冪等版 (Neon SQL エディタか `_apply.mjs` にそのまま貼れる):
+
+```sql
+ALTER TABLE "download_audit" ALTER COLUMN "user_id" DROP NOT NULL;
+
+ALTER TABLE "download_audit" DROP CONSTRAINT IF EXISTS "download_audit_user_id_users_id_fk";
+ALTER TABLE "download_audit" ADD CONSTRAINT "download_audit_user_id_users_id_fk"
+  FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE NO ACTION;
+
+ALTER TABLE "admin_actions" DROP CONSTRAINT IF EXISTS "admin_actions_target_user_id_users_id_fk";
+ALTER TABLE "admin_actions" ADD CONSTRAINT "admin_actions_target_user_id_users_id_fk"
+  FOREIGN KEY ("target_user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE NO ACTION;
+```
+
+適用後の確認:
+
+```sql
+SELECT is_nullable FROM information_schema.columns
+ WHERE table_name = 'download_audit' AND column_name = 'user_id';   -- YES になる
+
+SELECT tc.constraint_name, rc.delete_rule
+  FROM information_schema.table_constraints tc
+  JOIN information_schema.referential_constraints rc
+    ON tc.constraint_name = rc.constraint_name
+ WHERE tc.constraint_name IN ('download_audit_user_id_users_id_fk',
+                              'admin_actions_target_user_id_users_id_fk');  -- SET NULL になる
+```
+
+`admin_actions.admin_id` / `friend_codes.issued_by_admin_id` / `releases.uploaded_by` は
+**わざと `no action` のまま**にしてある。監査ログの「誰がやったか」を消さないため、
+管理者アカウントは削除できない設計 (`lib/account/deleteUser.ts` が明示的に弾く)。
+
 ### 恒久対応: 履歴のベースライン化（落ち着いたらやる）
 以後 `drizzle-kit migrate` を本番でも普通に使えるようにするには、実スキーマと `drizzle.__drizzle_migrations` を整合させる必要がある。メンテナンス枠で慎重に：
 

@@ -5,6 +5,7 @@ import { desc, ilike, or } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { DeleteUserButton } from "./DeleteUserButton";
 
 export const metadata = { title: "ユーザー管理" };
 
@@ -90,6 +91,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                 <th className="px-4 py-3">期限</th>
                 <th className="px-4 py-3">認証</th>
                 <th className="px-4 py-3">登録日</th>
+                <th className="px-4 py-3">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -97,7 +99,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                 <tr>
                   <td
                     className="px-4 py-8 text-center text-ink-soft"
-                    colSpan={8}
+                    colSpan={9}
                   >
                     該当ユーザーがいません。
                   </td>
@@ -147,6 +149,15 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                     </td>
                     <td className="px-4 py-3 align-top text-xs text-ink-soft">
                       {new Date(u.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 align-top">
+                      {/* 管理者は削除できない (lib/account/deleteUser.ts が弾く)。
+                          UI にもボタンを出さない。 */}
+                      {u.isAdmin ? (
+                        <span className="text-[11px] text-ink-soft">—</span>
+                      ) : (
+                        <DeleteUserButton userId={u.id} email={u.email} />
+                      )}
                     </td>
                   </tr>
                 ))

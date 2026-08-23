@@ -208,10 +208,16 @@ export const adminActions = pgTable(
   "admin_actions",
   {
     id: serial("id").primaryKey(),
+    // admin_id は SET NULL にしない。「誰がやったか」が消えると監査にならないので、
+    // 管理者アカウントは削除できない (lib/account/deleteUser.ts が明示的に弾く)。
     adminId: integer("admin_id")
       .notNull()
       .references(() => users.id),
-    targetUserId: integer("target_user_id").references(() => users.id),
+    // 操作された側は退会しうる。行は残し、紐付けだけ切る。
+    // 対象の識別情報が必要な操作 (delete_user 等) は payload にスナップショットを残す。
+    targetUserId: integer("target_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
     action: text("action").notNull(),
     note: text("note"),
     payload: jsonb("payload"),
@@ -245,9 +251,12 @@ export const downloadAudit = pgTable(
   "download_audit",
   {
     id: serial("id").primaryKey(),
-    userId: integer("user_id")
-      .notNull()
-      .references(() => users.id),
+    // 退会でユーザー行を消せるように nullable + SET NULL にしてある。
+    // ダウンロードの事実 (件数・バージョン分布) は監査のために残しつつ、
+    // 誰がダウンロードしたかの紐付けだけを切る。
+    userId: integer("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
     version: text("version").notNull(),
     ip: text("ip"),
     userAgent: text("user_agent"),

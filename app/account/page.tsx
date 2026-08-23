@@ -156,19 +156,28 @@ export default async function AccountPage() {
               </>
             ) : null}
           </div>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/" });
-            }}
-          >
-            <button
-              type="submit"
-              className="rounded-full border border-line bg-surface px-5 py-2 text-sm font-extrabold text-ink-soft hover:border-primary hover:text-primary"
+          <div className="flex items-center gap-4">
+            {/* 退会は誤操作させたくないので、サインアウトより弱い見た目のリンクにする。 */}
+            <Link
+              href="/account/delete"
+              className="text-xs font-extrabold text-ink-soft underline underline-offset-4 hover:text-red-700"
             >
-              サインアウト
-            </button>
-          </form>
+              退会
+            </Link>
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+            >
+              <button
+                type="submit"
+                className="rounded-full border border-line bg-surface px-5 py-2 text-sm font-extrabold text-ink-soft hover:border-primary hover:text-primary"
+              >
+                サインアウト
+              </button>
+            </form>
+          </div>
         </section>
       </div>
     </main>
