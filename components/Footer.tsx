@@ -132,7 +132,7 @@ export function Footer() {
               */}
               <li>
                 <a
-                  href="https://docs.google.com/forms/d/e/1FAIpQLScoBqE5Xe0j2skILcqeDnlNzXLWOyZPbKyWftEs13qfskRQiQ/viewform"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSfg_jWhQYO7FBApFwWw_TbkorxDE5wD9r8iXOkSGncJPN6Lig/viewform"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-primary"
