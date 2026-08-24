@@ -43,16 +43,38 @@ export const metadata: Metadata = {
   },
 };
 
+// テーマ復元スクリプト。<html> に .dark を付けるだけの最小限。
+//
+// なぜ Provider ではなくインラインスクリプトなのか:
+// next.config.ts の cacheComponents (PPR) 下では「Suspense の外での動的アクセス」が
+// ビルドエラーになるため、cookies() でテーマを読む SSR 方式は採れない。
+// root layout は静的シェルのまま保ちたい (components/Header.tsx のコメント参照)。
+// localStorage を直接読んで first paint 前に class を当てるのが、この構成での唯一の
+// ちらつきゼロの方法。
+//
+// beforeInteractive 相当のタイミングで走らせたいので next/script ではなく素の <script>。
+const THEME_INIT = `(function(){try{
+var s=localStorage.getItem("ochacomet-theme");
+var d=s==="dark"||(s!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+document.documentElement.classList.toggle("dark",d);
+}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
+    // suppressHydrationWarning は上のスクリプトが <html> の class を
+    // サーバー出力より先に書き換えるため。ここだけの例外。
     <html
       lang="ja"
       className={`${zenMaru.variable} ${nunito.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-canvas text-ink font-[var(--font-zen-maru)]">
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>

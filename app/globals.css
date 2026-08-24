@@ -1,33 +1,160 @@
 @import "tailwindcss";
 
-@theme inline {
-  /* Brand — 緑単色基調（拡張 popup.css 準拠 #48875b） */
-  --color-primary: #48875b;
-  --color-primary-hover: #3a6e48;
-  --color-primary-soft: #eff3e8;
-  --color-primary-deep: #2c5638;
+/* ============================================================
+   カラートークン（2 層構造）
 
-  /* Neutral */
-  --color-canvas: #faf9f4;
-  --color-surface: #ffffff;
-  --color-ink: #1d2939;
-  --color-ink-soft: #5c6b57;
-  --color-line: #e5e3d8;
+   1 層目 = 生の CSS 変数（--canvas 等）。:root と .dark で値を差し替える。
+   2 層目 = Tailwind のテーマ変数（--color-canvas 等）。1 層目を参照するだけ。
 
-  /* Fonts — M PLUS Rounded 1c (柔らかい丸ゴシック) + Hiragino フォールバック */
-  --font-sans: var(--font-m-plus-rounded), "Nunito", "Hiragino Maru Gothic ProN",
-    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --font-en: var(--font-nunito), var(--font-m-plus-rounded), sans-serif;
-}
+   なぜ 2 層なのか:
+   `@theme inline` は「ユーティリティに値をリテラルで埋め込む」モード。
+   以前はここに #faf9f4 のような色を直接書いていたため、bg-canvas は
+   `background-color:#faf9f4` にコンパイルされ、**実行時に変数を差し替えても
+   色が一切変わらなかった**（生成 CSS に --color-canvas が 1 つも出力されない）。
+   ダークモードを効かせるには、値を必ず var() 越しにする必要がある。
+
+   おまけに .prose-legal は最初から var(--ink) / var(--line) / var(--primary) を
+   参照していたが、その名前の変数はどこにも存在せず未解決のままだった
+   （法務ページの見出し罫線が出ない・リンクが緑にならないバグ）。
+   1 層目にその名前で実体を置いたので、これも同時に直る。
+   ============================================================ */
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #1d2939;
+  color-scheme: light;
+
+  /* Brand — 緑単色基調（拡張 popup.css 準拠 #48875b） */
+  --primary: #48875b;
+  --primary-hover: #3a6e48;
+  --primary-soft: #eff3e8;
+  --primary-deep: #2c5638;
+
+  /* Neutral */
+  --canvas: #faf9f4;
+  --surface: #ffffff;
+  --ink: #1d2939;
+  --ink-soft: #5c6b57;
+  --line: #e5e3d8;
+
+  /* Semantic — 危険 / 注意 / 成功 / 管理者。
+     以前は red-50, amber-50, violet-100, emerald-100 … を各所に直書きしていた。
+     ダークで確実に破綻するので、意味で名前を付けてここに集約する。
+     -soft = 淡い背景、-ink = その上に乗る文字、素の名前 = 塗りつぶしボタン用。 */
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-soft: #fef2f2;
+  --danger-ink: #b91c1c;
+  --danger-line: #fecaca;
+
+  --warning-soft: #fffbeb;
+  --warning-ink: #92400e;
+  --warning-line: #fde68a;
+
+  --success-soft: #d1fae5;
+  --success-ink: #065f46;
+
+  --accent-soft: #f5f3ff;
+  --accent-ink: #6d28d9;
+  --accent-line: #ddd6fe;
+
+  /* 中立バッジ（tier / status の既定色） */
+  --neutral-soft: #f4f4f5;
+  --neutral-ink: #3f3f46;
+
+  /* ブランドマークの光線。ライトでは暗め、ダークでは明るめに振る。
+     components/BrandMark.tsx が参照する。 */
+  --mark-spark: #8a8474;
+  --mark-ray1: #5c8a3c;
+  --mark-ray2: #278958;
+  --mark-ray3: #657b55;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Brand — 暗い地の上でも沈まないよう明度を上げる。
+     primary-soft は「淡い緑の面」だったので、ダークでは逆に暗い緑の面にする。 */
+  --primary: #6cb583;
+  --primary-hover: #8ccc9f;
+  --primary-soft: #1e3327;
+  --primary-deep: #a5dcb6;
+
+  /* Neutral — canvas < surface の明度関係はライトと逆になる
+     （暗い地の上では、手前にあるカードの方が明るい）。 */
+  --canvas: #14161a;
+  --surface: #1c1f26;
+  --ink: #e8eaed;
+  --ink-soft: #a3aab3;
+  --line: #2e333d;
+
+  --danger: #e5484d;
+  --danger-hover: #f2686c;
+  --danger-soft: #3a1d1f;
+  --danger-ink: #ff9ea1;
+  --danger-line: #5d2a2d;
+
+  --warning-soft: #3a2f16;
+  --warning-ink: #f5d488;
+  --warning-line: #5c4a1f;
+
+  --success-soft: #14372a;
+  --success-ink: #86e0b4;
+
+  --accent-soft: #2a2140;
+  --accent-ink: #c4b5fd;
+  --accent-line: #443365;
+
+  --neutral-soft: #2a2e37;
+  --neutral-ink: #c3c8d0;
+
+  --mark-spark: #d8d2c0;
+  --mark-ray1: #9ed47a;
+  --mark-ray2: #55c98c;
+  --mark-ray3: #a8bf9a;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-deep: var(--primary-deep);
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-ink: var(--danger-ink);
+  --color-danger-line: var(--danger-line);
+
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-ink: var(--warning-ink);
+  --color-warning-line: var(--warning-line);
+
+  --color-success-soft: var(--success-soft);
+  --color-success-ink: var(--success-ink);
+
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-line: var(--accent-line);
+
+  --color-neutral-soft: var(--neutral-soft);
+  --color-neutral-ink: var(--neutral-ink);
+
+  /* Fonts — M PLUS Rounded 1c (柔らかい丸ゴシック) + Hiragino フォールバック */
+  --font-sans: var(--font-zen-maru), "Nunito", "Hiragino Maru Gothic ProN",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-en: var(--font-nunito), var(--font-zen-maru), sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--canvas);
+  color: var(--ink);
 }
 
 /* Hero pulse dot */
