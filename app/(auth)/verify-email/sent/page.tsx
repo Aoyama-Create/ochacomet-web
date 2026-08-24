@@ -20,7 +20,7 @@ export default function VerificationSentPage() {
           href="/login"
           className="font-extrabold text-primary hover:text-primary-hover"
         >
-          ログインに進む →
+          ログインに進む
         </Link>
         <Link
           href="/signup"

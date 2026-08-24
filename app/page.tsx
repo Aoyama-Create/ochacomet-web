@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AuthAwareCta } from "@/components/AuthAwareCta";
 import { OchaCometDesktop } from "@/components/lp/OchaCometDesktop";
 import { NotificationToast } from "@/components/lp/NotificationToast";
+import { Check, Mail } from "lucide-react";
 
 export default function Home() {
   // リリース優先で一旦ヒーローのみ公開する暫定フラグ。
@@ -106,7 +107,7 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-[15px] font-extrabold text-white shadow-[0_6px_18px_rgba(72,135,91,0.32)] transition-transform hover:-translate-y-px hover:bg-primary-hover"
               signedOut={
                 <>
-                  <MailIcon />
+                  <Mail className="h-[18px] w-[18px]" strokeWidth={2.2} />
                   無料で始める
                 </>
               }
@@ -125,13 +126,13 @@ function Hero({ heroOnly }: { heroOnly?: boolean }) {
 
           <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] text-ink-soft md:justify-start">
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> 基本機能はずっと無料
+              <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} /> 基本機能はずっと無料
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> Pro は 14 日間無料トライアル
+              <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} /> Pro は 14 日間無料トライアル
             </li>
             <li className="inline-flex items-center gap-1.5">
-              <CheckIcon /> いつでも解約OK
+              <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} /> いつでも解約OK
             </li>
           </ul>
         </div>
@@ -556,7 +557,7 @@ function PricingCard({
         {features.map((f) => (
           <li key={f} className="flex items-start gap-2">
             <span aria-hidden className="mt-0.5">
-              <CheckIcon />
+              <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} />
             </span>
             <span className="leading-relaxed">{f}</span>
           </li>
@@ -741,7 +742,7 @@ function FinalCta() {
           className="relative inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-[15px] font-extrabold text-primary-deep shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-px"
           signedOut={
             <>
-              <MailIcon />
+              <Mail className="h-[18px] w-[18px]" strokeWidth={2.2} />
               無料で始める
             </>
           }
@@ -777,40 +778,4 @@ function SectionHead({
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-primary"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
 
-function MailIcon() {
-  return (
-    <svg
-      aria-hidden
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <polyline points="3 7 12 13 21 7" />
-    </svg>
-  );
-}

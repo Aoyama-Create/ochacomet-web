@@ -11,6 +11,9 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { DeleteAccountForm } from "./DeleteAccountForm";
+import { BackLink } from "@/components/ui/BackLink";
+import { CreditCard } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 export const metadata = { title: "退会" };
 
@@ -32,12 +35,7 @@ export default async function DeleteAccountPage() {
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-2xl px-6 py-12">
-        <Link
-          href="/account"
-          className="text-xs font-extrabold text-ink-soft hover:text-primary"
-        >
-          ← マイページ
-        </Link>
+        <BackLink href="/account">マイページ</BackLink>
         <h1 className="mt-3 text-2xl font-black tracking-tight text-ink">
           退会
         </h1>
@@ -61,29 +59,30 @@ export default async function DeleteAccountPage() {
               必要に応じてご自身で削除してください。
             </li>
           </ul>
-          <p className="mt-4 text-sm font-extrabold text-red-700">
+          <p className="mt-4 text-sm font-extrabold text-danger-ink">
             退会後にアカウントを元に戻すことはできません。
           </p>
         </section>
 
         {subscriptionActive ? (
-          <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-6">
-            <h2 className="text-sm font-extrabold text-amber-900">
+          <section className="mt-5 rounded-2xl border border-warning-line bg-warning-soft p-6">
+            <h2 className="text-sm font-extrabold text-warning-ink">
               先に有料プランの解約が必要です
             </h2>
-            <p className="mt-2 text-sm text-amber-900">
+            <p className="mt-2 text-sm text-warning-ink">
               有料プランを契約中のまま退会すると、解約されないまま請求が続いてしまいます。
               先にサブスクリプションを解約し、契約期間の満了後にこのページへお戻りください。
             </p>
             <Link
               href="/account/subscription"
-              className="mt-4 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-white hover:bg-primary-hover"
+              className={buttonClass({ className: "mt-4" })}
             >
-              サブスクリプションの管理へ →
+              <CreditCard className="h-4 w-4" strokeWidth={2.2} />
+              サブスクリプションの管理へ
             </Link>
           </section>
         ) : row?.isAdmin ? (
-          <section className="mt-5 rounded-2xl border border-violet-200 bg-violet-50 p-6 text-sm text-violet-900">
+          <section className="mt-5 rounded-2xl border border-accent-line bg-accent-soft p-6 text-sm text-accent-ink">
             管理者アカウントはこの画面からは退会できません。
             先に管理者権限を外す必要があります。
           </section>

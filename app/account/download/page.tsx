@@ -1,8 +1,9 @@
 // /account/download — 会員向けダウンロードページ
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getLatestDesktop, listDesktopArchive } from "@/lib/desktop";
+import { BackLink } from "@/components/ui/BackLink";
+import { Download } from "lucide-react";
 
 export const metadata = { title: "ダウンロード" };
 
@@ -18,12 +19,7 @@ export default async function DownloadPage() {
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-3xl px-6 py-12">
-        <Link
-          href="/account"
-          className="text-xs text-ink-soft hover:text-primary"
-        >
-          ← マイページに戻る
-        </Link>
+        <BackLink href="/account">マイページに戻る</BackLink>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
           OchaComet のダウンロード
         </h1>
@@ -54,7 +50,7 @@ export default async function DownloadPage() {
                   href={ins.url}
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
                 >
-                  <DownloadIcon />
+                  <Download className="h-4 w-4" strokeWidth={2.2} />
                   {ins.platform} 版
                   <span className="font-bold opacity-75">
                     {(ins.sizeBytes / 1024 / 1024).toFixed(0)} MB
@@ -120,22 +116,3 @@ export default async function DownloadPage() {
   );
 }
 
-function DownloadIcon() {
-  return (
-    <svg
-      aria-hidden
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
-  );
-}

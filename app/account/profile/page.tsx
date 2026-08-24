@@ -1,13 +1,13 @@
 // /account/profile — プロフィール編集ページ。
 // 名前 / 電話 / 住所をマイページから後追加・編集できる。
 // メールアドレスは認証 + 決済 + Brevo に紐付くため表示のみで編集不可。
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { ProfileForm } from "./ProfileForm";
+import { BackLink } from "@/components/ui/BackLink";
 
 export const metadata = { title: "プロフィール" };
 
@@ -36,12 +36,7 @@ export default async function ProfilePage() {
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-2xl px-6 py-12">
-        <Link
-          href="/account"
-          className="text-xs text-ink-soft hover:text-primary"
-        >
-          ← マイページに戻る
-        </Link>
+        <BackLink href="/account">マイページに戻る</BackLink>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
           プロフィール
         </h1>

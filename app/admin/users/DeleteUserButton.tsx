@@ -10,6 +10,8 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { deleteUserAction, type DeleteUserFormState } from "./actions";
+import { Trash2 } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 const initialState: DeleteUserFormState = { ok: true };
 
@@ -50,8 +52,9 @@ export function DeleteUserButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full border border-line px-3 py-1 text-[11px] font-extrabold text-ink-soft whitespace-nowrap hover:border-red-300 hover:text-red-700"
+        className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-line px-3 py-1 text-[11px] font-extrabold text-ink-soft transition-colors hover:border-danger-line hover:text-danger"
       >
+        <Trash2 className="h-3 w-3" strokeWidth={2.4} />
         削除
       </button>
 
@@ -85,13 +88,13 @@ export function DeleteUserButton({
           <p className="mt-4 text-sm text-ink-soft">
             アカウント情報・取引情報・決済情報を削除します。ダウンロード履歴と管理操作の記録は、
             アカウントとの紐付けを外したうえで保存期間まで残ります。
-            <strong className="mt-1 block font-extrabold text-red-700">
+            <strong className="mt-1 block font-extrabold text-danger-ink">
               この操作は取り消せません。
             </strong>
           </p>
 
           {state && !state.ok && state.message ? (
-            <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+            <p className="mt-4 rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
               {state.message}
             </p>
           ) : null}
@@ -109,8 +112,9 @@ export function DeleteUserButton({
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-full bg-red-600 px-5 py-2 text-sm font-extrabold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className={buttonClass({ variant: "danger" })}
               >
+                <Trash2 className="h-4 w-4" strokeWidth={2.2} />
                 {isPending ? "削除中..." : "削除する"}
               </button>
             </form>

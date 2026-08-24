@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { DeleteUserButton } from "./DeleteUserButton";
+import { Package, Search } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 export const metadata = { title: "ユーザー管理" };
 
@@ -57,9 +59,10 @@ export default async function AdminUsersPage({ searchParams }: Props) {
           </h1>
           <Link
             href="/admin/releases"
-            className="text-xs font-extrabold text-ink-soft hover:text-primary"
+            className="inline-flex items-center gap-1 text-xs font-extrabold text-ink-soft transition-colors hover:text-primary"
           >
-            リリース管理 →
+            <Package className="h-3.5 w-3.5" strokeWidth={2.4} />
+            リリース管理
           </Link>
         </div>
 
@@ -71,10 +74,8 @@ export default async function AdminUsersPage({ searchParams }: Props) {
             placeholder="メールアドレス・名前で検索"
             className="flex-1 rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
-          <button
-            type="submit"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-white hover:bg-primary-hover"
-          >
+          <button type="submit" className={buttonClass()}>
+            <Search className="h-4 w-4" strokeWidth={2.2} />
             検索
           </button>
         </form>
@@ -116,7 +117,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                         {u.displayName?.trim() ? u.displayName : u.email}
                       </Link>
                       {u.isAdmin ? (
-                        <span className="ml-2 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold text-violet-700">
+                        <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-extrabold text-accent-ink">
                           admin
                         </span>
                       ) : null}
@@ -144,7 +145,7 @@ export default async function AdminUsersPage({ searchParams }: Props) {
                       {u.emailVerifiedAt ? (
                         <span className="font-extrabold text-primary">済</span>
                       ) : (
-                        <span className="font-extrabold text-amber-700">未</span>
+                        <span className="font-extrabold text-warning-ink">未</span>
                       )}
                     </td>
                     <td className="px-4 py-3 align-top text-xs text-ink-soft">
@@ -176,15 +177,15 @@ export default async function AdminUsersPage({ searchParams }: Props) {
 
 function TierBadge({ tier }: { tier: string }) {
   const classes: Record<string, string> = {
-    free: "bg-zinc-100 text-zinc-700",
+    free: "bg-neutral-soft text-ink-soft",
     pro: "bg-primary-soft text-primary-deep",
-    friend: "bg-amber-100 text-amber-800",
-    banned: "bg-red-100 text-red-700",
+    friend: "bg-warning-soft text-warning-ink",
+    banned: "bg-danger-soft text-danger-ink",
   };
   return (
     <span
       className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold ${
-        classes[tier] ?? "bg-zinc-100 text-zinc-700"
+        classes[tier] ?? "bg-neutral-soft text-ink-soft"
       }`}
     >
       {tier}

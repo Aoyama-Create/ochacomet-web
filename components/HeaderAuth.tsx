@@ -26,7 +26,7 @@ export async function HeaderAuth() {
           {user.isAdmin ? (
             <Link
               href="/admin/users"
-              className="rounded-md px-3 py-1.5 text-violet-700 hover:bg-violet-50"
+              className="rounded-md px-3 py-1.5 text-accent-ink hover:bg-accent-soft"
             >
               Admin
             </Link>

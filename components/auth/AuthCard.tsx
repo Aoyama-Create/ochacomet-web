@@ -1,6 +1,7 @@
 // signup / login / verify-email 共通のカードレイアウト。
 // LP と同じ緑単色基調 (canvas / surface / ink / primary) で揃える。
 import type { ReactNode } from "react";
+import { buttonClass } from "@/components/ui/button";
 
 type Props = {
   title: string;
@@ -89,10 +90,12 @@ export const inputClass =
 
 // 任意同意のチェックボックス。既定オフで使うこと (オプトイン)。
 export const checkboxClass =
-  "mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[#48875b] focus:outline-none focus:ring-2 focus:ring-primary/20";
+  "mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-primary/20";
 
-export const primaryButtonClass =
-  "inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50";
+// 実体は components/ui/button.ts。ここは既存の import 名を保つための再輸出。
+export const primaryButtonClass = buttonClass({ width: "full" });
 
-export const secondaryButtonClass =
-  "inline-flex w-full items-center justify-center rounded-full border border-line bg-canvas px-4 py-2.5 text-sm font-extrabold text-ink transition-colors hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-50";
+export const secondaryButtonClass = buttonClass({
+  variant: "secondary",
+  width: "full",
+});

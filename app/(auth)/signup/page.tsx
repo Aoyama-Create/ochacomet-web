@@ -10,6 +10,7 @@ import {
   primaryButtonClass,
 } from "@/components/auth/AuthCard";
 import { signupAction, type SignupFormState } from "./actions";
+import { UserPlus } from "lucide-react";
 
 const initialState: SignupFormState = { ok: true };
 
@@ -109,7 +110,7 @@ export default function SignupPage() {
         </label>
 
         {state && !state.ok && state.error ? (
-          <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
             {state.error}
           </p>
         ) : null}
@@ -119,6 +120,7 @@ export default function SignupPage() {
           disabled={isPending}
           className={primaryButtonClass}
         >
+          <UserPlus className="h-4 w-4" strokeWidth={2.2} />
           {isPending ? "登録中..." : "登録する"}
         </button>
 

@@ -10,6 +10,7 @@ import {
   primaryButtonClass,
 } from "@/components/auth/AuthCard";
 import { loginAction, type LoginFormState } from "./actions";
+import { LogIn } from "lucide-react";
 
 const initialState: LoginFormState = { ok: true };
 
@@ -55,7 +56,7 @@ function LoginForm() {
         </Field>
 
         {state && !state.ok && state.error ? (
-          <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
             {state.error}
           </p>
         ) : null}
@@ -65,6 +66,7 @@ function LoginForm() {
           disabled={isPending}
           className={primaryButtonClass}
         >
+          <LogIn className="h-4 w-4" strokeWidth={2.2} />
           {isPending ? "ログイン中..." : "ログイン"}
         </button>
       </form>

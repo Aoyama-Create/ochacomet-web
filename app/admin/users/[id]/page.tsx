@@ -1,11 +1,11 @@
 // /admin/users/[id] — 個別ユーザー詳細 + フレンドコード発行
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { friendCodes, users } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { IssueFriendCodeForm } from "./IssueFriendCodeForm";
+import { BackLink } from "@/components/ui/BackLink";
 
 export const metadata = { title: "ユーザー詳細" };
 
@@ -51,12 +51,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-3xl px-6 py-12">
-        <Link
-          href="/admin/users"
-          className="text-xs text-ink-soft hover:text-primary"
-        >
-          ← 一覧に戻る
-        </Link>
+        <BackLink href="/admin/users">一覧に戻る</BackLink>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
           {user.displayName?.trim() ? user.displayName : user.email}
         </h1>
@@ -98,7 +93,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
                 user.emailVerifiedAt ? (
                   <span className="text-primary">完了</span>
                 ) : (
-                  <span className="text-amber-700">未完了</span>
+                  <span className="text-warning-ink">未完了</span>
                 )
               }
             />
@@ -138,7 +133,7 @@ export default async function AdminUserDetailPage({ params }: Props) {
             {friendActive ? (
               <>
                 <br />
-                <span className="font-extrabold text-amber-700">
+                <span className="font-extrabold text-warning-ink">
                   現在 friend tier (有効期限内) のユーザーです。
                 </span>
               </>
@@ -205,13 +200,13 @@ function Row({
 function StatusBadge({ status }: { status: string }) {
   const classes: Record<string, string> = {
     active: "bg-primary-soft text-primary-deep",
-    expired: "bg-zinc-100 text-zinc-700",
-    revoked: "bg-red-100 text-red-700",
+    expired: "bg-neutral-soft text-ink-soft",
+    revoked: "bg-danger-soft text-danger-ink",
   };
   return (
     <span
       className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold ${
-        classes[status] ?? "bg-zinc-100 text-zinc-700"
+        classes[status] ?? "bg-neutral-soft text-ink-soft"
       }`}
     >
       {status}

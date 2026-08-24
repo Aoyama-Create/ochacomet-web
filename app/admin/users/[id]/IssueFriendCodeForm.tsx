@@ -1,6 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
+import { Ticket } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 import {
   issueFriendCodeAction,
   type IssueFriendCodeFormState,
@@ -53,8 +55,9 @@ export function IssueFriendCodeForm({ targetUserId }: { targetUserId: number }) 
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className={buttonClass()}
       >
+        <Ticket className="h-4 w-4" strokeWidth={2.2} />
         {isPending ? "発行中..." : "フレンドコードを発行"}
       </button>
 
@@ -72,7 +75,7 @@ export function IssueFriendCodeForm({ targetUserId }: { targetUserId: number }) 
       ) : null}
 
       {state && !state.ok && state.message ? (
-        <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
           {state.message}
         </p>
       ) : null}

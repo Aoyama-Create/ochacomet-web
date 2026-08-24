@@ -29,7 +29,7 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
           href="/login?verified=1"
           className="inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
         >
-          ログインに進む →
+          ログインに進む
         </Link>
       </AuthCard>
     );
@@ -46,7 +46,7 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
     <AuthCard
       title="メール認証に失敗しました"
       description={
-        <span className="text-red-700">{message}</span>
+        <span className="text-danger-ink">{message}</span>
       }
     >
       <Link

@@ -5,6 +5,9 @@ import { desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { releases } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { BackLink } from "@/components/ui/BackLink";
+import { Plus } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 export const metadata = { title: "リリース管理" };
 
@@ -30,21 +33,17 @@ export default async function AdminReleasesPage() {
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <Link
-              href="/admin/users"
-              className="text-xs text-ink-soft hover:text-primary"
-            >
-              ← ユーザー管理に戻る
-            </Link>
+            <BackLink href="/admin/users">ユーザー管理に戻る</BackLink>
             <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
               リリース管理
             </h1>
           </div>
           <Link
             href="/admin/releases/new"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover"
+            className={buttonClass()}
           >
-            + 新規アップロード
+            <Plus className="h-4 w-4" strokeWidth={2.4} />
+            新規アップロード
           </Link>
         </div>
 

@@ -3,6 +3,8 @@
 // 管理者 2FA のコード入力フォーム。マウント時にコードを送信 (request)、
 // 入力を verify に投げ、成功したら callbackUrl に遷移する。
 import { useEffect, useRef, useState, useTransition } from "react";
+import { ShieldCheck } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 export function Admin2faForm({ callbackUrl }: { callbackUrl: string }) {
   const [code, setCode] = useState("");
@@ -68,8 +70,9 @@ export function Admin2faForm({ callbackUrl }: { callbackUrl: string }) {
         type="button"
         onClick={verify}
         disabled={pending || code.length !== 6}
-        className="mt-4 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-white hover:bg-primary-hover disabled:opacity-50"
+        className={buttonClass({ width: "full", className: "mt-4" })}
       >
+        <ShieldCheck className="h-4 w-4" strokeWidth={2.2} />
         {pending ? "確認中..." : "認証する"}
       </button>
 
@@ -83,7 +86,7 @@ export function Admin2faForm({ callbackUrl }: { callbackUrl: string }) {
       </button>
 
       {msg ? <p className="mt-3 text-xs text-primary-deep">{msg}</p> : null}
-      {err ? <p className="mt-3 text-xs text-red-600">{err}</p> : null}
+      {err ? <p className="mt-3 text-xs text-danger-ink">{err}</p> : null}
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { Save } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 type InitialProfile = {
   displayName: string;
@@ -95,7 +97,7 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
               className="block text-[13px] font-extrabold text-ink"
             >
               お名前
-              <span className="ml-1.5 text-[10px] font-extrabold text-amber-700">
+              <span className="ml-1.5 text-[10px] font-extrabold text-warning-ink">
                 必須
               </span>
             </label>
@@ -252,7 +254,7 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
             type="checkbox"
             checked={emailOptinMarketing}
             onChange={(e) => setEmailOptinMarketing(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[#48875b] focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-line accent-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <span>
             新機能・キャンペーンのお知らせを受け取る
@@ -264,7 +266,7 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
       </section>
 
       {error ? (
-        <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
           {error}
         </p>
       ) : null}
@@ -279,8 +281,9 @@ export function ProfileForm({ initial }: { initial: InitialProfile }) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-primary px-7 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          className={buttonClass()}
         >
+          <Save className="h-4 w-4" strokeWidth={2.2} />
           {pending ? "保存中..." : "保存する"}
         </button>
       </div>

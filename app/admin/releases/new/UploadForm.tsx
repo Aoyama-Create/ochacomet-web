@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Upload } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 type Result =
   | { ok: true; version: string; sha256: string; sizeBytes: number }
@@ -124,8 +126,9 @@ export function UploadForm() {
       <button
         type="submit"
         disabled={submitting || !file || !version || !shaPreview}
-        className="rounded-full bg-primary px-6 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className={buttonClass()}
       >
+        <Upload className="h-4 w-4" strokeWidth={2.2} />
         {submitting ? "アップロード中..." : "アップロード"}
       </button>
 
@@ -135,7 +138,7 @@ export function UploadForm() {
             <strong className="font-extrabold">v{result.version}</strong> をアップロードしました ({(result.sizeBytes / 1024 / 1024).toFixed(2)} MB)
           </div>
         ) : (
-          <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">
+          <div className="rounded-xl bg-danger-soft p-3 text-sm text-danger-ink">
             {result.message} <span className="text-xs">({result.reason})</span>
           </div>
         )

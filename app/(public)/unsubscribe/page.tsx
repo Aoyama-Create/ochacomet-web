@@ -33,7 +33,7 @@ function UnsubscribeForm() {
 
   if (!token) {
     return (
-      <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+      <p className="rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
         トークンが見つかりません。メール内のリンクを開き直してください。
       </p>
     );
@@ -50,7 +50,7 @@ function UnsubscribeForm() {
   return (
     <>
       {error ? (
-        <p className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="mb-3 rounded-xl bg-danger-soft px-3 py-2 text-sm text-danger-ink">
           エラー: {error}
         </p>
       ) : null}

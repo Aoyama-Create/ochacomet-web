@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
+import { BackLink } from "@/components/ui/BackLink";
 import {
   CustomerPortalButton,
   UpgradeButton,
@@ -72,12 +73,7 @@ export default async function SubscriptionPage({
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-3xl px-6 py-12">
-        <Link
-          href="/account"
-          className="text-xs text-ink-soft hover:text-primary"
-        >
-          ← マイページに戻る
-        </Link>
+        <BackLink href="/account">マイページに戻る</BackLink>
         <h1 className="mt-1 text-2xl font-black text-ink">
           サブスクリプション
         </h1>
@@ -195,7 +191,7 @@ export default async function SubscriptionPage({
         )}
 
         {view.status === "friend" && (
-          <section className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm leading-relaxed text-amber-900">
+          <section className="mt-8 rounded-2xl border border-warning-line bg-warning-soft p-6 text-sm leading-relaxed text-warning-ink">
             <p>
               フレンドコードによる Pro 試用中です ({u.friendExpiresAt && new Date(u.friendExpiresAt).toLocaleDateString()} まで)。
               期限を過ぎると Free プランに戻ります。継続して Pro を使うには、有効期限内に
@@ -254,7 +250,7 @@ function computeStateView(args: {
     return {
       status: "cancelled",
       badgeText: "停止中",
-      badgeClass: "bg-red-100 text-red-800",
+      badgeClass: "bg-danger-soft text-danger-ink",
       bodyTitle: "アカウントが停止されています",
       bodyDescription:
         "ご利用の停止についてはお問い合わせください。",
@@ -265,7 +261,7 @@ function computeStateView(args: {
     return {
       status: "friend",
       badgeText: "Friend (試用中)",
-      badgeClass: "bg-amber-100 text-amber-800",
+      badgeClass: "bg-warning-soft text-warning-ink",
       bodyTitle: "フレンドコードで Pro 機能を試用中",
       bodyDescription:
         "正規購入ではなく招待による試用期間です。Pro 機能をお楽しみください。",
@@ -284,7 +280,7 @@ function computeStateView(args: {
     return {
       status: "trialing",
       badgeText: "Pro (トライアル)",
-      badgeClass: "bg-emerald-100 text-emerald-800",
+      badgeClass: "bg-success-soft text-success-ink",
       bodyTitle: `無料トライアル中${
         daysRemaining != null ? ` (残り ${daysRemaining} 日)` : ""
       }`,
@@ -296,7 +292,7 @@ function computeStateView(args: {
     return {
       status: "active",
       badgeText: "Pro (加入中)",
-      badgeClass: "bg-emerald-100 text-emerald-800",
+      badgeClass: "bg-success-soft text-success-ink",
       bodyTitle: "Pro プランに加入中",
       bodyDescription:
         "すべての Pro 機能をご利用いただけます。プラン変更・解約は下記の Customer Portal から。",
@@ -306,7 +302,7 @@ function computeStateView(args: {
     return {
       status: "past_due",
       badgeText: "支払い失敗",
-      badgeClass: "bg-red-100 text-red-800",
+      badgeClass: "bg-danger-soft text-danger-ink",
       bodyTitle: "支払いが失敗しています",
       bodyDescription:
         "クレジットカードの有効期限切れ等で課金が失敗しました。Customer Portal で支払い方法を更新してください。",
@@ -316,7 +312,7 @@ function computeStateView(args: {
     return {
       status: "cancelled",
       badgeText: "解約済み",
-      badgeClass: "bg-zinc-200 text-zinc-700",
+      badgeClass: "bg-neutral-soft text-ink-soft",
       bodyTitle: "解約済み (Free プランに移行)",
       bodyDescription:
         "Pro プランの契約が終了しました。再加入する場合は下のアップグレードからどうぞ。",
@@ -326,7 +322,7 @@ function computeStateView(args: {
   return {
     status: "free",
     badgeText: "Free",
-    badgeClass: "bg-zinc-200 text-zinc-700",
+    badgeClass: "bg-neutral-soft text-ink-soft",
     bodyTitle: "Free プランをご利用中",
     bodyDescription:
       "基本機能 (自動コメント送信・テンプレート) は無料でお使いいただけます。Pro 機能を試したい方は 14 日間の無料トライアルから。",

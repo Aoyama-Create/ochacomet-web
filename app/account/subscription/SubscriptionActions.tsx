@@ -4,6 +4,8 @@
 // fetch して返ってきた URL に window.location.href で遷移する。
 
 import { useState, useTransition } from "react";
+import { CreditCard, ExternalLink } from "lucide-react";
+import { buttonClass } from "@/components/ui/button";
 
 type UpgradeButtonProps = {
   variant: "monthly" | "yearly";
@@ -50,19 +52,19 @@ export function UpgradeButton({
         type="button"
         onClick={go}
         disabled={pending}
-        className={
-          highlighted
-            ? "w-full rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-white shadow-[0_4px_14px_rgba(72,135,91,0.32)] hover:bg-primary-hover disabled:opacity-50"
-            : "w-full rounded-full border border-line bg-canvas px-4 py-2.5 text-sm font-extrabold text-ink hover:border-primary hover:text-primary disabled:opacity-50"
-        }
+        className={buttonClass({
+          variant: highlighted ? "primary" : "secondary",
+          width: "full",
+        })}
       >
+        <CreditCard className="h-4 w-4" strokeWidth={2.2} />
         {pending ? "リダイレクト中..." : label}
       </button>
       {note ? (
         <p className="mt-2 text-xs leading-relaxed text-ink-soft">{note}</p>
       ) : null}
       {error ? (
-        <p className="mt-2 text-xs text-red-600">{error}</p>
+        <p className="mt-2 text-xs text-danger-ink">{error}</p>
       ) : null}
     </div>
   );
@@ -99,12 +101,13 @@ export function CustomerPortalButton({ label }: { label: string }) {
         type="button"
         onClick={go}
         disabled={pending}
-        className="rounded-full border border-line bg-canvas px-5 py-2 text-sm font-extrabold text-ink hover:border-primary hover:text-primary disabled:opacity-50"
+        className={buttonClass({ variant: "secondary" })}
       >
+        <ExternalLink className="h-4 w-4" strokeWidth={2.2} />
         {pending ? "..." : label}
       </button>
       {error ? (
-        <p className="mt-2 text-xs text-red-600">{error}</p>
+        <p className="mt-2 text-xs text-danger-ink">{error}</p>
       ) : null}
     </div>
   );

@@ -1,8 +1,8 @@
 // /admin/releases/new — ZIP アップロード画面
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { UploadForm } from "./UploadForm";
+import { BackLink } from "@/components/ui/BackLink";
 
 export const metadata = { title: "新規リリース" };
 
@@ -13,12 +13,7 @@ export default async function NewReleasePage() {
   return (
     <main className="flex flex-1 flex-col bg-canvas">
       <div className="mx-auto w-full max-w-2xl px-6 py-12">
-        <Link
-          href="/admin/releases"
-          className="text-xs text-ink-soft hover:text-primary"
-        >
-          ← リリース管理に戻る
-        </Link>
+        <BackLink href="/admin/releases">リリース管理に戻る</BackLink>
         <h1 className="mt-1 text-2xl font-black tracking-tight text-ink">
           新規リリース
         </h1>

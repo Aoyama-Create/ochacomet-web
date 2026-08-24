@@ -10,6 +10,8 @@ import { eq } from "drizzle-orm";
 import { auth, signOut } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/db/schema";
+import { ArrowRight, LogOut, UserMinus } from "lucide-react";
+import { dangerLinkClass } from "@/components/ui/button";
 
 export const metadata = { title: "マイページ" };
 
@@ -51,7 +53,7 @@ export default async function AccountPage() {
         </p>
 
         {!verified ? (
-          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div className="mt-6 rounded-xl border border-warning-line bg-warning-soft px-4 py-3 text-sm text-warning-ink">
             <strong className="font-extrabold">メール認証が未完了です。</strong>{" "}
             登録時に届いた認証メールのリンクを開いて完了させてください。
             アプリのダウンロード等、一部の機能が制限されます。
@@ -64,9 +66,10 @@ export default async function AccountPage() {
             <h2 className="text-lg font-extrabold text-ink">基本情報</h2>
             <Link
               href="/account/profile"
-              className="text-xs font-extrabold text-primary hover:text-primary-hover"
+              className="inline-flex items-center gap-1 text-xs font-extrabold text-primary transition-colors hover:text-primary-hover"
             >
-              プロフィールを編集 →
+              プロフィールを編集
+              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.4} />
             </Link>
           </div>
           {/* 2 列化で縦を約半分にする。app/account/subscription/page.tsx と同じ作法 */}
@@ -74,7 +77,7 @@ export default async function AccountPage() {
             <Row
               label="お名前"
               value={
-                displayName || <span className="text-amber-700">未設定</span>
+                displayName || <span className="text-warning-ink">未設定</span>
               }
             />
             <Row label="メール" value={email} />
@@ -89,7 +92,7 @@ export default async function AccountPage() {
                 verified ? (
                   <span className="font-extrabold text-primary">完了</span>
                 ) : (
-                  <span className="font-extrabold text-amber-700">未完了</span>
+                  <span className="font-extrabold text-warning-ink">未完了</span>
                 )
               }
             />
@@ -97,7 +100,7 @@ export default async function AccountPage() {
               <Row
                 label="権限"
                 value={
-                  <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[11px] font-extrabold text-violet-700">
+                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-extrabold text-accent-ink">
                     admin
                   </span>
                 }
@@ -112,19 +115,19 @@ export default async function AccountPage() {
             href="/account/profile"
             title="プロフィール編集"
             body="名前・電話番号・住所を編集します。"
-            cta="編集する →"
+            cta="編集する"
           />
           <ActionCard
             href="/account/download"
             title="アプリをダウンロード"
             body="macOS / Windows 版のアプリを取得します。"
-            cta="ダウンロードへ →"
+            cta="ダウンロードへ"
           />
           <ActionCard
             href="/account/subscription"
             title="サブスクリプション"
             body="プラン状態・アップグレード・解約。"
-            cta="プランを見る →"
+            cta="プランを見る"
           />
         </section>
 
@@ -138,18 +141,18 @@ export default async function AccountPage() {
           <div className="flex flex-wrap items-center gap-3 text-sm">
             {isAdmin ? (
               <>
-                <span className="text-xs font-extrabold text-violet-900">
+                <span className="text-xs font-extrabold text-accent-ink">
                   Admin
                 </span>
                 <Link
                   href="/admin/users"
-                  className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+                  className="rounded-full border border-accent-line bg-surface px-4 py-1.5 font-extrabold text-accent-ink hover:bg-accent-soft"
                 >
                   ユーザー管理
                 </Link>
                 <Link
                   href="/admin/releases"
-                  className="rounded-full border border-violet-300 bg-white px-4 py-1.5 font-extrabold text-violet-700 hover:bg-violet-100"
+                  className="rounded-full border border-accent-line bg-surface px-4 py-1.5 font-extrabold text-accent-ink hover:bg-accent-soft"
                 >
                   リリース管理
                 </Link>
@@ -157,11 +160,10 @@ export default async function AccountPage() {
             ) : null}
           </div>
           <div className="flex items-center gap-4">
-            {/* 退会は誤操作させたくないので、サインアウトより弱い見た目のリンクにする。 */}
-            <Link
-              href="/account/delete"
-              className="text-xs font-extrabold text-ink-soft underline underline-offset-4 hover:text-red-700"
-            >
+            {/* 退会は取り消せない操作なので、赤で明示する。
+                塗りつぶしにはしない（確定は /account/delete 側の赤ボタンで行う二段構え）。 */}
+            <Link href="/account/delete" className={dangerLinkClass}>
+              <UserMinus className="h-3.5 w-3.5" strokeWidth={2.4} />
               退会
             </Link>
             <form
@@ -172,8 +174,9 @@ export default async function AccountPage() {
             >
               <button
                 type="submit"
-                className="rounded-full border border-line bg-surface px-5 py-2 text-sm font-extrabold text-ink-soft hover:border-primary hover:text-primary"
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2 text-sm font-extrabold text-ink-soft transition-colors hover:border-primary hover:text-primary"
               >
+                <LogOut className="h-4 w-4" strokeWidth={2.2} />
                 サインアウト
               </button>
             </form>
@@ -211,8 +214,12 @@ function ActionCard({
     >
       <h3 className="text-base font-extrabold text-ink">{title}</h3>
       <p className="mt-2 text-[13px] leading-relaxed text-ink-soft">{body}</p>
-      <p className="mt-3 text-[13px] font-extrabold text-primary group-hover:text-primary-hover">
+      <p className="mt-3 inline-flex items-center gap-1 text-[13px] font-extrabold text-primary group-hover:text-primary-hover">
         {cta}
+        <ArrowRight
+          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+          strokeWidth={2.4}
+        />
       </p>
     </Link>
   );
