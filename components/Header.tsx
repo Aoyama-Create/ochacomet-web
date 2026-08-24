@@ -7,8 +7,9 @@
 //
 // ログイン状態で出し分ける部分は HeaderAuth に切り出し、Suspense でストリーミングする。
 import Link from "next/link";
-import Image from "next/image";
 import { Suspense } from "react";
+import { BrandMark } from "./BrandMark";
+import { ThemeToggle } from "./ThemeToggle";
 import { HeaderAuth, HeaderAuthFallback } from "./HeaderAuth";
 
 // 背景は不透明な白（bg-surface）。透過していたころは backdrop-blur で下地を
@@ -25,22 +26,21 @@ export function Header() {
           href="/"
           className="flex items-center gap-2 text-base font-extrabold text-ink"
         >
-          {/* 透過のマーク。角丸は掛けない（丸める対象の面が無い） */}
-          <Image
-            src="/ochacomet-mark.svg"
-            width={28}
-            height={28}
-            alt=""
-            aria-hidden
-            className="h-7 w-7"
-            unoptimized
-          />
+          {/* 透過のマーク。角丸は掛けない（丸める対象の面が無い）。
+              テーマで色が変わるのでインライン SVG（components/BrandMark.tsx）。 */}
+          <BrandMark className="h-7 w-7" />
           OchaComet
         </Link>
 
-        <Suspense fallback={<HeaderAuthFallback />}>
-          <HeaderAuth />
-        </Suspense>
+        {/* ThemeToggle は Suspense の外に置く。中に入れると、認証の解決を待つ間
+            テーマを切り替えられない。ThemeToggle 自体は動的アクセスをしないので
+            静的シェルに含まれる。 */}
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Suspense fallback={<HeaderAuthFallback />}>
+            <HeaderAuth />
+          </Suspense>
+        </div>
       </div>
     </header>
   );
