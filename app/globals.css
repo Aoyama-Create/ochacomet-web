@@ -146,10 +146,23 @@
   --color-neutral-soft: var(--neutral-soft);
   --color-neutral-ink: var(--neutral-ink);
 
-  /* Fonts — M PLUS Rounded 1c (柔らかい丸ゴシック) + Hiragino フォールバック */
-  --font-sans: var(--font-zen-maru), "Nunito", "Hiragino Maru Gothic ProN",
-    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-  --font-en: var(--font-nunito), var(--font-zen-maru), sans-serif;
+  /* Fonts — 本文は OS 標準のサンセリフ（日本語は角ゴシック）。
+     英数字だけ Nunito を当てる。
+
+     ★ ここに日本語 Web フォントを足さないこと。
+       以前は `--font-sans: var(--font-m-plus-rounded), …` と書かれていたが、
+       --font-m-plus-rounded はどこにも定義されておらず、変数参照が解決できずに
+       値ごと無効化されていた。その結果 Tailwind preflight の
+       `font-family: var(--default-font-family, ui-sans-serif, system-ui, …)` が
+       フォールバックへ落ち、実際には OS 標準の角ゴシックで表示されていた。
+       つまり「丸ゴシックのつもりで、一度も効いていなかった」状態。
+
+       2026-08-25 にこの見た目を正とする判断をした。日本語 Web フォントは重く
+       （Zen Maru Gothic の 400/500/700/900）、実際に効かせるとダウンロードと
+       フォント切り替わりのちらつきが新たに発生するため。 */
+  --font-sans: ui-sans-serif, system-ui, "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    "Noto Sans JP", sans-serif;
+  --font-en: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {

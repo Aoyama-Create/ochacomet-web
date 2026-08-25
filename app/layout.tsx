@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Zen_Maru_Gothic, Nunito } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
-const zenMaru = Zen_Maru_Gothic({
-  variable: "--font-zen-maru",
-  weight: ["400", "500", "700", "900"],
-  preload: false,
-});
+// 日本語は OS 標準の角ゴシックに任せる（app/globals.css の --font-sans 参照）。
+// 以前は Zen Maru Gothic を読み込んでいたが、変数名の食い違いで一度も適用されて
+// おらず、実質ダウンロードされていなかった。効かせると日本語 Web フォント分の
+// 転送とフォント切り替わりが増えるため、読み込み自体をやめる。
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -69,13 +68,13 @@ export default function RootLayout({
     // サーバー出力より先に書き換えるため。ここだけの例外。
     <html
       lang="ja"
-      className={`${zenMaru.variable} ${nunito.variable} h-full antialiased`}
+      className={`${nunito.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
-      <body className="min-h-full flex flex-col bg-canvas text-ink font-[var(--font-zen-maru)]">
+      <body className="min-h-full flex flex-col bg-canvas text-ink">
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
