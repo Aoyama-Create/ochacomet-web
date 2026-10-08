@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "OchaComet の返金・解約に関する規定",
 };
 
-const LAST_UPDATED = "2026年8月14日";
+const LAST_UPDATED = "2026年10月8日";
 
 export default function RefundPage() {
   return (
@@ -66,7 +66,7 @@ export default function RefundPage() {
       <p>返金をご希望の場合、次の手順でお申し出ください。</p>
       <ol>
         <li>
-          <a href="mailto:support@ochacomet.aoyamacreate.com">support@ochacomet.aoyamacreate.com</a>{" "}
+          <a href="mailto:support@ochacomet.mail.aoyamacreate.com">support@ochacomet.mail.aoyamacreate.com</a>{" "}
           に以下を記載してメール送信
           <ul>
             <li>ご登録メールアドレス</li>
@@ -104,7 +104,7 @@ export default function RefundPage() {
       <h2>お問い合わせ</h2>
       <p>
         本ポリシーに関するお問い合わせは{" "}
-        <a href="mailto:support@ochacomet.aoyamacreate.com">support@ochacomet.aoyamacreate.com</a>{" "}
+        <a href="mailto:support@ochacomet.mail.aoyamacreate.com">support@ochacomet.mail.aoyamacreate.com</a>{" "}
         までご連絡ください。
       </p>
     </LegalPage>

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: "OchaComet のサービス利用規約",
 };
 
-const LAST_UPDATED = "2026年8月22日";
+const LAST_UPDATED = "2026年10月8日";
 
 export default function TermsPage() {
   return (
@@ -562,7 +562,7 @@ export default function TermsPage() {
       <h2>お問い合わせ</h2>
       <p>
         本規約に関するお問い合わせは{" "}
-        <a href="mailto:support@ochacomet.aoyamacreate.com">support@ochacomet.aoyamacreate.com</a>{" "}
+        <a href="mailto:support@ochacomet.mail.aoyamacreate.com">support@ochacomet.mail.aoyamacreate.com</a>{" "}
         までご連絡ください。
       </p>
       <p>

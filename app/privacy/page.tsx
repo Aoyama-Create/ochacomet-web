@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   description: "OchaComet における個人情報の取り扱いについて",
 };
 
-const LAST_UPDATED = "2026年8月23日";
+const LAST_UPDATED = "2026年10月8日";
 
 export default function PrivacyPage() {
   return (
@@ -346,7 +346,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           請求は{" "}
-          <a href="mailto:support@ochacomet.aoyamacreate.com">support@ochacomet.aoyamacreate.com</a>{" "}
+          <a href="mailto:support@ochacomet.mail.aoyamacreate.com">support@ochacomet.mail.aoyamacreate.com</a>{" "}
           宛にメールでお願いします。この窓口は、本ポリシーに関するお問い合わせ窓口と同一です。
         </li>
         <li>
@@ -383,7 +383,7 @@ export default function PrivacyPage() {
       </p>
       <p>
         本ポリシーに関するお問い合わせ、および第 11 条の開示等の請求は{" "}
-        <a href="mailto:support@ochacomet.aoyamacreate.com">support@ochacomet.aoyamacreate.com</a>{" "}
+        <a href="mailto:support@ochacomet.mail.aoyamacreate.com">support@ochacomet.mail.aoyamacreate.com</a>{" "}
         までご連絡ください。両者の窓口は同一です。
       </p>
       <p>

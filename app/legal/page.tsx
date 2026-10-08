@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "OchaComet の事業者情報",
 };
 
-const LAST_UPDATED = "2026年8月14日";
+const LAST_UPDATED = "2026年10月8日";
 
 export default function LegalPage_() {
   return (
@@ -50,8 +50,8 @@ export default function LegalPage_() {
           <tr>
             <th>メールアドレス</th>
             <td>
-              <a href="mailto:support@ochacomet.aoyamacreate.com">
-                support@ochacomet.aoyamacreate.com
+              <a href="mailto:support@ochacomet.mail.aoyamacreate.com">
+                support@ochacomet.mail.aoyamacreate.com
               </a>
             </td>
           </tr>
