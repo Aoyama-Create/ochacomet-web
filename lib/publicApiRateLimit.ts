@@ -1,4 +1,5 @@
 // 公開 API の IP 単位レート制限。契約は lib/publicApiRateLimit.contract.ts。
+import { NextResponse } from "next/server";
 import { clientIpFromHeaders } from "@/lib/audit";
 import { checkRateLimit } from "@/lib/rateLimit";
 import {
@@ -16,14 +17,22 @@ export const publicRateLimitKey: PublicRateLimitKey = (route, ip) =>
   `pub:${route}:${ip ?? UNKNOWN_IP_KEY}`;
 
 export const buildRateLimitedResponse: BuildRateLimitedResponse = (route) => {
-  void route;
-  throw new Error("not implemented: buildRateLimitedResponse");
+  const headers: Record<string, string> = {
+    "Retry-After": String(PUBLIC_RATE_LIMITS[route].windowSec),
+    "Cache-Control": "no-store, max-age=0",
+  };
+  if (route === "version") {
+    headers["Access-Control-Allow-Origin"] = "*";
+  }
+  return NextResponse.json({ error: "rate_limit" }, { status: 429, headers });
 };
 
 export const onRateLimitError: OnRateLimitError = (route, err) => {
-  void route;
-  void err;
-  throw new Error("not implemented: onRateLimitError");
+  console.error(
+    `[publicApiRateLimit] ${route}: レート制限の確認に失敗したため通します`,
+    err,
+  );
+  return null;
 };
 
 export const enforcePublicRateLimit: EnforcePublicRateLimit = async (
