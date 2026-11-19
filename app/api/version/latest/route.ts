@@ -11,18 +11,23 @@
 // force-lock は今回スコープ外。minVersion は env MIN_SUPPORTED_VERSION を
 // そのまま返すのみで、拡張側では情報表示にとどめる。
 //
-// TODO: 高トラフィック時は IP レート制限 (lib/rateLimit) を追加する。
+// レート制限: IP ごとに 60 回 / 10 分 (lib/publicApiRateLimit)。超過時は 429 { error: "rate_limit" }
+// (429 は Cache-Control: no-store で返し、CDN キャッシュに載せない)。
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { releases } from "@/db/schema";
 import { compareSemver, maxSemver } from "@/lib/semver";
+import { enforcePublicRateLimit } from "@/lib/publicApiRateLimit";
 
 const CACHE_HEADERS = {
   "Cache-Control": "public, max-age=300",
   "Access-Control-Allow-Origin": "*",
 } as const;
 
-export async function GET() {
+export async function GET(req: Request) {
+  const limited = await enforcePublicRateLimit(req, "version");
+  if (limited) return limited;
+
   const rows = await db
     .select({
       version: releases.version,

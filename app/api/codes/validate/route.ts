@@ -5,10 +5,10 @@
 //   有効: { valid: true, expires: ISO8601 } / 200
 //   無効: { valid: false, reason: "expired" | "not_found" } / 200
 //
-// 1st リリースではレート制限を入れない (拡張側で 24h キャッシュするので攻撃 ROI 低い)。
-// Phase 3 でフレンドコード brute force 懸念が出たら IP/code ベースのレート制限を追加する。
+// レート制限: IP ごとに 30 回 / 10 分 (lib/publicApiRateLimit)。超過時は 429 { error: "rate_limit" }。
 import { NextResponse } from "next/server";
 import { validateFriendCode } from "@/lib/friendCodes/validate";
+import { enforcePublicRateLimit } from "@/lib/publicApiRateLimit";
 
 const NO_STORE_HEADERS = {
   "Cache-Control": "no-store, max-age=0",
@@ -17,6 +17,8 @@ const NO_STORE_HEADERS = {
 } as const;
 
 export async function GET(req: Request) {
+  const limited = await enforcePublicRateLimit(req, "codes");
+  if (limited) return limited;
   const url = new URL(req.url);
   const code = url.searchParams.get("code") ?? "";
   const result = await validateFriendCode(code);
